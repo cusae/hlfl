@@ -1,2 +1,2 @@
 change_logs = ChangeLog
-SUBDIRS = . doc src
+SUBDIRS = doc src
