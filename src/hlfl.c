@@ -782,7 +782,6 @@ process(buffer)
  char *flags;
  char old_t;
  int n;
- int m;
 
 
  while ((t[0] == ' ') || (t[0] == '\t') || (t[0] == '\n'))
