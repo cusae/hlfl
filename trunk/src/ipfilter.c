@@ -187,8 +187,6 @@ translate_ipfilter(op, proto, src, log, dst, sports, dports, interface)
    case REJECT_ALL:
     printf("block return-icmp in%s quick %s %s from %s %s to %s %s %s\n", logit,
 	   via, p, dst, dports, src, sports, icmp_code);
-    printf("block in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
-	   dst, dports, src, sports, icmp_code);
     printf("block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	   src, sports, dst, dports, icmp_code);
     break;
