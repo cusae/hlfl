@@ -251,7 +251,7 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 /* XXX to complete */
 /* XXX complete also the rest of the code when knowing specifical place of the keyword */
  if (log)
-  logit = "";
+  logit = "log";
 
  src = cisco_ip(src);
  dst = cisco_ip(dst);
@@ -298,8 +298,8 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
       {
        c = cisco_interface(interface);
        snprintf(buffer, size,
-		"access-list %d permit %s %s %s %s %s %s\n", c->out, p,
-		src, sports, dst, dports, icmp_code);
+		"access-list %d permit %s %s %s %s %s %s %s\n", c->out, p,
+		src, sports, dst, dports, icmp_code, logit);
        cisco_add_rule(buffer, interface);
 
       }
@@ -308,8 +308,8 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
        while (c)
 	 {
 	  bzero(buffer, size);
-	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		   c->out, p, dst, dports, dst, dports, icmp_code);
+	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		   c->out, p, dst, dports, dst, dports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
 	  c = c->next;
 	 }
@@ -319,8 +319,8 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
     if (interface)
       {
        c = cisco_interface(interface);
-       snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		c->in, p, dst, dports, src, sports, icmp_code);
+       snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		c->in, p, dst, dports, src, sports, icmp_code, logit);
        cisco_add_rule(buffer, interface);
       }
     else
@@ -329,8 +329,8 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 	 {
 	  bzero(buffer, size);
 
-	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		   c->in, p, dst, dports, src, sports, icmp_code);
+	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		   c->in, p, dst, dports, src, sports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
 	  c = c->next;
 	 }
@@ -340,11 +340,11 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
     if (interface)
       {
        c = cisco_interface(interface);
-       snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		c->out, p, src, sports, dst, dports, icmp_code);
+       snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		c->out, p, src, sports, dst, dports, icmp_code, logit);
        cisco_add_rule(buffer, interface);
-       snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		c->in, p, dst, dports, src, sports, icmp_code);
+       snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		c->in, p, dst, dports, src, sports, icmp_code, logit);
        cisco_add_rule(buffer, interface);
       }
     else
@@ -352,11 +352,11 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
        while (c)
 	 {
 
-	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		   c->out, p, src, sports, dst, dports, icmp_code);
+	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		   c->out, p, src, sports, dst, dports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
-	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		   c->in, p, dst, dports, src, sports, icmp_code);
+	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		   c->in, p, dst, dports, src, sports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
 	  c = c->next;
 	 }
@@ -369,12 +369,12 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
        if (interface)
 	 {
 	  c = cisco_interface(interface);
-	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s\n",
-		   c->out, p, src, sports, dst, dports);
+	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
+		   c->out, p, src, sports, dst, dports, logit);
 	  cisco_add_rule(buffer, interface);
 	  snprintf(buffer, size,
-		   "access-list %d permit %s %s %s %s %s established\n", c->in,
-		   p, dst, dports, src, sports);
+		   "access-list %d permit %s %s %s %s %s established %s\n", c->in,
+		   p, dst, dports, src, sports, logit);
 	  cisco_add_rule(buffer, interface);
 	 }
        else
@@ -382,12 +382,12 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 	  while (c)
 	    {
 
-	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s\n",
-		      c->out, p, src, sports, dst, dports);
+	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
+		      c->out, p, src, sports, dst, dports, logit);
 	     cisco_add_rule(buffer, c->name);
 	     snprintf(buffer, size,
-		      "access-list %d permit %s %s %s %s %s established\n",
-		      c->in, p, dst, dports, src, sports);
+		      "access-list %d permit %s %s %s %s %s established %s\n",
+		      c->in, p, dst, dports, src, sports, logit);
 	     cisco_add_rule(buffer, c->name);
 	     c = c->next;
 	    }
@@ -399,11 +399,11 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 	 {
 	  c = cisco_interface(interface);
 
-	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		   c->out, p, src, sports, dst, dports, icmp_code);
+	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		   c->out, p, src, sports, dst, dports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
 	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		   c->in, p, dst, dports, src, sports, icmp_code);
+		   c->in, p, dst, dports, src, sports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
 	 }
        else
@@ -411,11 +411,11 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 	  while (c)
 	    {
 
-	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		      c->out, p, src, sports, dst, dports, icmp_code);
+	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		      c->out, p, src, sports, dst, dports, icmp_code, logit);
 	     cisco_add_rule(buffer, c->name);
-	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		      c->in, p, dst, dports, src, sports, icmp_code);
+	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		      c->in, p, dst, dports, src, sports, icmp_code, logit);
 	     cisco_add_rule(buffer, c->name);
 	     c = c->next;
 	    }
@@ -429,24 +429,24 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
        if (interface)
 	 {
 	  c = cisco_interface(interface);
-	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s\n",
-		   c->in, p, dst, dports, src, sports);
+	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
+		   c->in, p, dst, dports, src, sports, logit);
 	  cisco_add_rule(buffer, c->name);
 	  snprintf(buffer, size,
-		   "access-list %d permit %s %s %s %s %s established\n", c->out,
-		   p, src, sports, dst, dports);
+		   "access-list %d permit %s %s %s %s %s established %s\n", c->out,
+		   p, src, sports, dst, dports, logit);
 	  cisco_add_rule(buffer, c->name);
 	 }
        else
 	 {
 	  while (c)
 	    {
-	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s\n",
-		      c->in, p, dst, dports, src, sports);
+	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
+		      c->in, p, dst, dports, src, sports, logit);
 	     cisco_add_rule(buffer, c->name);
 	     snprintf(buffer, size,
-		      "access-list %d permit %s %s %s %s %s established\n",
-		      c->out, p, src, sports, dst, dports);
+		      "access-list %d permit %s %s %s %s %s established %s\n",
+		      c->out, p, src, sports, dst, dports, logit);
 	     cisco_add_rule(buffer, c->name);
 	     c = c->next;
 	    }
@@ -458,22 +458,22 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 	 {
 	  c = cisco_interface(interface);
 
-	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		   c->out, p, src, sports, dst, dports, icmp_code);
+	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		   c->out, p, src, sports, dst, dports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
-	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		   c->in, p, dst, dports, src, sports, icmp_code);
+	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		   c->in, p, dst, dports, src, sports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
 	 }
        else
 	 {
 	  while (c)
 	    {
-	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		      c->out, p, src, sports, dst, dports, icmp_code);
+	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		      c->out, p, src, sports, dst, dports, icmp_code, logit);
 	     cisco_add_rule(buffer, c->name);
-	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
-		      c->in, p, dst, dports, src, sports, icmp_code);
+	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
+		      c->in, p, dst, dports, src, sports, icmp_code, logit);
 	     cisco_add_rule(buffer, c->name);
 	     c = c->next;
 	    }
@@ -487,22 +487,22 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
     if (interface)
       {
        c = cisco_interface(interface);
-       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s\n", c->out,
-		p, src, sports, dst, dports, icmp_code);
+       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n", c->out,
+		p, src, sports, dst, dports, icmp_code, logit);
        cisco_add_rule(buffer, c->name);
-       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s\n", c->in,
-		p, dst, dports, src, sports, icmp_code);
+       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n", c->in,
+		p, dst, dports, src, sports, icmp_code, logit);
        cisco_add_rule(buffer, c->name);
       }
     else
       {
        while (c)
 	 {
-	  snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s\n",
-		   c->out, p, src, sports, dst, dports, icmp_code);
+	  snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n",
+		   c->out, p, src, sports, dst, dports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
-	  snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s\n",
-		   c->in, p, dst, dports, src, sports, icmp_code);
+	  snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n",
+		   c->in, p, dst, dports, src, sports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
 	  c = c->next;
 	 }
@@ -515,16 +515,16 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
       {
        c = cisco_interface(interface);
 
-       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s\n", c->out,
-		p, src, sports, dst, dports, icmp_code);
+       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n", c->out,
+		p, src, sports, dst, dports, icmp_code, logit);
        cisco_add_rule(buffer, c->name);
       }
     else
       {
        while (c)
 	 {
-	  snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s\n",
-		   c->out, p, src, sports, dst, dports, icmp_code);
+	  snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n",
+		   c->out, p, src, sports, dst, dports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
 	  c = c->next;
 	 }
@@ -535,16 +535,16 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
     if (interface)
       {
        c = cisco_interface(interface);
-       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s\n", c->in,
-		p, dst, dports, src, sports, icmp_code);
+       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n", c->in,
+		p, dst, dports, src, sports, icmp_code, logit);
        cisco_add_rule(buffer, c->name);
       }
     else
       {
        while (c)
 	 {
-	  snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s\n",
-		   c->in, p, dst, dports, src, sports, icmp_code);
+	  snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n",
+		   c->in, p, dst, dports, src, sports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
 	  c = c->next;
 	 }
