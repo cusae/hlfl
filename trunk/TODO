@@ -7,7 +7,7 @@
    case ACCEPT_ALL :
      ...
     break;
-    case DENY_ALL : 
+    case DENY_ALL :
      ...
     break;
     case ACCEPT_INCOMING :

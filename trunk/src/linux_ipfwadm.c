@@ -1,5 +1,5 @@
 /* hlfl
- * Copyright (C) 2000 Renaud Deraison
+ * Copyright (C) 2000-2002 Renaud Deraison
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,8 +48,8 @@ icmp_types(type)
   fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
   exit(1);
  }
- 
- sprintf(ret, "%d", num);  
+
+ sprintf(ret, "%d", num);
  return ret;
 }
 
@@ -114,8 +114,8 @@ translate_linux_ipfwadm(op, proto, src, log, dst, sports, dports, interface)
 	   logit, src, sports, dst, dports, proto, via);
     break;
    case ACCEPT_ONE_WAY_REVERSE:
-   if(!icmp(proto)) /* 
-                     * XXXX ugly hack here, because ifpwadm 
+   if(!icmp(proto)) /*
+                     * XXXX ugly hack here, because ifpwadm
    		     * wants the icmp code to be with -S
 		     */
     printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n", logit,
@@ -218,7 +218,7 @@ translate_linux_ipfwadm_start()
  printf("$ipfwadm -O -f\n");
  printf("$ipfwadm -F -f\n");
  printf("$ipfwadm -A -f\n");
- 
+
  printf("$ipfwadm -I -p deny\n");
  printf("$ipfwadm -O -p deny\n");
  printf("$ipfwadm -F -p deny\n");
