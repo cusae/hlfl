@@ -212,7 +212,7 @@ get_ports_ranges(expr)
 
  if(expr)
  {
- while(expr[0]==' ')expr+=sizeof(char);
+ while(expr[0]==' ')expr++;
  s = strchr(expr, ' ');
  }
 
@@ -220,7 +220,7 @@ get_ports_ranges(expr)
    	char old_s;
     	old_s = s[0];
         s[0]='\0';
- 	expr = s+sizeof(char);
+ 	expr = s+1;
 	expr = clean_expr(expr);
 	if(!expr)
 	{
@@ -288,7 +288,7 @@ get_icmp_codes(codes)
  
  if(codes)
  {
-  while(codes[0]==' ')codes+=sizeof(char);
+  while(codes[0]==' ')codes++;
   t = strchr(codes, ' ');
   if(!t)
   {
@@ -299,7 +299,7 @@ get_icmp_codes(codes)
   else
   {
    t[0]=0;
-   ret[0] = strdup(t+sizeof(char));
+   ret[0] = strdup(t+1);
    return ret;
   }
  }

@@ -94,7 +94,7 @@ get_definition(d)
   return NULL;
  o_d = d = strdup(d);
  
- while(d[0]==' ')d+=sizeof(char);
+ while(d[0]==' ')d++;
  while(d[strlen(d)-1]==' ')d[strlen(d)-1]= '\0';
  if((t = strchr(d, ' ')))t[0] = '\0';
  
@@ -104,8 +104,8 @@ get_definition(d)
    {
     if(t)
     {
-     char * ret = malloc(strlen(k->value) + strlen(t+sizeof(char)) + 2);
-     sprintf(ret, "%s %s", k->value, t+sizeof(char));
+     char * ret = malloc(strlen(k->value) + strlen(t+1) + 2);
+     sprintf(ret, "%s %s", k->value, t+1);
      t[0] = ' ';
      free(o_d);
      return ret;
@@ -228,7 +228,7 @@ char ** translate_proto(proto)
       return NULL;
    }
    ret[current++] = strdup(t);
-   t = s+sizeof(char);
+   t = s+1;
    s[0]='|';
    s = strchr(t, '|');
   }
@@ -262,7 +262,7 @@ valid_ip(s)
   char * t;
   char * m;
   int ok = 0;
-  while(s[0]==' ')s+=sizeof(char);
+  while(s[0]==' ')s++;
   while(s[strlen(s)-1]==' ')s[strlen(s)-1]='\0';
   if((t = strchr(s, ' ')))t[0]='\0';
   if((m = strchr(s, '/')))m[0]='\0';
@@ -329,9 +329,9 @@ ip(src, level)
       int i = 0;
       char * end;
       char ** r;
-      t+=sizeof(char);
+      t++;
       w[0]='\0';
-      end = w+sizeof(char);
+      end = w+1;
       r = ip(t, level+1);
       while(r[i])
       {
@@ -381,7 +381,7 @@ ip(src, level)
     }
     else ret[current] = strdup(t);
     current++;
-    if(s)t = s+sizeof(char);
+    if(s)t = s+1;
     else t = NULL;
   }
   return ret;
@@ -677,7 +677,7 @@ int include(file)
    char * path = malloc(strlen(FILES)+strlen(file)+2);
    
    file[strlen(file)-1] = '\0';
-   file+=sizeof(char);
+   file++;
    sprintf(path, "%s%s%s", FILES, FILES[strlen(FILES)-1]=='/' ? "":"/", file);;
    f = fopen(path, "r");
    if(!f)
@@ -732,7 +732,7 @@ define(order)
  oldt = t[0];
  t[0] =  '\0';
  def = strdup(order);
- value = strdup(t+sizeof(char));
+ value = strdup(t+1);
  t[0] = oldt;
  while((value[strlen(value)-1]=='\n')||
        (value[strlen(value)-1]==' '))
@@ -764,7 +764,7 @@ process(buffer)
 
  while((t[0]==' ')||
        (t[0]=='\t')||
-       (t[0]=='\n'))t+=sizeof(char);
+       (t[0]=='\n'))t++;
 
 
  /*
@@ -789,11 +789,11 @@ process(buffer)
 
  /* proto */
  proto = t;
- t = strchr(proto+sizeof(char), ' ');
+ t = strchr(proto+1, ' ');
  
  if(!t)
   {
-   t = strchr(proto+sizeof(char), '(');
+   t = strchr(proto+1, '(');
    if(!t){
    	error = HLFL_SYNTAX_ERROR;
 	return -1;
@@ -806,17 +806,17 @@ process(buffer)
  t[0] = old_t;
  if(!strcmp(proto, "define"))
  {
-  return define(t+sizeof(char));
+  return define(t+1);
  }
  
  else if(!strcmp(proto, "include"))
  {
-  return include(t+sizeof(char));
+  return include(t+1);
  }
 
  else
  {
- while(t[0]==' ')t+=sizeof(char);
+ while(t[0]==' ')t++;
 
 
  /* src */
@@ -826,7 +826,7 @@ process(buffer)
     return -1;
    }
 
- src = t+sizeof(char);
+ src = t+1;
  t = matching_items(t, '(', ')');
  
  if(!t)
@@ -839,16 +839,16 @@ process(buffer)
  src = strdup(src);
  t[0] = old_t;
  
- t+=sizeof(char);
+ t++;
   while((t[0]==' ')||
-        (t[0]=='\t'))t+=sizeof(char);
+        (t[0]=='\t'))t++;
 
  /* op */
  op = t;
- t = strchr(op+sizeof(char), ' ');
+ t = strchr(op+1, ' ');
  if(!t)
    {
-   t = strchr(op+sizeof(char), '(');
+   t = strchr(op+1, '(');
    if(!t){
    	error = HLFL_SYNTAX_ERROR;
 	return -1;
@@ -860,7 +860,7 @@ process(buffer)
  t[0] = old_t;
 
   while((t[0]==' ')||
-        (t[0]=='\t'))t+=sizeof(char);
+        (t[0]=='\t'))t++;
 
  /* dst */
  if(t[0]!='(')
@@ -869,7 +869,7 @@ process(buffer)
    return -1;
   }
 
- dst = t+sizeof(char);
+ dst = t++;
  t = matching_items(t, '(', ')');
  
  if(!t)
@@ -882,15 +882,15 @@ process(buffer)
  t[0] = '\0';
  dst = strdup(dst);
  t[0] = old_t;
- t+=sizeof(char);
+ t++;
  while((t[0]==' ')||
-        (t[0]=='\t'))t+=sizeof(char);
+        (t[0]=='\t'))t++;
 
  /* interface (optional) */ 
 
  if(t[0]=='[')
  {
-   interface = t+sizeof(char);
+   interface = t+1;
    t = matching_items(t, '[', ']');
    if(!t)
     {
@@ -899,8 +899,8 @@ process(buffer)
      }
    t[0]='\0';
    interface = strdup(interface);
-   t+=sizeof(char);
-   while(t[0]==' ')t+=sizeof(char);
+   t++;
+   while(t[0]==' ')t++;
  }
  else interface = NULL;
 
@@ -961,9 +961,9 @@ read_file(file, fname)
     else if(n==INCLUDE_TEXT)
     {
       char * t = buffer;
-      while(t[0]=='\n' || t[0]=='\t' || t[0]==' ')t+=sizeof(char);
-      t+=sizeof(char); /* t[0] == '!' */
-      while(t[0]=='\n' || t[0]=='\t' || t[0]==' ')t+=sizeof(char);
+      while(t[0]=='\n' || t[0]=='\t' || t[0]==' ')t++;
+      t++; /* t[0] == '!' */
+      while(t[0]=='\n' || t[0]=='\t' || t[0]==' ')t++;
       include_text_func(t);
     }
     bzero(buffer, sizeof(buffer));
