@@ -1,0 +1,129 @@
+
+#
+# Include the definition of the services
+#
+
+include <services.hlfl>
+
+#
+# Single way permissions
+#
+
+# local : 192.168.0.0/16
+define local 192.168.0.0/16
+
+# remote : 172.22.0.0/16
+define remote 172.22.0.0/16
+
+
+# interface : eth0
+define interface eth0
+
+# ->
+tcp (local) -> (remote) [interface]
+
+# <-
+tcp (local) <- (remote) [interface]
+
+# <->
+tcp (local) <-> (remote) [interface]
+
+# <=>>
+
+tcp (local) <=>> (remote) [interface]
+
+# <<=>
+
+tcp (local) <<=> (remote) [interface]
+
+
+# <-X
+
+tcp (local) <-X (remote) [interface]
+
+# X->
+
+tcp (local) X-> (remote) [interface]
+
+# <-X!
+
+tcp (local) <-X! (remote) [interface]
+
+# X!->
+
+tcp (local) X!-> (remote) [interface]
+
+# X
+
+tcp (local) X (remote) [interface]
+
+# X!
+
+tcp (local) X! (remote) [interface]
+
+
+
+# l->
+tcp (local) l-> (remote) [interface]
+
+# <-l
+tcp (local) <-l (remote) [interface]
+
+# <-l>
+tcp (local) <-l> (remote) [interface]
+
+# <=l>>
+
+tcp (local) <=l>> (remote) [interface]
+
+# <<=l>
+
+tcp (local) <<=l> (remote) [interface]
+
+
+# <-Xl
+
+tcp (local) <-Xl (remote) [interface]
+
+# Xl->
+
+tcp (local) Xl-> (remote) [interface]
+
+# <-Xl!
+
+tcp (local) <-Xl! (remote) [interface]
+
+# Xl!->
+
+tcp (local) Xl!-> (remote) [interface]
+
+# X
+
+tcp (local) Xl (remote) [interface]
+
+# X!
+
+tcp (local) Xl! (remote) [interface]
+
+
+
+# More complicated
+define a 192.168.1.1
+define b 192.168.2.1
+define c a|b
+
+# -> udp|tcp
+
+udp|tcp (local) -> (remote) [interface]
+
+# tcp ((a|b) 1024) -> (remote) [interface]
+
+tcp ((a|b) 1024) -> (remote) [interface]
+
+
+# tcp ((c) 1024) -> (a|b) [interface]
+
+tcp ((c) 1024) -> (a|b) [interface]
+
+# should conclude by an error
+tcp|udp|toto|icmp ((a|b) 1024) -> (a|b) [interface]

@@ -1,0 +1,22 @@
+SHELL=@SHELL@
+# Autoconf installation directories
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+sbindir=@sbindir@
+libexecdir=@libexecdir@
+datadir=@datadir@
+sysconfdir=@sysconfdir@
+sharedstatedir=@sharedstatedir@
+localstatedir=@localstatedir@
+libdir=@libdir@
+includedir=@includedir@
+oldincludedir=@oldincludedir@
+infodir=@infodir@
+mandir=@mandir@
+CC=@CC@
+CFLAGS=@CFLAGS@ -DFILES=\"${datadir}/hlfl\"
+DEFS=$(CFLAGS)
+LIBS=@LIBS@
+INSTALL=@INSTALL@
+VERSION=\"@VERSION@\"
