@@ -1,4 +1,5 @@
 #ifndef __HLFL_INCLUDES__
+#define __HLFL_INCLUDES__
 #include "config.h"
 #ifdef HAVE_STDIO_H
 #include <stdio.h>
@@ -44,4 +45,4 @@
 
 #define COMMENT 1
 #define INCLUDE_TEXT 2
-#endif
+#endif /* __HLFL_INCLUDES__ */

@@ -68,7 +68,7 @@ include_text_t include_text_func;
 /*--------------------------------------------------------------
 
 			    Utilities
-			    
+
 ----------------------------------------------------------------*/
 
 void
@@ -313,7 +313,7 @@ ip(src, level)
  if (!src)
   return NULL;
 
- /* 
+ /*
   * Double the src string, else multiple interface won't have
   * multiple ip
   */
@@ -394,7 +394,7 @@ ip(src, level)
 	  free(r);
 	 }
 
-       /* 
+       /*
         * Case #3 : Syntax error
         */
        else
@@ -484,8 +484,8 @@ ifaces(iface, level)
 }
 
 
-/* 
- * Free the IPs returned by the previous function 
+/*
+ * Free the IPs returned by the previous function
  */
 
 #define ifaces_destroy(x) ip_destroy(x)
@@ -507,7 +507,7 @@ ip_destroy(p)
 /*-------------------------------------------------------------------
 
 		       Translator function
-		
+
 ---------------------------------------------------------------------*/
 
 /*
@@ -686,7 +686,7 @@ translate(proto, src, op, dst, interface, flags)
 /*---------------------------------------------------------------------
 
 			       (ugly) Parser
-			
+
 -----------------------------------------------------------------------*/
 
 /*

@@ -4,4 +4,4 @@
 void read_file(FILE *, char *);
 int icmp(char *);
 
-#endif
+#endif /* __HLFL_H__ */

@@ -6,4 +6,4 @@ int translate_cisco_start();
 void cisco_comment(char *);
 void cisco_exit();
 void include_text_cisco(char *);
-#endif
+#endif /* HLHL__CISCO_H */
