@@ -548,6 +548,7 @@ char *dst;
 char *interface;
 char *flags;
 {
+	int ret = 0;
 	int opi = int_op(op);
 	char **srcs = NULL;
 	char **dsts = NULL;
@@ -619,7 +620,7 @@ char *flags;
 						while (sports[k]) {
 							int l = 0;
 							while (dports[l]) {
-								translator_definitions
+								ret = translator_definitions
 								    [active_translator].
 								    translate_func
 								    (opi,
@@ -637,6 +638,14 @@ char *flags;
 								     ?
 								     interfaces
 								     [ni] : NULL);
+								if (ret) {
+									if (check_mask & 1) {
+										error = ret;
+										return -1;
+									} else {
+										ret = 0;
+									}
+								}
 								l++;
 							}
 							k++;
@@ -669,7 +678,7 @@ char *flags;
 						while (sports[k]) {
 							int l = 0;
 							while (dports[l]) {
-								translator_definitions
+								ret = translator_definitions
 								    [active_translator].
 								    translate_func
 								    (opi,
@@ -687,6 +696,14 @@ char *flags;
 								     ?
 								     interfaces
 								     [ni] : NULL);
+								if (ret) {
+									if (check_mask & 1) {
+										error = ret;
+										return -1;
+									} else {
+										ret = 0;
+									}
+								}
 								l++;
 							}
 							k++;
@@ -707,7 +724,7 @@ char *flags;
 	free(srcs);
 	free(dsts);
 	free(protos);
-	return 0;
+	return ret;
 }
 
 /*---------------------------------------------------------------------
