@@ -1,0 +1,117 @@
+
+
+
+define students 192.168.2.0/27
+define teachers 192.168.1.0/27
+
+
+# loopback
+all (any) <-> (any) [lo0]
+
+# no spoofing
+all (any) <-X (192.168.0.0/16 | 172.16.0.0/12 | 10.0.0.0/8 | 127.0.0.0/8) [ed2]
+all (192.168.0.0/16 | 172.16.0.0/12 | 10.0.0.0/8 | 127.0.0.0/8) X-> (any) [ed2]
+
+
+
+
+# Refuse all communication between students and teachers
+all (teachers | students) X (students | teachers) [ed1] nomix
+
+#
+# Public services : ssh, ftp, sendmail, cvs, www, pop3
+# 		    dns and  passive ftp
+#
+
+
+
+tcp (172.22.0.1 21,25,80,110,2401,49152-) <<=> (any 1024-) [ed2]
+
+# ssh
+tcp (172.22.0.1 22) <<=> (any 1000-) [ed2]
+
+# ftp-data
+tcp (172.22.0.1 20) <=>> (any 1024-) [ed2]
+
+# DNS
+udp (172.22.0.1 53) <<=> (any 53,1024-65535) [ed2]
+
+# deny access to mysql and squid from the outside
+
+tcp (any 3128,3306) X! (any) [ed2]
+
+
+#
+# clients
+#
+
+# ssh
+tcp (172.22.0.1 1020-) <=>> (any 22) [ed2]
+
+# ftp
+tcp (172.22.0.1 1024-) <=>> (any 21) [ed2]
+tcp (172.22.0.1 1024-) <<=> (any 20) [ed2]
+
+# passive ftp
+tcp (172.22.0.1 1024-) <=>> (any 1024-) [ed2]
+
+# sendmail
+tcp (172.22.0.1) <=>> (any 25) [ed2]
+
+# www
+tcp (172.22.0.1 1024-) <=>> (any 80,443) [ed2]
+
+# ntp
+
+udp (172.22.0.1 123) <=>> (138.96.64.10 123) [ed2]
+
+
+# dns
+
+udp (172.22.0.1 53,1024-) <=>> (any 53) [ed2]
+
+# icmp
+
+icmp (172.22.0.1 echo-request) <-> (any) [ed2]
+icmp (172.22.0.1) <-> (any echo-reply) [ed2]
+icmp (172.22.0.1) <-> (any destination-unreachable) [ed2]
+
+#-----------------------------------------------
+# Private side (ed1)
+#-----------------------------------------------
+
+
+define tux 192.168.1.2/32
+
+# ssh going to tux (an administrable host)
+tcp (192.168.1.1) <=>> (tux 22) [ed1]
+
+
+
+# dns 
+udp ((192.168.1.1 | 192.168.2.1) 53) <<=> (teachers | students) [ed1] nomix
+
+# webmail
+tcp (any 6789-6791,10000) <<=> ((teachers|students) 1024-) [ed1]
+
+# pop
+tcp (192.168.1.1 110) <<=> (teachers 1024-) [ed1]
+tcp (192.168.2.1 110) <<=> ((students|192.168.2.8) 1024-) [ed1]
+
+# sendmail
+tcp ((192.168.1.1 | 192.168.2.1) 25) <<=> ((192.168.1.0/27 | 192.168.2.0/27) 1024-) [ed1] nomix
+
+# proxy
+tcp ((192.168.1.1 | 192.168.2.1) 8080) <<=> ((192.168.1.0/27 | 192.168.2.0/27) 1024-) [ed1] nomix
+
+# squid
+
+tcp (192.168.2.1 3128) <<=> ((192.168.2.2 | 192.168.2.8) 1024-) [ed1]
+tcp (192.168.1.1 3128) <<=> (192.168.1.2 1024- ) [ed1]
+
+
+
+# reject what's left
+
+all (any) X! (any)
+
