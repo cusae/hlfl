@@ -35,6 +35,7 @@
 #define ACCEPT_TWO_WAYS_ESTABLISHED 4 		/* <=>> 	 */
 #define ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE 11  /* <<=>		 */
 #define DENY 5					/*  X            */
+#define DENY_LOG 12				/*  Xl		 */
 #define REJECT 6				/*  X!           */
 #define DENY_OUT 7				/* X->           */
 #define DENY_IN 8				/* <-X           */
