@@ -43,7 +43,6 @@ List of operators :
 <<=> : accept outgoing and incoming if the communication was established
        by the remote side
 X    : deny incoming and outgoing
-Xl: deny and log incoming and outgoing
 X!   : reject incoming and outgoing
 X->  : deny outgoing
 <-X  : deny incoming
@@ -54,6 +53,18 @@ X!-> : reject outgoing
 Note that <=>> and <<=> work for UDP on stateful firewalls. On stateless
 firewall, they work the same way as <-> for UDP.
 
+
+Log support :
+-----------------------------------------------------------------------------
+
+Log is supported, you just need to add an "l" character anywhere in the
+operator -- beginning, middle or end, as you wish.
+
+Example:
+
+<<l=> : accept outgoing and incoming if the communication was established
+        by the remote side, and log every matching packet
+Xl    : deny incoming and outgoing, and log every matching packet
 
 (src) and (dst) format
 -------------------------------------------------------------------------
