@@ -19,7 +19,7 @@ define remote 172.22.0.0/16
 # interface : eth0
 define interface eth0
 
-# -> 
+# ->
 tcp (local) -> (remote) [interface]
 
 # <-
@@ -63,7 +63,7 @@ tcp (local) X! (remote) [interface]
 
 
 
-# l-> 
+# l->
 tcp (local) l-> (remote) [interface]
 
 # <-l

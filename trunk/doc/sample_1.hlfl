@@ -17,7 +17,7 @@ all (any) <-> (any) [lo]
 
 #
 # eth0
-# 
+#
 # We trust all the users of the internal LAN
 # (I do this because I'm _alone_ in the LAN. You
 #  may want to write more restrictive rules)
@@ -42,7 +42,7 @@ all (192.168.0.0/16 | 172.16.0.0/12 | 10.0.0.0/8 | 127.0.0.0/8) X!-> (any) [eth1
 # accept DHCP via UDP and TCP
 udp|tcp (any bootpc) <=>> (212.198.0.0/16 bootps) [eth1]
 
-# accept DNS 
+# accept DNS
 udp (any domain,1024-) <=>> (any domain) [eth1]
 
 # accept NTP

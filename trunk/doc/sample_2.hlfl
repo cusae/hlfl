@@ -88,7 +88,7 @@ tcp (192.168.1.1) <=>> (tux 22) [ed1]
 
 
 
-# dns 
+# dns
 udp ((192.168.1.1 | 192.168.2.1) 53) <<=> (teachers | students) [ed1] nomix
 
 # webmail
