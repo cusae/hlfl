@@ -36,7 +36,6 @@
 #define ACCEPT_TWO_WAYS_ESTABLISHED 4	/* <=>>          */
 #define ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE 11	/* <<=>          */
 #define DENY 5			/*  X            */
-#define DENY_LOG 12		/*  Xl           */
 #define REJECT 6		/*  X!           */
 #define DENY_OUT 7		/* X->           */
 #define DENY_IN 8		/* <-X           */
@@ -45,4 +44,4 @@
 
 #define COMMENT 1
 #define INCLUDE_TEXT 2
-#endif /* __HLFL_INCLUDES__ */
+#endif				/* __HLFL_INCLUDES__ */

@@ -79,10 +79,11 @@ netfilter_dports(ports)
  * Linux netfilter
  *------------------------------------------------------------------*/
 int
-translate_linux_netfilter(op, proto, src, dst, sports, dports, interface)
+translate_linux_netfilter(op, proto, src, log, dst, sports, dports, interface)
  int op;
  char *proto;
  char *src;
+ int log;
  char *dst;
  char *sports;
  char *dports;
@@ -95,7 +96,11 @@ translate_linux_netfilter(op, proto, src, dst, sports, dports, interface)
  char *sports_as_dst = NULL;
  char *dports_as_src = NULL;
  char *dports_as_dst = NULL;
- char *icmp_code;
+ char *icmp_code = NULL;
+ char *logit = "";
+
+ if (log)
+  logit = " -l";
 
  if (icmp(proto))
    {
@@ -136,92 +141,87 @@ translate_linux_netfilter(op, proto, src, dst, sports, dports, interface)
  switch (op)
    {
    case ACCEPT_ONE_WAY:
-    printf("$iptables -A OUTPUT -s %s -d %s -p %s %s %s -j ACCEPT %s\n", src,
-	   dst, proto, sports_as_src, dports_as_dst, via_out);
+    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+	   logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
     break;
    case ACCEPT_ONE_WAY_REVERSE:
-    printf("$iptables -A INPUT -s %s -d %s -p %s %s %s -j ACCEPT %s\n", dst,
-	   src, proto, dports_as_src, sports_as_dst, via_in);
+    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n", logit,
+	   dst, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    case ACCEPT_TWO_WAYS:
-    printf("$iptables -A OUTPUT -s %s -d %s -p %s %s %s -j ACCEPT %s\n", src,
-	   dst, proto, sports_as_src, dports_as_dst, via_out);
-    printf("$iptables -A INPUT -s %s -d %s -p %s %s %s -j ACCEPT %s\n", dst,
-	   src, proto, dports_as_src, sports_as_dst, via_in);
+    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+	   logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
+    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n", logit,
+	   dst, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED:
     if (!strcmp(proto, "tcp"))
       {
-       printf("$iptables -A OUTPUT -s %s -d %s -p %s %s %s -j ACCEPT %s\n", src,
-	      dst, proto, sports_as_src, dports_as_dst, via_out);
-       printf("$iptables -A INPUT -s %s -d %s -p %s %s %s --syn -j DENY %s\n",
-	      dst, src, proto, dports_as_src, sports_as_dst, via_in);
-       printf("$iptables -A INPUT -s %s -d %s -p %s %s %s -j ACCEPT %s\n", dst,
-	      src, proto, dports_as_src, sports_as_dst, via_in);
+       printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+	      logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
+       printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s --syn -j DENY %s\n",
+	      logit, dst, src, proto, dports_as_src, sports_as_dst, via_in);
+       printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+	      logit, dst, src, proto, dports_as_src, sports_as_dst, via_in);
       }
     else
       {
        /* XXX stateful needed here */
        printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$iptables -A OUTPUT -s %s -d %s -p %s %s %s -j ACCEPT %s\n", src,
-	      dst, proto, sports_as_src, dports_as_dst, via_out);
-       printf("$iptables -A INPUT -s %s -d %s -p %s %s %s -j ACCEPT %s\n", dst,
-	      src, proto, dports_as_src, sports_as_dst, via_in);
+       printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+	      logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
+       printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+	      logit, dst, src, proto, dports_as_src, sports_as_dst, via_in);
       }
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
     if (!strcmp(proto, "tcp"))
       {
-       printf("$iptables -A INPUT -s %s -d %s -p %s %s %s -j ACCEPT %s\n", dst,
-	      src, proto, dports_as_src, sports_as_dst, via_in);
-       printf("$iptables -A OUTPUT -s %s -d %s -p %s %s %s --syn -j DENY %s\n",
-	      src, dst, proto, sports_as_src, dports_as_dst, via_out);
-       printf("$iptables -A OUTPUT -s %s -d %s -p %s %s %s -j ACCEPT %s\n", src,
-	      dst, proto, sports_as_src, dports_as_dst, via_out);
+       printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+	      logit, dst, src, proto, dports_as_src, sports_as_dst, via_in);
+       printf
+	   ("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s --syn -j DENY %s\n",
+	    logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
+       printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+	      logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
       }
     else
       {
        /* XXX stateful needed here */
        printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$iptables -A INPUT -s %s -d %s -p %s %s %s -j ACCEPT %s\n", dst,
-	      src, proto, dports_as_src, sports_as_dst, via_in);
-       printf("$iptables -A OUTPUT -s %s -d %s -p %s %s %s -j ACCEPT %s\n", src,
-	      dst, proto, sports_as_src, dports_as_dst, via_out);
+       printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+	      logit, dst, src, proto, dports_as_src, sports_as_dst, via_in);
+       printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+	      logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
       }
     break;
    case DENY:
-    printf("$iptables -A OUTPUT -s %s -d %s -p %s %s %s -j DROP %s\n", src, dst,
-	   proto, sports_as_src, dports_as_dst, via_out);
-    printf("$iptables -A INPUT -s %s -d %s -p %s %s %s -j DROP %s\n", dst, src,
-	   proto, dports_as_src, sports_as_dst, via_in);
-    break;
-   case DENY_LOG:
-    printf("$iptables -A OUTPUT -l -s %s -d %s -p %s %s %s -j DROP %s\n", src,
-	   dst, proto, sports_as_src, dports_as_dst, via_out);
-    printf("$iptables -A INPUT -l -s %s -d %s -p %s %s %s -j DROP %s\n", dst,
-	   src, proto, dports_as_src, sports_as_dst, via_in);
+    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", src,
+	   logit, dst, proto, sports_as_src, dports_as_dst, via_out);
+    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", dst,
+	   logit, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    case REJECT:
-    printf("$iptables -A OUTPUT -s %s -d %s -p %s %s %s -j REJECT %s\n", src,
-	   dst, proto, sports_as_src, dports_as_dst, via_out);
-    printf("$iptables -A INPUT -s %s  -d %s -p %s %s %s -j REJECT %s\n", dst,
-	   src, proto, dports_as_src, sports_as_dst, via_in);
+    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j REJECT %s\n",
+	   logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
+    printf("$iptables -A INPUT%s -s %s  -d %s -p %s %s %s -j REJECT %s\n",
+	   logit, dst, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    case DENY_OUT:
-    printf("$iptables -A OUTPUT -s %s -d %s -p %s %s %s -j DROP %s\n", src, dst,
-	   proto, sports_as_src, dports_as_dst, via_out);
+    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", src,
+	   logit, dst, proto, sports_as_src, dports_as_dst, via_out);
     break;
    case DENY_IN:
-    printf("$iptables -A INPUT -s %s -d %s -p %s %s %s -j DROP %s\n", dst, src,
-	   proto, dports_as_src, sports_as_dst, via_in);
+    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", dst,
+	   logit, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    case REJECT_OUT:
-    printf("$iptables -A OUTPUT -s %s -d %s -p %s %s %s -j REJECT %s\n", src,
-	   dst, proto, sports_as_src, dports_as_dst, via_out);
+    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j REJECT %s\n",
+	   logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
     break;
    case REJECT_IN:
-    printf("$iptables -A INPUT -s %s -d %s -p %s %s %s -j REJECT %s\n", dst,
-	   src, proto, dports_as_src, sports_as_dst, via_in);
+    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j REJECT %s\n", logit,
+	   dst, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    }
  if (icmp(proto))

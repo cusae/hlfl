@@ -75,10 +75,11 @@ ipfilter_port(char *port)
  * Darren Reed's ipfilter
  *------------------------------------------------------------------*/
 int
-translate_ipfilter(op, proto, src, dst, sports, dports, interface)
+translate_ipfilter(op, proto, src, log, dst, sports, dports, interface)
  int op;
  char *proto;
  char *src;
+ int log;
  char *dst;
  char *sports;
  char *dports;
@@ -87,6 +88,10 @@ translate_ipfilter(op, proto, src, dst, sports, dports, interface)
  char *via = strdup("");
  char *p = strdup("");
  char *icmp_code = "";
+ char *logit = "";
+
+ if (log)
+  logit = " log";
 
  if (icmp(proto))
    {
@@ -125,84 +130,78 @@ translate_ipfilter(op, proto, src, dst, sports, dports, interface)
  switch (op)
    {
    case ACCEPT_ONE_WAY:
-    printf("pass out quick %s %s from %s %s to %s %s %s\n", via, p, src, sports,
-	   dst, dports, icmp_code);
+    printf("pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	   src, sports, dst, dports, icmp_code);
     break;
    case ACCEPT_ONE_WAY_REVERSE:
-    printf("pass in quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports,
-	   src, sports, icmp_code);
+    printf("pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p, dst,
+	   dports, src, sports, icmp_code);
     break;
    case ACCEPT_TWO_WAYS:
-    printf("pass in quick %s %s from %s %s to %s %s %s\n", via, p, src, sports,
-	   dst, dports, icmp_code);
-    printf("pass out quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports,
-	   src, sports, icmp_code);
+    printf("pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p, src,
+	   sports, dst, dports, icmp_code);
+    printf("pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	   dst, dports, src, sports, icmp_code);
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED:
     if (!strcmp(proto, "tcp") || !strcmp(proto, "udp"))
       {
-       printf("pass out quick %s %s from %s %s to %s %s keep state\n", via, p,
-	      src, sports, dst, dports);
+       printf("pass out%s quick %s %s from %s %s to %s %s keep state\n", logit,
+	      via, p, src, sports, dst, dports);
       }
     else
       {
-       printf("pass in quick %s %s from %s %s to %s %s %s\n", via, p, dst,
-	      dports, src, sports, icmp_code);
-       printf("pass out quick %s %s from %s %s to %s %s %s\n", via, p, src,
-	      sports, dst, dports, icmp_code);
+       printf("pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	      dst, dports, src, sports, icmp_code);
+       printf("pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	      src, sports, dst, dports, icmp_code);
       }
     break;
 
    case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
     if (!strcmp(proto, "tcp") || !strcmp(proto, "udp"))
       {
-       printf("pass in quick %s %s from %s %s to %s %s keep state\n", via, p,
-	      dst, dports, src, sports);
+       printf("pass in%s quick %s %s from %s %s to %s %s keep state\n", logit,
+	      via, p, dst, dports, src, sports);
       }
     else
       {
-       printf("pass in quick %s %s from %s %s to %s %s %s\n", via, p, dst,
-	      dports, src, sports, icmp_code);
-       printf("pass out quick %s %s from %s %s to %s %s %s\n", via, p, src,
-	      sports, dst, dports, icmp_code);
+       printf("pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	      dst, dports, src, sports, icmp_code);
+       printf("pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	      src, sports, dst, dports, icmp_code);
       }
     break;
 
    case DENY:
-    printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src,
-	   sports, dst, dports, icmp_code);
-    printf("block in quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports,
-	   src, sports, icmp_code);
-    break;
-   case DENY_LOG:
-    printf("block out log quick %s %s from %s %s to %s %s %s\n", via, p, src,
-	   sports, dst, dports, icmp_code);
-    printf("block in log quick %s %s from %s %s to %s %s %s\n", via, p, dst,
-	   dports, src, sports, icmp_code);
+    printf("block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	   src, sports, dst, dports, icmp_code);
+    printf("block in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	   dst, dports, src, sports, icmp_code);
     break;
    case REJECT:
-    printf("block in quick %s %s from %s %s to %s %s %s\n", via, p, src, sports,
-	   dst, dports, icmp_code);
-    printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src,
-	   sports, dst, dports, icmp_code);
-    printf("block return-icmp in quick %s %s from %s %s to %s %s %s\n", via, p,
-	   dst, dports, src, sports, icmp_code);
+    printf("block in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	   src, sports, dst, dports, icmp_code);
+    printf("block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	   src, sports, dst, dports, icmp_code);
+    printf("block return-icmp in%s quick %s %s from %s %s to %s %s %s\n", logit,
+	   via, p, dst, dports, src, sports, icmp_code);
     break;
    case DENY_OUT:
-    printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src,
-	   sports, dst, dports, icmp_code);
+    printf("block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	   src, sports, dst, dports, icmp_code);
     break;
    case DENY_IN:
-    printf("block in quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports,
-	   src, sports, icmp_code);
+    printf("block in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	   dst, dports, src, sports, icmp_code);
     break;
    case REJECT_OUT:
-    printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src,
-	   sports, dst, dports, icmp_code);
+    printf("block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	   src, sports, dst, dports, icmp_code);
     break;
    case REJECT_IN:
-    printf("block return-icmp in quick %s %s from %s %s to %s %s %s\n", via, p,
-	   dst, dports, src, sports, icmp_code);
+    printf("block return-icmp in%s quick %s %s from %s %s to %s %s %s\n", logit,
+	   via, p, dst, dports, src, sports, icmp_code);
     break;
    }
 

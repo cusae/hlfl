@@ -32,7 +32,7 @@
 #define MAX_PROTOS 4
 
 typedef int (*translator_start_t) (void);
-typedef int (*translate_t) (int, char *, char *, char *, char *, char *,
+typedef int (*translate_t) (int, char *, char *, int, char *, char *, char *,
 			    char *);
 typedef void (*comment_t) (char *);
 typedef void (*include_text_t) (char *);
@@ -171,8 +171,6 @@ int_op(op)
   return ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE;
  if (!strcmp(op, "X"))
   return DENY;
- if (!strcmp(op, "Xl"))
-  return DENY_LOG;
  if (!strcmp(op, "X!"))
   return REJECT;
  if (!strcmp(op, "X->"))
@@ -483,27 +481,6 @@ ifaces(iface, level)
  return ret;
 }
 
-
-/*
- * Free the IPs returned by the previous function
- */
-
-#define ifaces_destroy(x) ip_destroy(x)
-
-void
-ip_destroy(p)
- char **p;
-{
- int i = 0;
- while (p[i])
-   {
-    /*free(p[i++]); */
-    i++;
-   }
- free(p);
-}
-
-
 /*-------------------------------------------------------------------
 
 		       Translator function
@@ -514,16 +491,18 @@ ip_destroy(p)
  * The function that calls the appropriate translator...
  */
 int
-translate(proto, src, op, dst, interface, flags)
+translate(proto, src, op, log, dst, interface, flags)
  char *proto;
  char *src;
+ char *op;
+ int log;
  char *dst;
  char *interface;
  char *flags;
 {
  int opi = int_op(op);
- char **srcs;
- char **dsts;
+ char **srcs = NULL;
+ char **dsts = NULL;
  int mix = 1;
  char *iface = NULL;
  char **protos;
@@ -583,6 +562,7 @@ translate(proto, src, op, dst, interface, flags)
 
 		s = strdup(srcs[i]);
 		d = strdup(dsts[j]);
+
 		if (!icmp(protos[np]))
 		  {
 		   sports = get_ports_ranges(s);
@@ -606,6 +586,7 @@ translate(proto, src, op, dst, interface, flags)
 		     {
 		      translate_func(opi, protos[np],
 				     s,
+				     log,
 				     d,
 				     sports[k],
 				     dports[l],
@@ -653,6 +634,7 @@ translate(proto, src, op, dst, interface, flags)
 		     {
 		      translate_func(opi, protos[np],
 				     s,
+				     log,
 				     d,
 				     sports[k],
 				     dports[l],
@@ -675,10 +657,9 @@ translate(proto, src, op, dst, interface, flags)
 
  if (iface)
   free(iface);
- ifaces_destroy(ifaces);
- ip_destroy(srcs);
- ip_destroy(dsts);
- ip_destroy(protos);
+ free(srcs);
+ free(dsts);
+ free(protos);
  return 0;
 }
 
@@ -793,10 +774,12 @@ process(buffer)
  char *src;
  char *dst;
  char *op;
+ int log = 0;
  char *interface;
  char *flags;
  char old_t;
  int n;
+ int m;
 
 
  while ((t[0] == ' ') || (t[0] == '\t') || (t[0] == '\n'))
@@ -884,6 +867,7 @@ process(buffer)
 
     /* op */
     op = t;
+
     t = strchr(op + 1, ' ');
     if (!t)
       {
@@ -898,6 +882,23 @@ process(buffer)
     t[0] = '\0';
     op = strdup(op);
     t[0] = old_t;
+
+    /* log */
+
+    if (index(op, 'l') != NULL)
+      {
+       m = 0;
+       for (n = 0; op[n] != '0'; n++)
+	 {
+	  if (op[n] != 'l')
+	    {
+	     *(op + m) = *(op + n);
+	     m++;
+	    }
+	 }
+       op = strdup(op);
+       log = 1;
+      }
 
     while ((t[0] == ' ') || (t[0] == '\t'))
      t++;
@@ -956,10 +957,10 @@ process(buffer)
      flags = NULL;
 
 
-
     n = translate(remove_spaces(proto),
 		  remove_spaces(src),
 		  remove_spaces(op),
+		  log,
 		  remove_spaces(dst),
 		  remove_spaces(interface), remove_spaces(flags));
     free(proto);
@@ -1048,7 +1049,7 @@ main(argc, argv)
 {
 
 
- if (!argv[1])
+ if (!argv[1] || argc != 2)
    {
     usage(argv[0]);
    }

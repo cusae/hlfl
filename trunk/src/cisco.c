@@ -230,10 +230,11 @@ cisco_ip(char *ip)
  * CISCO rules
  *------------------------------------------------------------------*/
 int
-translate_cisco(op, proto, src, dst, sports, dports, interface)
+translate_cisco(op, proto, src, log, dst, sports, dports, interface)
  int op;
  char *proto;
  char *src;
+ int log;
  char *dst;
  char *sports;
  char *dports;
@@ -245,6 +246,12 @@ translate_cisco(op, proto, src, dst, sports, dports, interface)
  char *icmp_code = "";
  char *buffer;
  int size = 1024;
+ char *logit = "";
+
+/* XXX to complete */
+/* XXX complete also the rest of the code when knowing specifical place of the keyword */
+ if (log)
+  logit = "";
 
  src = cisco_ip(src);
  dst = cisco_ip(dst);
@@ -577,8 +584,7 @@ translate_cisco_start()
  * do not print comments
  */
 void
-cisco_comment(c)
- char *c;
+cisco_comment(void)
 {
  return;
 }
