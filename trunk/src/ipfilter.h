@@ -1,5 +1,5 @@
 #ifndef HLFL_IPFILTER_H__
-#define HLHL_IPFILTER_H__
+#define HLFL_IPFILTER_H__
 
 int translate_ipfilter(int, char *, char *, int, char *, char *, char *,
 		       char *);
