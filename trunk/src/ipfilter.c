@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
- 
+
 #include "includes.h"
 #include "hlfl.h"
 #include "ipfilter.h"
@@ -24,181 +24,202 @@
 /*------------------------------------------------------------------
  * Private utilities
  *------------------------------------------------------------------*/
- 
+
 static char *
 icmp_types(type)
- char * type;
+ char *type;
 {
- char * ret = malloc(20);
+ char *ret = malloc(20);
  bzero(ret, 20);
- if(!strlen(type))
+ if (!strlen(type))
   return ret;
- if(!strcmp(type, "echo-reply"))
+ if (!strcmp(type, "echo-reply"))
   sprintf(ret, "icmp-type 0");
+ else if (!strcmp(type, "destination-unreachable"))
+  sprintf(ret, "icmp-type 3");
+ else if (!strcmp(type, "echo-request"))
+  sprintf(ret, "icmp-type 8");
+ else if (!strcmp(type, "time-exceeded"))
+  sprintf(ret, "icmp-type 11");
  else
-  if(!strcmp(type, "destination-unreachable"))
-   sprintf(ret, "icmp-type 3");
-  else
-   if(!strcmp(type, "echo-request"))
-    sprintf(ret, "icmp-type 8");
-   else 
-    if(!strcmp(type, "time-exceeded"))
-     sprintf(ret, "icmp-type 11");
-    else
-     fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
- return ret;    
+  fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
+ return ret;
 }
 
- 
-static char * 
-ipfilter_port(char * port)
+
+static char *
+ipfilter_port(char *port)
 {
- char * t;
- if(!port || !strlen(port))
- {
-  return strdup("");
- }
- else if((t = strchr(port, '-')))
- {
-  char * ret = malloc(strlen(port)+20);
-  t[0] = '\0';
-  sprintf(ret, "port %s >< %s", port, t+1);
-  t[0] = '-';
-  return ret;
- }
- else 
- {
-  char * ret = malloc(strlen(port)+20);
-  sprintf(ret, "port = %s", port);
-  return ret;
- }
+ char *t;
+ if (!port || !strlen(port))
+   {
+    return strdup("");
+   }
+ else if ((t = strchr(port, '-')))
+   {
+    char *ret = malloc(strlen(port) + 20);
+    t[0] = '\0';
+    sprintf(ret, "port %s >< %s", port, t + 1);
+    t[0] = '-';
+    return ret;
+   }
+ else
+   {
+    char *ret = malloc(strlen(port) + 20);
+    sprintf(ret, "port = %s", port);
+    return ret;
+   }
 }
+
 /*------------------------------------------------------------------
  * Darren Reed's ipfilter
- *------------------------------------------------------------------*/		      
+ *------------------------------------------------------------------*/
 int
-translate_ipfilter(op, proto, src, dst,sports,dports, interface)
-  int op;
-  char * proto;
-  char * src;
-  char * dst;
-  char * sports;
-  char * dports;
-  char * interface;
+translate_ipfilter(op, proto, src, dst, sports, dports, interface)
+ int op;
+ char *proto;
+ char *src;
+ char *dst;
+ char *sports;
+ char *dports;
+ char *interface;
 {
- char * via = strdup("");
- char * p = strdup("");
- char * icmp_code = "";
- 
-   if(icmp(proto))
- {
-  if(sports && strlen(sports))icmp_code = icmp_types(sports);
-  else if(dports && strlen(dports))icmp_code = icmp_types(dports);
-  else icmp_code = icmp_types("");
-  
-  sports = "";
-  dports = "";
- }
- else
- {
- sports = ipfilter_port(sports);
- dports = ipfilter_port(dports);
- }
- 
- if(strcmp(proto, "all"))
- {
-  free(p);
-  p = malloc(10+strlen(proto));
-  sprintf(p, "proto %s", proto);
- }
- 
+ char *via = strdup("");
+ char *p = strdup("");
+ char *icmp_code = "";
 
- 
- 
- if(interface)
- {
-  free(via);
-  via = malloc(10 + strlen(interface));
-  sprintf(via, "on %s", interface);
- }
-  switch(op)
-  {
-    case ACCEPT_ONE_WAY :
-      printf("pass out quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
-      break;
-    case ACCEPT_ONE_WAY_REVERSE :
-      printf("pass in quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports, src, sports, icmp_code);
-      break;
-    case ACCEPT_TWO_WAYS :
-      printf("pass in quick %s %s from %s %s to %s %s %s\n", via, p, src,sports, dst, dports,icmp_code);
-      printf("pass out quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports, src, sports, icmp_code);
-      break;
-    case ACCEPT_TWO_WAYS_ESTABLISHED :
-      if(!strcmp(proto, "tcp")||
-         !strcmp(proto, "udp"))
+ if (icmp(proto))
+   {
+    if (sports && strlen(sports))
+     icmp_code = icmp_types(sports);
+    else if (dports && strlen(dports))
+     icmp_code = icmp_types(dports);
+    else
+     icmp_code = icmp_types("");
+
+    sports = "";
+    dports = "";
+   }
+ else
+   {
+    sports = ipfilter_port(sports);
+    dports = ipfilter_port(dports);
+   }
+
+ if (strcmp(proto, "all"))
+   {
+    free(p);
+    p = malloc(10 + strlen(proto));
+    sprintf(p, "proto %s", proto);
+   }
+
+
+
+
+ if (interface)
+   {
+    free(via);
+    via = malloc(10 + strlen(interface));
+    sprintf(via, "on %s", interface);
+   }
+ switch (op)
+   {
+   case ACCEPT_ONE_WAY:
+    printf("pass out quick %s %s from %s %s to %s %s %s\n", via, p, src, sports,
+	   dst, dports, icmp_code);
+    break;
+   case ACCEPT_ONE_WAY_REVERSE:
+    printf("pass in quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports,
+	   src, sports, icmp_code);
+    break;
+   case ACCEPT_TWO_WAYS:
+    printf("pass in quick %s %s from %s %s to %s %s %s\n", via, p, src, sports,
+	   dst, dports, icmp_code);
+    printf("pass out quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports,
+	   src, sports, icmp_code);
+    break;
+   case ACCEPT_TWO_WAYS_ESTABLISHED:
+    if (!strcmp(proto, "tcp") || !strcmp(proto, "udp"))
       {
-       printf("pass out quick %s %s from %s %s to %s %s keep state\n", via, p, src,sports, dst, dports);
+       printf("pass out quick %s %s from %s %s to %s %s keep state\n", via, p,
+	      src, sports, dst, dports);
       }
-      else
+    else
       {
-        printf("pass in quick %s %s from %s %s to %s %s %s\n", via, p, dst,dports, src, sports, icmp_code);
-        printf("pass out quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
+       printf("pass in quick %s %s from %s %s to %s %s %s\n", via, p, dst,
+	      dports, src, sports, icmp_code);
+       printf("pass out quick %s %s from %s %s to %s %s %s\n", via, p, src,
+	      sports, dst, dports, icmp_code);
       }
-      break;
-      
-    case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE :
-      if(!strcmp(proto, "tcp")||
-         !strcmp(proto, "udp"))
+    break;
+
+   case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
+    if (!strcmp(proto, "tcp") || !strcmp(proto, "udp"))
       {
-       printf("pass in quick %s %s from %s %s to %s %s keep state\n", via, p, dst,dports, src, sports);
+       printf("pass in quick %s %s from %s %s to %s %s keep state\n", via, p,
+	      dst, dports, src, sports);
       }
-      else
+    else
       {
-        printf("pass in quick %s %s from %s %s to %s %s %s\n", via, p, dst,dports, src, sports, icmp_code);
-        printf("pass out quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
+       printf("pass in quick %s %s from %s %s to %s %s %s\n", via, p, dst,
+	      dports, src, sports, icmp_code);
+       printf("pass out quick %s %s from %s %s to %s %s %s\n", via, p, src,
+	      sports, dst, dports, icmp_code);
       }
-      break;  
-      
-    case DENY :
-      printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
-      printf("block in quick %s %s from %s %s to %s %s %s\n", via, p, dst,dports, src, sports, icmp_code);
-      break;
-    case DENY_LOG :
-      printf("block out log quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
-      printf("block in log quick %s %s from %s %s to %s %s %s\n", via, p, dst,dports, src, sports, icmp_code);
-      break;
-    case REJECT :
-      printf("block in quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
-      printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
-      printf("block return-icmp in quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports, src, sports, icmp_code);
-      break;
-    case DENY_OUT :
-      printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
-      break;
-    case DENY_IN :
-      printf("block in quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports, src, sports, icmp_code);
-      break;
-    case REJECT_OUT :
-      printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
-      break;
-    case REJECT_IN :
-      printf("block return-icmp in quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports, src, sports, icmp_code);
-      break;
-  }
-  
-  free(via);
-  
-  free(p);
-  if(icmp(proto))free(icmp_code);
-  else
-  {
-   free(sports);
-   free(dports);
-  }
-  return 0;
+    break;
+
+   case DENY:
+    printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src,
+	   sports, dst, dports, icmp_code);
+    printf("block in quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports,
+	   src, sports, icmp_code);
+    break;
+   case DENY_LOG:
+    printf("block out log quick %s %s from %s %s to %s %s %s\n", via, p, src,
+	   sports, dst, dports, icmp_code);
+    printf("block in log quick %s %s from %s %s to %s %s %s\n", via, p, dst,
+	   dports, src, sports, icmp_code);
+    break;
+   case REJECT:
+    printf("block in quick %s %s from %s %s to %s %s %s\n", via, p, src, sports,
+	   dst, dports, icmp_code);
+    printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src,
+	   sports, dst, dports, icmp_code);
+    printf("block return-icmp in quick %s %s from %s %s to %s %s %s\n", via, p,
+	   dst, dports, src, sports, icmp_code);
+    break;
+   case DENY_OUT:
+    printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src,
+	   sports, dst, dports, icmp_code);
+    break;
+   case DENY_IN:
+    printf("block in quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports,
+	   src, sports, icmp_code);
+    break;
+   case REJECT_OUT:
+    printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src,
+	   sports, dst, dports, icmp_code);
+    break;
+   case REJECT_IN:
+    printf("block return-icmp in quick %s %s from %s %s to %s %s %s\n", via, p,
+	   dst, dports, src, sports, icmp_code);
+    break;
+   }
+
+ free(via);
+
+ free(p);
+ if (icmp(proto))
+  free(icmp_code);
+ else
+   {
+    free(sports);
+    free(dports);
+   }
+ return 0;
 }
 
-   
+
 int
 translate_ipfilter_start()
 {
@@ -207,14 +228,15 @@ translate_ipfilter_start()
  return 0;
 }
 
-void 
+void
 include_text_ipfilter(c)
- char * c;
+ char *c;
 {
- if(!strncmp("if(", c, 3))
- {
-  if(!strncmp("if(ipfilter)", c, strlen("if(ipfilter)")))
-   printf("%s", c+strlen("if(ipfilter)"));
- }
-  else printf("%s", c);
+ if (!strncmp("if(", c, 3))
+   {
+    if (!strncmp("if(ipfilter)", c, strlen("if(ipfilter)")))
+     printf("%s", c + strlen("if(ipfilter)"));
+   }
+ else
+  printf("%s", c);
 }

@@ -29,18 +29,18 @@
 #endif
 
 
-#define ACCEPT_ONE_WAY 1			/*  ->           */
-#define ACCEPT_ONE_WAY_REVERSE 2		/* <-            */
-#define ACCEPT_TWO_WAYS 3 			/* <->           */
-#define ACCEPT_TWO_WAYS_ESTABLISHED 4 		/* <=>> 	 */
-#define ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE 11  /* <<=>		 */
-#define DENY 5					/*  X            */
-#define DENY_LOG 12				/*  Xl		 */
-#define REJECT 6				/*  X!           */
-#define DENY_OUT 7				/* X->           */
-#define DENY_IN 8				/* <-X           */
-#define REJECT_OUT 9				/* X!->          */
-#define REJECT_IN 10				/* <-X!          */
+#define ACCEPT_ONE_WAY 1	/*  ->           */
+#define ACCEPT_ONE_WAY_REVERSE 2	/* <-            */
+#define ACCEPT_TWO_WAYS 3	/* <->           */
+#define ACCEPT_TWO_WAYS_ESTABLISHED 4	/* <=>>          */
+#define ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE 11	/* <<=>          */
+#define DENY 5			/*  X            */
+#define DENY_LOG 12		/*  Xl           */
+#define REJECT 6		/*  X!           */
+#define DENY_OUT 7		/* X->           */
+#define DENY_IN 8		/* <-X           */
+#define REJECT_OUT 9		/* X!->          */
+#define REJECT_IN 10		/* <-X!          */
 
 #define COMMENT 1
 #define INCLUDE_TEXT 2

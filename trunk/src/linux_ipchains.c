@@ -24,27 +24,26 @@
 /*------------------------------------------------------------------
  * Private functions
  *------------------------------------------------------------------*/
-  
+
 
 static char *
 icmp_types(type)
- char * type;
+ char *type;
 {
- char * ret = malloc(40+strlen(type));
- bzero(ret, 40+strlen(type));
- if(!strlen(type))
+ char *ret = malloc(40 + strlen(type));
+ bzero(ret, 40 + strlen(type));
+ if (!strlen(type))
   return ret;
-  
- if(!strcmp(type, "echo-reply") ||
-     !strcmp(type, "destination-unreachable")||
-     !strcmp(type, "echo-request") ||
-     !strcmp(type, "time-exceeded"))
-      sprintf(ret, "--icmp-type %s", type);
-  else
-     fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
- return ret;    
+
+ if (!strcmp(type, "echo-reply") ||
+     !strcmp(type, "destination-unreachable") ||
+     !strcmp(type, "echo-request") || !strcmp(type, "time-exceeded"))
+  sprintf(ret, "--icmp-type %s", type);
+ else
+  fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
+ return ret;
 }
- 
+
 
 
 
@@ -53,112 +52,144 @@ icmp_types(type)
  *------------------------------------------------------------------*/
 int
 translate_linux_ipchains(op, proto, src, dst, sports, dports, interface)
-  int op;
-  char * proto;
-  char * src;
-  char * dst;
-  char * sports;
-  char * dports;
-  char * interface;
+ int op;
+ char *proto;
+ char *src;
+ char *dst;
+ char *sports;
+ char *dports;
+ char *interface;
 {
- char * via = strdup("");
- char * t;
- char * icmp_code = NULL;
- 
+ char *via = strdup("");
+ char *t;
+ char *icmp_code = NULL;
 
- 
- if(icmp(proto))
- {
-  if(sports && strlen(sports))icmp_code = icmp_types(sports);
-  else if(dports && strlen(dports))icmp_code = icmp_types(dports);
-  else icmp_code = icmp_types("");
-  
-  dports = icmp_code;
-  sports = "";
- }
+
+
+ if (icmp(proto))
+   {
+    if (sports && strlen(sports))
+     icmp_code = icmp_types(sports);
+    else if (dports && strlen(dports))
+     icmp_code = icmp_types(dports);
+    else
+     icmp_code = icmp_types("");
+
+    dports = icmp_code;
+    sports = "";
+   }
  else
- {
- if(sports)while((t=strchr(sports, '-')))t[0]=':';
- if(dports)while((t=strchr(dports, '-')))t[0]=':';
- }
- 
- 
- if(interface)
- {
-  free(via);
-  via = malloc(10 + strlen(interface));
-  sprintf(via, "-i %s", interface);
- }
-  switch(op)
-  {
-    case ACCEPT_ONE_WAY :
-      printf("$ipchains -A output -s %s %s -d %s %s -p %s -j ACCEPT %s\n", src, sports, dst, dports, proto, via);
-      break;
-    case ACCEPT_ONE_WAY_REVERSE :
-      printf("$ipchains -A input -s %s %s -d %s %s -p %s -j ACCEPT %s\n", dst, dports, src, sports, proto, via);
-      break;
-    case ACCEPT_TWO_WAYS :
-      printf("$ipchains -A output -s %s %s -d %s %s -p %s -j ACCEPT %s\n", src, sports, dst,dports, proto, via);
-      printf("$ipchains -A input -s %s %s -d %s %s -p %s -j ACCEPT %s\n", dst, dports, src, sports, proto, via);
-      break;
-    case ACCEPT_TWO_WAYS_ESTABLISHED :
-      if(!strcmp(proto, "tcp"))
+   {
+    if (sports)
+     while ((t = strchr(sports, '-')))
+      t[0] = ':';
+    if (dports)
+     while ((t = strchr(dports, '-')))
+      t[0] = ':';
+   }
+
+
+ if (interface)
+   {
+    free(via);
+    via = malloc(10 + strlen(interface));
+    sprintf(via, "-i %s", interface);
+   }
+ switch (op)
+   {
+   case ACCEPT_ONE_WAY:
+    printf("$ipchains -A output -s %s %s -d %s %s -p %s -j ACCEPT %s\n", src,
+	   sports, dst, dports, proto, via);
+    break;
+   case ACCEPT_ONE_WAY_REVERSE:
+    printf("$ipchains -A input -s %s %s -d %s %s -p %s -j ACCEPT %s\n", dst,
+	   dports, src, sports, proto, via);
+    break;
+   case ACCEPT_TWO_WAYS:
+    printf("$ipchains -A output -s %s %s -d %s %s -p %s -j ACCEPT %s\n", src,
+	   sports, dst, dports, proto, via);
+    printf("$ipchains -A input -s %s %s -d %s %s -p %s -j ACCEPT %s\n", dst,
+	   dports, src, sports, proto, via);
+    break;
+   case ACCEPT_TWO_WAYS_ESTABLISHED:
+    if (!strcmp(proto, "tcp"))
       {
-       printf("$ipchains -A output -s %s %s -d %s %s -p %s -j ACCEPT %s\n", src, sports, dst, dports, proto, via);
-       printf("$ipchains -A input -s %s %s -d %s %s -p %s -y -j DENY %s\n", dst, dports, src, sports, proto, via);
-       printf("$ipchains -A input -s %s %s -d %s %s -p %s -j ACCEPT %s\n", dst, dports, src, sports, proto, via);
+       printf("$ipchains -A output -s %s %s -d %s %s -p %s -j ACCEPT %s\n", src,
+	      sports, dst, dports, proto, via);
+       printf("$ipchains -A input -s %s %s -d %s %s -p %s -y -j DENY %s\n", dst,
+	      dports, src, sports, proto, via);
+       printf("$ipchains -A input -s %s %s -d %s %s -p %s -j ACCEPT %s\n", dst,
+	      dports, src, sports, proto, via);
       }
-      else
-      {
-       /* XXX stateful needed here */
-       printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$ipchains -A output -s %s %s -d %s %s -p %s -j ACCEPT %s\n", src, sports, dst, dports, proto, via);
-       printf("$ipchains -A input -s %s %s -d %s %s -p %s -j ACCEPT %s\n", dst, dports, src, sports, proto, via);
-      }
-      break;
-     case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE :
-      if(!strcmp(proto, "tcp"))
-      {
-       printf("$ipchains -A input -s %s %s -d %s %s -p %s -j ACCEPT %s\n", dst, dports, src, sports, proto, via);
-       printf("$ipchains -A output -s %s %s -d %s %s -p %s -y -j DENY %s\n", src, sports, dst, dports, proto, via);
-       printf("$ipchains -A output -s %s %s -d %s %s -p %s -j ACCEPT %s\n", src, sports, dst, dports, proto, via);
-      }
-      else
+    else
       {
        /* XXX stateful needed here */
        printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$ipchains -A input -s %s %s -d %s %s -p %s -j ACCEPT %s\n", dst, dports, src, sports, proto, via);
-       printf("$ipchains -A output -s %s %s -d %s %s -p %s -j ACCEPT %s\n", src, sports, dst, dports, proto, via);
+       printf("$ipchains -A output -s %s %s -d %s %s -p %s -j ACCEPT %s\n", src,
+	      sports, dst, dports, proto, via);
+       printf("$ipchains -A input -s %s %s -d %s %s -p %s -j ACCEPT %s\n", dst,
+	      dports, src, sports, proto, via);
       }
-      break;  
-    case DENY :
-      printf("$ipchains -A output -s %s %s -d %s %s -p %s -j DENY %s\n", src, sports, dst,dports, proto, via);
-      printf("$ipchains -A input -s %s %s -d %s %s -p %s -j DENY %s\n", dst, dports, src,sports, proto, via);
-      break;
-    case DENY_LOG :
-      printf("$ipchains -A output -l -s %s %s -d %s %s -p %s -j DENY %s\n", src, sports, dst,dports, proto, via);
-      printf("$ipchains -A input -l -s %s %s -d %s %s -p %s -j DENY %s\n", dst, dports, src,sports, proto, via);
-      break;
-    case REJECT :
-      printf("$ipchains -A output -s %s %s -d %s %s -p %s -j REJECT %s\n", src, sports, dst, dports, proto, via);
-      printf("$ipchains -A input -s %s %s -d %s %s -p %s -j REJECT %s\n", dst, dports, src, sports, proto, via);
-      break;
-    case DENY_OUT :
-      printf("$ipchains -A output -s %s %s -d %s %s -p %s -j DENY %s\n", src,sports, dst,dports, proto, via);
-      break;
-    case DENY_IN :
-      printf("$ipchains -A input -s %s %s -d %s %s -p %s -j DENY %s\n", dst, dports, src, sports, proto, via);
-      break;
-    case REJECT_OUT :
-      printf("$ipchains -A output -s %s %s -d %s %s -p %s -j REJECT %s\n", src, sports, dst,dports, proto, via);
-      break;
-    case REJECT_IN :
-      printf("$ipchains -A input -s %s %s -d %s %s -p %s -j REJECT %s\n", dst, dports, src, sports, proto, via);
-      break;
-  }
-  free(via);
-  if(icmp_code)free(icmp_code);
-  return 0;
+    break;
+   case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
+    if (!strcmp(proto, "tcp"))
+      {
+       printf("$ipchains -A input -s %s %s -d %s %s -p %s -j ACCEPT %s\n", dst,
+	      dports, src, sports, proto, via);
+       printf("$ipchains -A output -s %s %s -d %s %s -p %s -y -j DENY %s\n",
+	      src, sports, dst, dports, proto, via);
+       printf("$ipchains -A output -s %s %s -d %s %s -p %s -j ACCEPT %s\n", src,
+	      sports, dst, dports, proto, via);
+      }
+    else
+      {
+       /* XXX stateful needed here */
+       printf("# (warning. A stateful firewall would be better here)\n");
+       printf("$ipchains -A input -s %s %s -d %s %s -p %s -j ACCEPT %s\n", dst,
+	      dports, src, sports, proto, via);
+       printf("$ipchains -A output -s %s %s -d %s %s -p %s -j ACCEPT %s\n", src,
+	      sports, dst, dports, proto, via);
+      }
+    break;
+   case DENY:
+    printf("$ipchains -A output -s %s %s -d %s %s -p %s -j DENY %s\n", src,
+	   sports, dst, dports, proto, via);
+    printf("$ipchains -A input -s %s %s -d %s %s -p %s -j DENY %s\n", dst,
+	   dports, src, sports, proto, via);
+    break;
+   case DENY_LOG:
+    printf("$ipchains -A output -l -s %s %s -d %s %s -p %s -j DENY %s\n", src,
+	   sports, dst, dports, proto, via);
+    printf("$ipchains -A input -l -s %s %s -d %s %s -p %s -j DENY %s\n", dst,
+	   dports, src, sports, proto, via);
+    break;
+   case REJECT:
+    printf("$ipchains -A output -s %s %s -d %s %s -p %s -j REJECT %s\n", src,
+	   sports, dst, dports, proto, via);
+    printf("$ipchains -A input -s %s %s -d %s %s -p %s -j REJECT %s\n", dst,
+	   dports, src, sports, proto, via);
+    break;
+   case DENY_OUT:
+    printf("$ipchains -A output -s %s %s -d %s %s -p %s -j DENY %s\n", src,
+	   sports, dst, dports, proto, via);
+    break;
+   case DENY_IN:
+    printf("$ipchains -A input -s %s %s -d %s %s -p %s -j DENY %s\n", dst,
+	   dports, src, sports, proto, via);
+    break;
+   case REJECT_OUT:
+    printf("$ipchains -A output -s %s %s -d %s %s -p %s -j REJECT %s\n", src,
+	   sports, dst, dports, proto, via);
+    break;
+   case REJECT_IN:
+    printf("$ipchains -A input -s %s %s -d %s %s -p %s -j REJECT %s\n", dst,
+	   dports, src, sports, proto, via);
+    break;
+   }
+ free(via);
+ if (icmp_code)
+  free(icmp_code);
+ return 0;
 }
 
 
@@ -168,7 +199,7 @@ translate_linux_ipchains_start()
 {
  printf("#!/bin/sh\n");
  printf("# Firewall rules generated by hlfl\n\n");
- 
+
  printf("ipchains=\"/sbin/ipchains\"\n\n");
  printf("$ipchains -F\n");
  printf("$ipchains -X\n");
@@ -178,14 +209,15 @@ translate_linux_ipchains_start()
  return 0;
 }
 
-void 
+void
 include_text_ipchains(c)
- char * c;
+ char *c;
 {
- if(!strncmp("if(", c, 3))
- {
-  if(!strncmp("if(ipchains)", c, strlen("if(ipchains)")))
-   printf("%s", c+strlen("if(ipchains)"));
- }
-  else printf("%s", c);
+ if (!strncmp("if(", c, 3))
+   {
+    if (!strncmp("if(ipchains)", c, strlen("if(ipchains)")))
+     printf("%s", c + strlen("if(ipchains)"));
+   }
+ else
+  printf("%s", c);
 }
