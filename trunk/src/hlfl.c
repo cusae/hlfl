@@ -71,7 +71,6 @@ struct option long_options[] = {
 #endif				/* HAVE_GETOPT_LONG */
 int ch;
 int opt_idx = 0;
-int opt_count = 1;
 #endif				/* HAVE_GETOPT */
 
 int error = 0;
@@ -1115,12 +1114,10 @@ char **argv;
 			}
 		case 't':{
 				active_translator = translator_name_to_type(optarg);
-				opt_count++;
 				break;
 			}
 		case 'o':{
 				output_fname = strdup(optarg);
-				opt_count++;
 				break;
 			}
 		default:{
@@ -1143,11 +1140,11 @@ char **argv;
 		translator_definitions[active_translator].
 		    translator_start((fout != (void *) 0) ? fout : stdout);
 
-		if (opt_count < argc) {
+		if (optind < argc) {
 			char *input_fname;	/* name of rule file to read */
 
-			while (opt_count < argc) {
-				input_fname = argv[opt_count++];
+			while (optind < argc) {
+				input_fname = argv[optind++];
 
 				if ((fin = fopen(input_fname, "r")) != (void *) 0) {
 					read_file(fin, input_fname);
