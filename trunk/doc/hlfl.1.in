@@ -1,10 +1,20 @@
-.TH HLFL 1 "February 2001" "" "User Manuals"
+.TH HLFL 1 "October 2002" "" "User Manuals"
 .SH NAME
 hlfl \- High Level Firewall Language
-.SH SYNOSIS
+.SH SYNOPSIS
 .B	hlfl
-.I [ipchains | ipfw | ipfwadm | ipfilter | netfilter | cisco ]
-< input > output
+.br
+.IP "-t or --type="
+[ipchains | ipfw | ipfw4 | ipfwadm | ipfilter | netfilter | cisco ] RULEFILE
+.br
+.IP "-o or --output="
+FILE (stdout is the default)
+.br
+.IP "-h or --help"
+prints help
+.br
+.IP "-v or --version"
+prints version
 
 .SH DESCRIPTION
 
@@ -41,7 +51,7 @@ must be one of
 or
 .I all
 
-.IP "(local) and (remote) "
+.IP "(local) and (remote)"
 contain the IP addresses (and tcp and udp ports) of both side. Multiple IPs may be specified.  For instance :
 .LP
 .br
@@ -104,7 +114,7 @@ X!   : reject outgoing and incoming
 
 Full text operators are allowed. The syntax is :
 .br
-operator ::= "accept" | "deny" | "reject" ["from" | "to" | "and" | "established" | "log"]
+operator ::= "accept" | "deny" | "reject" [ "from" | "to" | "and" | "established" | "log" ]
 .br
 
 It is possible to combine full text operators with symbolic ones. This
@@ -251,6 +261,19 @@ so the 'if(
 
 see @datadir@/hlfl/ for real-life examples.
 
+.SH NOTE
+
+By default, the rules are permissives, everything is allowed to
+pass to anywhere. If you want to change that default, add
+.LP
+.br
+all (any) X (any)
+.br
+.LP
+at the
+.B end 
+of your rules.
+
 .SH OTHER INFOS
 
 If you find some bug, please mail it to hlfl's mailing list, <hlfl@hlfl.org>.
@@ -265,4 +288,3 @@ again.
 Arnaud Launay <launay@hlfl.org> joined later on, and took actively part in
 the project.
 .br
-
