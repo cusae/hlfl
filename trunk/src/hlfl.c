@@ -1040,7 +1040,7 @@ usage(n)
  fprintf(stderr, "Where <type> can be one of :\n");
  fprintf(stderr, "\tipfw - BSD ipfw\n");
  fprintf(stderr, "\tipfilter - Darren Reeds's ipfilter\n");
-	fprintf(stderr, "\tipfwadm - Linux 2.0.x ipfwadm\n");
+ fprintf(stderr, "\tipfwadm - Linux 2.0.x ipfwadm\n");
  fprintf(stderr, "\tipchains - Linux 2.2.x ipchains\n");
  fprintf(stderr, "\tnetfilter - Linux 2.3.x netfilter\n");
  fprintf(stderr, "\tcisco - Cisco rules\n\n");
