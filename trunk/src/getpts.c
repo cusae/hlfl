@@ -223,7 +223,7 @@ char **
 get_ports_ranges(expr)
  char *expr;
 {
- u_short *ports;
+ u_short *ports = NULL;
  int i = 1;
  char **ret = NULL;
  int n;
