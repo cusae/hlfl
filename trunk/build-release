@@ -31,8 +31,8 @@ cvs tag ${TAG}
 
 # prepare the tarballs
 
-cvs export -r ${TAG} -d /tmp/hlfl-${VERSION} hlfl
-( cd /tmp && tar cvf hlfl-${VERSION}.tar hlfl-${VERSION} && bzip2 -k9 hlfl-${VERSION}.tar && gzip -9 hlfl-${VERSION}.tar )
+( ./prepare && ./configure && make dist && mv hlfl-${VERSION}.tar.gz /tmp &&
+cd /tmp && && bzip2 -k9 hlfl-${VERSION}.tar && gzip -9 hlfl-${VERSION}.tar )
 
 # build the diffs
 
