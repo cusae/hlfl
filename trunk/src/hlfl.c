@@ -226,7 +226,8 @@ translate_proto(proto)
  bzero(ret, sizeof(char *) * (MAX_PROTOS + 1));
 
  t = proto;
- s = strchr(t, '|');
+if (s = strchr(t, '|'))
+{
  while (s)
    {
     s[0] = '\0';
@@ -245,7 +246,15 @@ translate_proto(proto)
     s[0] = '|';
     s = strchr(t, '|');
    }
-
+}
+else
+{
+ if (check_proto(remove_spaces(t)))
+  {
+   error = HLFL_UNKNOWN_PROTOCOL;
+   return NULL;
+  }
+}
  ret[current++] = strdup(t);
  ret[current] = NULL;
  return ret;
