@@ -43,6 +43,7 @@ List of operators :
 <<=> : accept outgoing and incoming if the communication was established
        by the remote side
 X    : deny incoming and outgoing
+Xl: deny and log incoming and outgoing
 X!   : reject incoming and outgoing
 X->  : deny outgoing
 <-X  : deny incoming

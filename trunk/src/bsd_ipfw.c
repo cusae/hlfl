@@ -127,6 +127,10 @@ translate_bsd_ipfw(op, proto, src, dst, sports, dports, interface)
       printf("$ipfw -f add deny %s from %s %s to %s %s out %s %s\n", proto, src, sports,  dst, dports, icmp_code, via);
       printf("$ipfw -f add deny %s from %s %s to %s %s in %s %s\n", proto, dst, dports, src, sports, icmp_code, via);
       break;
+    case DENY_LOG :
+      printf("$ipfw -f add deny log %s from %s %s to %s %s out %s %s\n", proto, src, sports,  dst, dports, icmp_code, via);
+      printf("$ipfw -f add deny log %s from %s %s to %s %s out %s %s\n", proto, src, sports,  dst, dports, icmp_code, via);
+      break;
     case REJECT :
       printf("$ipfw -f add reject %s from %s %s to %s %s out %s %s\n", proto, src, sports, dst,dports, icmp_code, via);
       printf("$ipfw -f add reject %s from %s %s to %s %s in %s %s\n", proto, dst, dports, src,sports, icmp_code, via);

@@ -163,8 +163,13 @@ translate_ipfilter(op, proto, src, dst,sports,dports, interface)
       printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
       printf("block in quick %s %s from %s %s to %s %s %s\n", via, p, dst,dports, src, sports, icmp_code);
       break;
+    case DENY_LOG :
+      printf("block out log quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
+      printf("block in log quick %s %s from %s %s to %s %s %s\n", via, p, dst,dports, src, sports, icmp_code);
+      break;
     case REJECT :
-      printf("block quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
+      printf("block in quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
+      printf("block out quick %s %s from %s %s to %s %s %s\n", via, p, src, sports, dst, dports, icmp_code);
       printf("block return-icmp in quick %s %s from %s %s to %s %s %s\n", via, p, dst, dports, src, sports, icmp_code);
       break;
     case DENY_OUT :

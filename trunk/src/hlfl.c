@@ -161,6 +161,8 @@ int_op(op)
     return ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE;  
   if(!strcmp(op, "X"))
     return DENY;
+  if(!strcmp(op, "Xl"))
+    return DENY_LOG;
   if(!strcmp(op, "X!"))
     return REJECT;
   if(!strcmp(op, "X->"))
