@@ -193,13 +193,13 @@ char *interface;
 		/* Add extra rules specific to tcp protocol, when protocol is all */
 		if (!strcmp(proto, "all")) {
 			fprintf(fout,
-				"$iptables --append ALL --source %s --destination %s --protocol tcp %s %s --jump %sREJECT %s %s\n",
+				"$iptables --append ALL --source %s --destination %s --protocol tcp %s %s --jump %sREJECT --reject-with tcp-reset %s\n",
 				src, dst, sports_as_src, dports_as_dst,
-				logit, rejectit, via_out);
+				logit, via_out);
 			fprintf(fout,
-				"$iptables --append ALL --source %s  --destination %s --protocol tcp %s %s --jump %sREJECT %s %s\n",
+				"$iptables --append ALL --source %s  --destination %s --protocol tcp %s %s --jump %sREJECT --reject-with tcp-reset %s\n",
 				dst, src, dports_as_src, sports_as_dst,
-				logit, rejectit, via_in);
+				logit, via_in);
 		}
 		fprintf(fout,
 			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sREJECT %s %s\n",
@@ -224,9 +224,9 @@ char *interface;
 		/* Add an extra rule specific to tcp protocol, when protocol is all */
 		if (!strcmp(proto, "all")) {
 			fprintf(fout,
-				"$iptables --append ALL --source %s --destination %s --protocol tcp %s %s --jump %sREJECT %s %s\n",
+				"$iptables --append ALL --source %s --destination %s --protocol tcp %s %s --jump %sREJECT --reject-with tcp-reset %s\n",
 				src, dst, sports_as_src, dports_as_dst,
-				logit, rejectit, via_out);
+				logit, via_out);
 		}
 		fprintf(fout,
 			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sREJECT %s %s\n",
@@ -237,9 +237,9 @@ char *interface;
 		/* Add an extra rule specific to tcp protocol, when protocol is all */
 		if (!strcmp(proto, "all")) {
 			fprintf(fout,
-				"$iptables --append ALL --source %s --destination %s --protocol tcp %s %s --jump %sREJECT %s %s\n",
+				"$iptables --append ALL --source %s --destination %s --protocol tcp %s %s --jump %sREJECT %s\n",
 				dst, src, dports_as_src, sports_as_dst,
-				logit, rejectit, via_out);
+				logit, via_out);
 		}
 		fprintf(fout,
 			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sREJECT %s %s\n",
