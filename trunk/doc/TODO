@@ -1,4 +1,19 @@
+                              TODO list for hlfl
 
+Priority classification:
+9   next point release
+8   next release
+7   as soon as possible
+6   soon
+5   should be included
+4   nice to have
+3   consider including
+2   maybe not
+1   probably not
+-   unclassified
 
--  labels (?)
+-------------------- extensions and improvements -----------------------
 
+9   ipfwadm support
+5   labels (?)
+3   real IP syntax verif (?)
