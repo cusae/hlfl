@@ -1,0 +1,164 @@
+
+#
+# Include the definition of the services
+#
+
+include <services.hlfl>
+
+#
+# Single way permissions
+#
+
+# local : 192.168.0.0/16
+define local 192.168.0.0/16
+
+# remote : 172.22.0.0/16
+define remote 172.22.0.0/16
+
+
+# interface : eth0
+define interface eth0
+
+# ->
+tcp (local) -> (remote) [interface]
+
+# <-
+tcp (local) <- (remote) [interface]
+
+# <->
+tcp (local) <-> (remote) [interface]
+
+# <=>>
+
+tcp (local) <=>> (remote) [interface]
+
+# <<=>
+
+tcp (local) <<=> (remote) [interface]
+
+
+# <-X
+
+tcp (local) <-X (remote) [interface]
+
+# X->
+
+tcp (local) X-> (remote) [interface]
+
+# <-X!
+
+tcp (local) <-X! (remote) [interface]
+
+# X!->
+
+tcp (local) X!-> (remote) [interface]
+
+# X
+
+tcp (local) X (remote) [interface]
+
+# X!
+
+tcp (local) X! (remote) [interface]
+
+
+
+# -> log
+tcp (local) log -> (remote) [interface]
+
+# <- log
+tcp (local) log <- (remote) [interface]
+
+# <-> log
+tcp (local) <-> log (remote) [interface]
+
+# <=>> log
+
+tcp (local) <=>> log (remote) [interface]
+
+# <<=> log
+
+tcp (local) <<=> log (remote) [interface]
+
+
+# <-X log
+
+tcp (local) <-X log (remote) [interface]
+
+# X-> log
+
+tcp (local) X-> log (remote) [interface]
+
+# <-X! log
+
+tcp (local) <-X! log (remote) [interface]
+
+# X!-> log
+
+tcp (local) log X!-> (remote) [interface]
+
+# X log
+
+tcp (local) X log (remote) [interface]
+
+# X! log
+
+tcp (local) X! log (remote) [interface]
+
+
+
+# More complicated
+define a 192.168.1.1
+define b 192.168.2.1
+define c a|b
+
+# -> udp|tcp
+
+udp|tcp (local) -> (remote) [interface]
+
+# tcp ((a|b) 1024) -> (remote) [interface]
+
+tcp ((a|b) 1024) -> (remote) [interface]
+
+
+# tcp ((c) 1024) -> (a|b) [interface]
+
+tcp ((c) 1024) -> (a|b) [interface]
+
+
+#
+# Full text
+#
+
+
+# (a) accept to (b)
+tcp (a) accept to (b) on interface
+
+# (a) accept from (b)
+tcp (a) accept from (b) on interface
+
+# (a) accept from and to (b)
+tcp (a) accept from and to (b) on interface
+
+# (a) accept established from (b)
+tcp (a) accept established from (b) on interface
+
+# (a) accept established to (b)
+tcp (a) accept established to (b) on interface
+
+# (a) accept log established from (b)
+tcp (a) accept established log from (b) on interface
+
+# (a) reject from (b)
+tcp (a) reject from (b)
+
+# (a) reject (b)
+tcp (a) reject (b)
+
+# (a) reject from and to (b)
+tcp (a) reject from and to (b)
+
+
+
+# should conclude by an error
+tcp|udp|toto|icmp ((a|b) 1024) -> (a|b) [interface]

@@ -1,0 +1,362 @@
+2002-02-20  Arnaud Launay  <launay@hlfl.org>
+
+	* /home/cvsroot/hlfl/build-release 1.2:
+	Use features from autoconf/make.
+
+	* /home/cvsroot/hlfl/NEWS 1.3: Things done since last release
+
+	* /home/cvsroot/hlfl/src/hlfl.c 1.28, /home/cvsroot/hlfl/src/includes.h 1.7, /home/cvsroot/hlfl/src/ipfilter.c 1.18, /home/cvsroot/hlfl/src/linux_ipchains.c 1.10, /home/cvsroot/hlfl/src/linux_ipfwadm.c 1.6, /home/cvsroot/hlfl/src/linux_ipfwadm.h 1.2, /home/cvsroot/hlfl/src/linux_netfilter.c 1.10, /home/cvsroot/hlfl/src/utils.c 1.5, /home/cvsroot/hlfl/doc/CodingStyle 1.2, /home/cvsroot/hlfl/src/bsd_ipfw.c 1.11, /home/cvsroot/hlfl/src/cisco.c 1.15, /home/cvsroot/hlfl/src/errors.h 1.4, /home/cvsroot/hlfl/src/getpts.c 1.8:
+	Cosmetic changes only.
+
+	* /home/cvsroot/hlfl/configure.in 1.9, /home/cvsroot/hlfl/src/utils.c 1.4, /home/cvsroot/hlfl/src/utils.h 1.5:
+	Support for Solaris, should compile and work.
+
+2002-02-13  Arnaud Launay  <launay@hlfl.org>
+
+	* /home/cvsroot/hlfl/src/ipfilter.c 1.17:
+	TCP uses RST to indicate a connection refused.
+	(cf. Stevens, vol1, p. 247)
+	Reported by Adrien Huvier <nabok@nabok.org>
+
+2002-02-12  Arnaud Launay  <launay@hlfl.org>
+
+	* /home/cvsroot/hlfl/Makefile.am 1.3:
+	Some files were missing from distrib
+
+	* /home/cvsroot/hlfl/src/stamp-h.in 1.2, /home/cvsroot/hlfl/Makefile.in 1.4, /home/cvsroot/hlfl/configure.in 1.8, /home/cvsroot/hlfl/hlfl.tmpl.in 1.4, /home/cvsroot/hlfl/src/config.h.in 1.5:
+	Cleanup:
+	 - delete some dynamically generated files;
+	 - modify configure.in to reflect new state.
+
+	* /home/cvsroot/hlfl/src/bsd_ipfw.c 1.10: Forgot a {.
+	Remember me to compile and test before commiting.
+
+	* /home/cvsroot/hlfl/src/linux_ipchains.c 1.9, /home/cvsroot/hlfl/src/linux_ipfwadm.c 1.5, /home/cvsroot/hlfl/src/linux_netfilter.c 1.9, /home/cvsroot/hlfl/src/bsd_ipfw.c 1.9, /home/cvsroot/hlfl/src/cisco.c 1.14, /home/cvsroot/hlfl/src/getpts.c 1.7, /home/cvsroot/hlfl/src/hlfl.c 1.27, /home/cvsroot/hlfl/src/ipfilter.c 1.16, /home/cvsroot/hlfl/doc/syntax.txt 1.11, /home/cvsroot/hlfl/doc/RoadMap 1.2, /home/cvsroot/hlfl/Makefile.in 1.3, /home/cvsroot/hlfl/TODO 1.2, /home/cvsroot/hlfl/depcomp 1.2, /home/cvsroot/hlfl/hlfl.spec.in 1.2:
+	(c) update, EOF blanks deleted, typos
+
+	* /home/cvsroot/hlfl/src/Makefile.am 1.4, /home/cvsroot/hlfl/src/bsd_ipfw.c 1.8, /home/cvsroot/hlfl/src/hlfl.c 1.26, /home/cvsroot/hlfl/src/ipfw4.c 1.2, /home/cvsroot/hlfl/src/ipfw4.h 1.2:
+	Simplified support for ipfw4
+
+2001-11-12  Arnaud Launay  <launay@hlfl.org>
+
+	* /home/cvsroot/hlfl/src/Makefile.am 1.3, /home/cvsroot/hlfl/src/hlfl.c 1.25, /home/cvsroot/hlfl/src/ipfw4.c 1.1, /home/cvsroot/hlfl/src/ipfw4.h 1.1:
+	Preliminary support for ipfw statefull
+
+	* /home/cvsroot/hlfl/src/Makefile.in 1.3, /home/cvsroot/hlfl/doc/Makefile.in 1.4, /home/cvsroot/hlfl/configure 1.7, /home/cvsroot/hlfl/configure.in 1.7, /home/cvsroot/hlfl/prepare 1.1:
+	Drop dynamically generated files, and add a script to recreate them
+
+	* /home/cvsroot/hlfl/src/config.h.in 1.4: Forgot to update about memset
+
+	* /home/cvsroot/hlfl/src/bsd_ipfw.h 1.5, /home/cvsroot/hlfl/src/cisco.h 1.5, /home/cvsroot/hlfl/src/ipfilter.h 1.5:
+	typo: HLHL -> HLFL
+
+2001-11-09  Arnaud Launay  <launay@hlfl.org>
+
+	* /home/cvsroot/hlfl/src/linux_ipfwadm.c 1.4, /home/cvsroot/hlfl/src/linux_netfilter.c 1.8, /home/cvsroot/hlfl/configure.in 1.6, /home/cvsroot/hlfl/src/bsd_ipfw.c 1.7, /home/cvsroot/hlfl/src/cisco.c 1.13, /home/cvsroot/hlfl/src/getpts.c 1.6, /home/cvsroot/hlfl/src/hlfl.c 1.24, /home/cvsroot/hlfl/src/ipfilter.c 1.15, /home/cvsroot/hlfl/src/linux_ipchains.c 1.8:
+	bzero(3) (deprecated) -> memset(3)
+
+2001-11-06  Arnaud Launay  <launay@hlfl.org>
+
+	* /home/cvsroot/hlfl/src/hlfl.c 1.23:
+	Corrects Renaud's mail address and update Linux rules
+
+2001-11-05  Arnaud Launay  <launay@hlfl.org>
+
+	* /home/cvsroot/hlfl/doc/Makefile.in 1.3: alpha order
+
+	* /home/cvsroot/hlfl/src/Makefile.am 1.2, /home/cvsroot/hlfl/src/Makefile.in 1.2:
+	Forget every *.h for dist target
+
+	* /home/cvsroot/hlfl/Makefile.am 1.2, /home/cvsroot/hlfl/Makefile.in 1.2:
+	VERSION is needed for dist target
+
+	* /home/cvsroot/hlfl/doc/Makefile.am 1.2, /home/cvsroot/hlfl/doc/Makefile.in 1.2:
+	Add some files as doc and hook for dist target
+
+	* /home/cvsroot/hlfl/LICENSE 1.3: redundant with COPYING
+
+	* /home/cvsroot/hlfl/src/Makefile 1.8, /home/cvsroot/hlfl/doc/hlfl.1 1.8, /home/cvsroot/hlfl/Makefile 1.7:
+	Obsolete files due to new auto{conf,make}
+
+	* /home/cvsroot/hlfl/src/Makefile.am 1.1, /home/cvsroot/hlfl/src/Makefile.in 1.1, /home/cvsroot/hlfl/src/config.h.in 1.3, /home/cvsroot/hlfl/src/stamp-h.in 1.1, /home/cvsroot/hlfl/COPYING 1.1, /home/cvsroot/hlfl/Makefile.am 1.1, /home/cvsroot/hlfl/Makefile.in 1.1, /home/cvsroot/hlfl/VERSION 1.7, /home/cvsroot/hlfl/aclocal.m4 1.4, /home/cvsroot/hlfl/compile 1.1, /home/cvsroot/hlfl/config.sub 1.4, /home/cvsroot/hlfl/configure 1.6, /home/cvsroot/hlfl/configure.in 1.5, /home/cvsroot/hlfl/depcomp 1.1, /home/cvsroot/hlfl/doc/Makefile.am 1.1, /home/cvsroot/hlfl/doc/Makefile.in 1.1, /home/cvsroot/hlfl/doc/hlfl.1.in 1.1, /home/cvsroot/hlfl/hlfl.spec.in 1.1, /home/cvsroot/hlfl/missing 1.1, /home/cvsroot/hlfl/mkinstalldirs 1.1:
+	Upgrade to autoconf 2.52 / automake 1.5
+
+2001-10-23  Arnaud Launay  <launay@hlfl.org>
+
+	* /home/cvsroot/hlfl/.root-dir 1.2: Old unused file
+
+2001-10-08  Arnaud Launay  <launay@hlfl.org>
+
+	* /home/cvsroot/hlfl/src/hlfl.c 1.22:
+	re-order the op tests to obtain usable results
+
+2001-08-12  Arnaud Launay  <launay@hlfl.org>
+
+	* /home/cvsroot/hlfl/doc/syntax.txt 1.10:
+	eth0/1 have no meaning under ipfw supported platforms
+
+	* /home/cvsroot/hlfl/src/ipfilter.c 1.14, /home/cvsroot/hlfl/doc/syntax.txt 1.9:
+	update: X is a two-ways deny
+
+2001-08-05  Arnaud Launay  <launay@hlfl.org>
+
+	* /home/cvsroot/hlfl/configure.in 1.4, /home/cvsroot/hlfl/configure 1.5:
+	LIBS and VERSION were bad handled
+
+	* /home/cvsroot/hlfl/aclocal.m4 1.3, /home/cvsroot/hlfl/configure 1.4, /home/cvsroot/hlfl/configure.in 1.3:
+	Adaptation to autoconf 2.52
+
+	* /home/cvsroot/hlfl/config.sub 1.3:
+	Update from ftp://ftp.gnu.org/pub/gnu/config/config.sub
+
+	* /home/cvsroot/hlfl/src/ipfilter.c 1.13:
+	Correction of X! behaviour following Sven Huster <sven.huster@mailsurf.com> suggestion.
+
+	* /home/cvsroot/hlfl/src/hlfl.c 1.21:
+	bug: X had precedence on X! and X! was then ignored.
+	workaround: test for X! before X
+
+	* /home/cvsroot/hlfl/src/ipfilter.c 1.12:
+	bad handle of ACCEPT_TWO_WAYS; patch from Sven Huster <sven.huster@mailsurf.com>.
+
+2001-03-19  Arnaud Launay  <launay@hlfl.org>
+
+	* /home/cvsroot/hlfl/src/cisco.c 1.12, /home/cvsroot/hlfl/src/hlfl.c 1.20:
+	Fix gcc 3.1 warnings
+
+2001-02-25  Renaud Deraison  <deraison@hlfl.org>
+
+	* /home/cvsroot/hlfl/doc/sample_3.hlfl 1.1, /home/cvsroot/hlfl/TODO 1.1:
+	added
+
+	* /home/cvsroot/hlfl/doc/test.hlfl 1.5, /home/cvsroot/hlfl/src/bsd_ipfw.c 1.6, /home/cvsroot/hlfl/src/cisco.c 1.11, /home/cvsroot/hlfl/src/hlfl.c 1.19, /home/cvsroot/hlfl/src/includes.h 1.6, /home/cvsroot/hlfl/src/ipfilter.c 1.11, /home/cvsroot/hlfl/src/linux_ipchains.c 1.7, /home/cvsroot/hlfl/src/linux_ipfwadm.c 1.3, /home/cvsroot/hlfl/src/linux_netfilter.c 1.7, /home/cvsroot/hlfl/VERSION 1.6, /home/cvsroot/hlfl/doc/hlfl.1 1.7, /home/cvsroot/hlfl/doc/syntax.txt 1.8:
+	full-text operators are now supported
+
+2001-02-24  Renaud Deraison  <deraison@hlfl.org>
+
+	* /home/cvsroot/hlfl/WARNING 1.5: removed
+
+2001-02-23  Renaud Deraison  <deraison@hlfl.org>
+
+	* /home/cvsroot/hlfl/src/cisco.c 1.10: comments
+
+	* /home/cvsroot/hlfl/ChangeLog 1.3, /home/cvsroot/hlfl/VERSION 1.5:
+	updated
+
+	* /home/cvsroot/hlfl/src/cisco.c 1.9, /home/cvsroot/hlfl/src/hlfl.c 1.18:
+	cisco support
+
+2001-02-23  Renaud Deraiso <deraison@hlfl.org>
+
+	* cisco rules now work for real
+
+2000-12-06  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/NEWS 1.2: News uptodate for release
+
+	* /usr/local/cvs/hlfl/doc/TODO 1.8:
+	Completed to follow ideas and roadmap
+
+	* /usr/local/cvs/hlfl/doc/RoadMap 1.1: First glimpse at a roadmap
+
+2000-11-19  Renaud Deraison  <deraison@hlfl.org>
+
+	* /usr/local/cvs/hlfl/src/hlfl.c 1.16: bugfix
+
+2000-11-19  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/TODO 1.7: cvsweb ok
+
+2000-11-07  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/Makefile 1.6, /usr/local/cvs/hlfl/build-release 1.1:
+	Add automatic release tool
+
+2000-11-06  Renaud Deraison  <deraison@hlfl.org>
+
+	* /usr/local/cvs/hlfl/configure 1.3, /usr/local/cvs/hlfl/configure.in 1.2, /usr/local/cvs/hlfl/hlfl.tmpl.in 1.3, /usr/local/cvs/hlfl/src/Makefile 1.7:
+	Solaris
+
+2000-09-29  Renaud Deraison  <deraison@hlfl.org>
+
+	* /usr/local/cvs/hlfl/Makefile 1.5, /usr/local/cvs/hlfl/src/Makefile 1.6:
+	use std Make commands, not GNU make commands
+
+2000-09-28  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/test.hlfl 1.4: Add test for unknown protocol
+
+	* /usr/local/cvs/hlfl/src/hlfl.c 1.15:
+	Correction of unknown protocol not reported
+	(noted by Guillaume Valadon <doug@free.fr>)
+
+	* /usr/local/cvs/hlfl/src/getpts.c 1.5:
+	Hey, ports could have been used uninitialized
+
+2000-09-25  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/ChangeLog 1.1: automatic release commit
+
+2000-09-21  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/NEWS 1.1:
+	News file, resuming changes (details in ChangeLog)
+
+2000-09-21  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/NEWS 1.1:
+	News file, resuming changes (details in ChangeLog)
+
+2000-09-19  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/src/ipfilter.c 1.10:
+	hell. ipf doesn't like 65536.
+
+2000-09-18  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/TODO 1.6: New ideas come to mind
+
+2000-09-17  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/src/hlfl.c 1.14: Unused var
+
+	* /usr/local/cvs/hlfl/src/cisco.c 1.8: Format arg missing
+
+2000-09-17  Renaud Deraison  <deraison@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/hlfl.1 1.6, /usr/local/cvs/hlfl/WARNING 1.4:
+	ipfwadm has been tested
+
+	* /usr/local/cvs/hlfl/src/hlfl.c 1.13: ugly tab that hurts my eye
+
+	* /usr/local/cvs/hlfl/src/linux_ipfwadm.c 1.2: icmp support
+
+2000-09-17  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/hlfl.1 1.5, /usr/local/cvs/hlfl/doc/TODO 1.5, /usr/local/cvs/hlfl/src/config.h.in 1.2, /usr/local/cvs/hlfl/src/hlfl.c 1.12, /usr/local/cvs/hlfl/src/linux_ipfwadm.c 1.1, /usr/local/cvs/hlfl/src/linux_ipfwadm.h 1.1, /usr/local/cvs/hlfl/src/Makefile 1.5, /usr/local/cvs/hlfl/WARNING 1.3:
+	Support for ipfwadm (linux 2.0) rules
+
+2000-09-16  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/TODO 1.4: Web items added
+
+2000-09-15  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/src/ipfilter.c 1.9:
+	Exclusion apply to higher limit, too
+
+2000-09-14  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/src/ipfilter.c 1.8: oops... t+1 is the final port
+
+	* /usr/local/cvs/hlfl/src/ipfilter.c 1.7: ranges are exclusives...
+
+2000-09-13  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/Makefile 1.4, /usr/local/cvs/hlfl/src/Makefile 1.4:
+	Don't scream when hlfl.tmpl doesn't exist; target for release
+
+2000-09-12  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/syntax.txt 1.7: \s\+$
+
+	* /usr/local/cvs/hlfl/doc/TODO 1.3: ViM style
+
+	* /usr/local/cvs/hlfl/doc/sample_1.hlfl 1.2, /usr/local/cvs/hlfl/doc/sample_2.hlfl 1.2, /usr/local/cvs/hlfl/doc/test.hlfl 1.3:
+	\s\+$
+
+	* /usr/local/cvs/hlfl/README 1.1: GNUish
+
+	* /usr/local/cvs/hlfl/aclocal.m4 1.2, /usr/local/cvs/hlfl/configure 1.2, /usr/local/cvs/hlfl/INSTALL 1.2, /usr/local/cvs/hlfl/install-sh 1.2, /usr/local/cvs/hlfl/Makefile 1.3, /usr/local/cvs/hlfl/THANKS 1.2, /usr/local/cvs/hlfl/WARNING 1.2:
+	\s\+$ again
+
+	* /usr/local/cvs/hlfl/LICENSE 1.2: FSF has moved
+
+2000-09-11  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/hlfl.1 1.4: Add ML infos
+
+2000-09-09  Renaud Deraison  <deraison@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/hlfl.1 1.3: updated
+
+	* /usr/local/cvs/hlfl/doc/syntax.txt 1.6: else
+
+	* /usr/local/cvs/hlfl/src/linux_netfilter.c 1.5, /usr/local/cvs/hlfl/src/bsd_ipfw.c 1.5, /usr/local/cvs/hlfl/src/cisco.c 1.7, /usr/local/cvs/hlfl/src/hlfl.c 1.11, /usr/local/cvs/hlfl/src/ipfilter.c 1.6, /usr/local/cvs/hlfl/src/linux_ipchains.c 1.6:
+	'else' support
+
+	* /usr/local/cvs/hlfl/doc/hlfl.1 1.2: logs
+
+	* /usr/local/cvs/hlfl/doc/TODO 1.2, /usr/local/cvs/hlfl/VERSION 1.3:
+	updated
+
+	* /usr/local/cvs/hlfl/src/Makefile 1.3:
+	config.h must not be removed by 'clean'
+
+	* /usr/local/cvs/hlfl/doc/test.hlfl 1.2: updated with the l flag
+
+	* /usr/local/cvs/hlfl/src/hlfl.c 1.10: bug fixed
+
+	* /usr/local/cvs/hlfl/src/cisco.c 1.6: log command for cisco
+
+2000-09-07  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/hlfl.tmpl.in 1.2: Fix hardcoded shell.
+
+	* /usr/local/cvs/hlfl/doc/syntax.txt 1.5:
+	Add doc for generic log support.
+
+	* /usr/local/cvs/hlfl/src/Makefile 1.2:
+	Simplify, general cleanup and dependencies add.
+
+	* /usr/local/cvs/hlfl/src/utils.h 1.4, /usr/local/cvs/hlfl/src/bsd_ipfw.c 1.4, /usr/local/cvs/hlfl/src/bsd_ipfw.h 1.4, /usr/local/cvs/hlfl/src/cisco.c 1.5, /usr/local/cvs/hlfl/src/cisco.h 1.4, /usr/local/cvs/hlfl/src/errors.h 1.3, /usr/local/cvs/hlfl/src/getpts.h 1.4, /usr/local/cvs/hlfl/src/hlfl.c 1.9, /usr/local/cvs/hlfl/src/hlfl.h 1.4, /usr/local/cvs/hlfl/src/includes.h 1.5, /usr/local/cvs/hlfl/src/ipfilter.c 1.5, /usr/local/cvs/hlfl/src/ipfilter.h 1.4, /usr/local/cvs/hlfl/src/linux_ipchains.c 1.5, /usr/local/cvs/hlfl/src/linux_ipchains.h 1.4, /usr/local/cvs/hlfl/src/linux_netfilter.c 1.4, /usr/local/cvs/hlfl/src/linux_netfilter.h 1.4:
+	Add generic log support; also evite segfault when compiled under high optimization.
+
+2000-08-31  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/config.sub 1.2:
+	Update from ftp://ftp.gnu.org/pub/gnu/config/config.sub
+
+	* /usr/local/cvs/hlfl/src/cisco.c 1.4, /usr/local/cvs/hlfl/src/cisco.h 1.3, /usr/local/cvs/hlfl/src/errors.h 1.2, /usr/local/cvs/hlfl/src/getpts.c 1.4, /usr/local/cvs/hlfl/src/getpts.h 1.3, /usr/local/cvs/hlfl/src/hlfl.c 1.8, /usr/local/cvs/hlfl/src/hlfl.h 1.3, /usr/local/cvs/hlfl/src/includes.h 1.4, /usr/local/cvs/hlfl/src/ipfilter.h 1.3, /usr/local/cvs/hlfl/src/linux_ipchains.h 1.3, /usr/local/cvs/hlfl/src/linux_netfilter.h 1.3, /usr/local/cvs/hlfl/src/utils.h 1.3, /usr/local/cvs/hlfl/src/bsd_ipfw.h 1.3:
+	\s\+$ deletion and some small modifs of *.h files.
+
+	* /usr/local/cvs/hlfl/doc/CodingStyle 1.1: Indent add.
+
+	* /usr/local/cvs/hlfl/src/getpts.c 1.3, /usr/local/cvs/hlfl/src/getpts.h 1.2, /usr/local/cvs/hlfl/src/hlfl.c 1.7, /usr/local/cvs/hlfl/src/hlfl.h 1.2, /usr/local/cvs/hlfl/src/includes.h 1.3, /usr/local/cvs/hlfl/src/ipfilter.c 1.4, /usr/local/cvs/hlfl/src/ipfilter.h 1.2, /usr/local/cvs/hlfl/src/linux_ipchains.c 1.4, /usr/local/cvs/hlfl/src/linux_ipchains.h 1.2, /usr/local/cvs/hlfl/src/linux_netfilter.c 1.3, /usr/local/cvs/hlfl/src/linux_netfilter.h 1.2, /usr/local/cvs/hlfl/src/utils.c 1.3, /usr/local/cvs/hlfl/src/utils.h 1.2, /usr/local/cvs/hlfl/src/bsd_ipfw.c 1.3, /usr/local/cvs/hlfl/src/bsd_ipfw.h 1.2, /usr/local/cvs/hlfl/src/cisco.c 1.3, /usr/local/cvs/hlfl/src/cisco.h 1.2:
+	Indentation modifications.
+
+2000-08-29  Renaud Deraison  <deraison@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/syntax.txt 1.4, /usr/local/cvs/hlfl/src/bsd_ipfw.c 1.2, /usr/local/cvs/hlfl/src/hlfl.c 1.6, /usr/local/cvs/hlfl/src/includes.h 1.2, /usr/local/cvs/hlfl/src/ipfilter.c 1.3, /usr/local/cvs/hlfl/src/linux_ipchains.c 1.3, /usr/local/cvs/hlfl/src/linux_netfilter.c 1.2:
+	patch from Arnaud S. Launay <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/AUTHORS 1.1: added
+
+	* /usr/local/cvs/hlfl/src/hlfl.c 1.5, /usr/local/cvs/hlfl/doc/syntax.txt 1.3, /usr/local/cvs/hlfl/Makefile 1.2:
+	patch from Arnaud Launay <asl@launay.org>
+
+2000-08-07  Renaud Deraison  <deraison@hlfl.org>
+
+	* /usr/local/cvs/hlfl/src/hlfl.c 1.4: typo
+
+	* /usr/local/cvs/hlfl/src/cisco.c 1.2, /usr/local/cvs/hlfl/src/getpts.c 1.2, /usr/local/cvs/hlfl/src/hlfl.c 1.3, /usr/local/cvs/hlfl/src/ipfilter.c 1.2, /usr/local/cvs/hlfl/src/utils.c 1.2:
+	sizeof(char) replaced by 1
+
+	* /usr/local/cvs/hlfl/src/linux_ipchains.c 1.2:
+	patch from Arnaud S. Launay <asl@launay.org>
+
+2000-08-03  Renaud Deraison  <deraison@hlfl.org>
+
+	* /usr/local/cvs/hlfl/src/hlfl.c 1.2, /usr/local/cvs/hlfl/VERSION 1.2:
+	updated
+
+2000-07-26  Renaud Deraison  <deraison@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/syntax.txt 1.2: typo
+
+	* /usr/local/cvs/hlfl/aclocal.m4 1.1.1.1, /usr/local/cvs/hlfl/config.sub 1.1.1.1, /usr/local/cvs/hlfl/configure 1.1.1.1, /usr/local/cvs/hlfl/configure.in 1.1.1.1, /usr/local/cvs/hlfl/doc/hlfl.1 1.1.1.1, /usr/local/cvs/hlfl/doc/sample_1.hlfl 1.1.1.1, /usr/local/cvs/hlfl/doc/sample_2.hlfl 1.1.1.1, /usr/local/cvs/hlfl/doc/services.hlfl 1.1.1.1, /usr/local/cvs/hlfl/doc/syntax.txt 1.1.1.1, /usr/local/cvs/hlfl/doc/test.hlfl 1.1.1.1, /usr/local/cvs/hlfl/doc/TODO 1.1.1.1, /usr/local/cvs/hlfl/hlfl.tmpl.in 1.1.1.1, /usr/local/cvs/hlfl/INSTALL 1.1.1.1, /usr/local/cvs/hlfl/install-sh 1.1.1.1, /usr/local/cvs/hlfl/LICENSE 1.1.1.1, /usr/local/cvs/hlfl/Makefile 1.1.1.1, /usr/local/cvs/hlfl/src/bsd_ipfw.c 1.1.1.1, /usr/local/cvs/hlfl/src/bsd_ipfw.h 1.1.1.1, /usr/local/cvs/hlfl/src/cisco.c 1.1.1.1, /usr/local/cvs/hlfl/src/cisco.h 1.1.1.1, /usr/local/cvs/hlfl/src/config.h.in 1.1.1.1, /usr/local/cvs/hlfl/src/errors.h 1.1.1.1, /usr/local/cvs/hlfl/src/getpts.c 1.1.1.1, /usr/local/cvs/hlfl/src/getpts.h 1.1.1.1, /usr/local/cvs/hlfl/src/hlfl.c 1.1.1.1, /usr/local/cvs/hlfl/src/hlfl.h 1.1.1.1, /usr/local/cvs/hlfl/src/includes.h 1.1.1.1, /usr/local/cvs/hlfl/src/ipfilter.c 1.1.1.1, /usr/local/cvs/hlfl/src/ipfilter.h 1.1.1.1, /usr/local/cvs/hlfl/src/linux_ipchains.c 1.1.1.1, /usr/local/cvs/hlfl/src/linux_ipchains.h 1.1.1.1, /usr/local/cvs/hlfl/src/linux_netfilter.c 1.1.1.1, /usr/local/cvs/hlfl/src/linux_netfilter.h 1.1.1.1, /usr/local/cvs/hlfl/src/Makefile 1.1.1.1, /usr/local/cvs/hlfl/src/utils.c 1.1.1.1, /usr/local/cvs/hlfl/src/utils.h 1.1.1.1, /usr/local/cvs/hlfl/THANKS 1.1.1.1, /usr/local/cvs/hlfl/VERSION 1.1.1.1, /usr/local/cvs/hlfl/WARNING 1.1.1.1:
+	- imported source tree
+
+	* /usr/local/cvs/hlfl/aclocal.m4 1.1, /usr/local/cvs/hlfl/config.sub 1.1, /usr/local/cvs/hlfl/configure 1.1, /usr/local/cvs/hlfl/configure.in 1.1, /usr/local/cvs/hlfl/doc/hlfl.1 1.1, /usr/local/cvs/hlfl/doc/sample_1.hlfl 1.1, /usr/local/cvs/hlfl/doc/sample_2.hlfl 1.1, /usr/local/cvs/hlfl/doc/services.hlfl 1.1, /usr/local/cvs/hlfl/doc/syntax.txt 1.1, /usr/local/cvs/hlfl/doc/test.hlfl 1.1, /usr/local/cvs/hlfl/doc/TODO 1.1, /usr/local/cvs/hlfl/hlfl.tmpl.in 1.1, /usr/local/cvs/hlfl/INSTALL 1.1, /usr/local/cvs/hlfl/install-sh 1.1, /usr/local/cvs/hlfl/LICENSE 1.1, /usr/local/cvs/hlfl/Makefile 1.1, /usr/local/cvs/hlfl/src/bsd_ipfw.c 1.1, /usr/local/cvs/hlfl/src/bsd_ipfw.h 1.1, /usr/local/cvs/hlfl/src/cisco.c 1.1, /usr/local/cvs/hlfl/src/cisco.h 1.1, /usr/local/cvs/hlfl/src/config.h.in 1.1, /usr/local/cvs/hlfl/src/errors.h 1.1, /usr/local/cvs/hlfl/src/getpts.c 1.1, /usr/local/cvs/hlfl/src/getpts.h 1.1, /usr/local/cvs/hlfl/src/hlfl.c 1.1, /usr/local/cvs/hlfl/src/hlfl.h 1.1, /usr/local/cvs/hlfl/src/includes.h 1.1, /usr/local/cvs/hlfl/src/ipfilter.c 1.1, /usr/local/cvs/hlfl/src/ipfilter.h 1.1, /usr/local/cvs/hlfl/src/linux_ipchains.c 1.1, /usr/local/cvs/hlfl/src/linux_ipchains.h 1.1, /usr/local/cvs/hlfl/src/linux_netfilter.c 1.1, /usr/local/cvs/hlfl/src/linux_netfilter.h 1.1, /usr/local/cvs/hlfl/src/Makefile 1.1, /usr/local/cvs/hlfl/src/utils.c 1.1, /usr/local/cvs/hlfl/src/utils.h 1.1, /usr/local/cvs/hlfl/THANKS 1.1, /usr/local/cvs/hlfl/VERSION 1.1, /usr/local/cvs/hlfl/WARNING 1.1:
+	New file.
+
