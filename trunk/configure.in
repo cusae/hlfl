@@ -2,7 +2,7 @@ dnl Set up the main lines of the config script
 
 AC_PREREQ(2.13)
 
-AC_INIT(hlfl, 0.60.0, hlfl@hlfl.org)
+AC_INIT(hlfl, 0.60.1, hlfl@hlfl.org)
 AM_INIT_AUTOMAKE
 AM_CONFIG_HEADER(config.h)
 
