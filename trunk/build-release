@@ -32,7 +32,7 @@ cvs tag ${TAG}
 # prepare the tarballs
 
 ( ./prepare && ./configure && make dist && mv hlfl-${VERSION}.tar.gz /tmp &&
-cd /tmp && && bzip2 -k9 hlfl-${VERSION}.tar && gzip -9 hlfl-${VERSION}.tar )
+cd /tmp && gunzip -c hlfl-${VERSION}.tar.gz | bzip2 -k9 >hlfl-${VERSION}.tar.bz2 )
 
 # build the diffs
 
@@ -44,10 +44,9 @@ cvs rdiff -u -r ${OTAG} -r ${TAG} hlfl | bzip2 -9 \
 # upload the release to the net
 DISTFILES="hlfl-${VERSION}.tar.bz2 hlfl-${VERSION}.tar.gz diff-${OVERSION}-${VERSION}.bz2 diff-${OVERSION}-${VERSION}.gz"
 
-for i in $DISTFILES; do
-	scp /tmp/$i atlantis.hlfl.org:/home/ftp/pub/hlfl
-done
+cd /tmp && scp $DISTFILES atlantis.hlfl.org:/home/ftp/pub/hlfl
+cd /tmp && scp $DISTFILES atlantis.hlfl.org:/home/hlfl/hlfl
 
 # Announce it to people
 
-mutt -s "[Announce] HLFL-${VERSION} is out" hlfl-announce@hlfl.org
+mutt -s "HLFL-${VERSION} is out" hlfl-announce@hlfl.org
