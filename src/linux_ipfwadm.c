@@ -107,8 +107,8 @@ char *interface;
 		break;
 	case ACCEPT_ONE_WAY_REVERSE:
 		if (!icmp(proto))	/*
-					   * XXXX ugly hack here, because ifpwadm
-					   * wants the icmp code to be with -S
+					 * XXXX ugly hack here, because ifpwadm
+					 * wants the icmp code to be with -S
 					 */
 			fprintf(fout,
 				"$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n",

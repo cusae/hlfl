@@ -177,34 +177,30 @@ char *interface;
 		break;
 	case REJECT_ALL:
 		/* Add an additional rule to correctly reject tcp when rejecting all */
-		if ( !strcmp(proto, "all") )
-			{
+		if (!strcmp(proto, "all")) {
 			fprintf(fout,
 				"$ipfw -f add reset%s tcp from %s %s to %s %s out %s %s\n",
 				logit, src, sports, dst, dports, icmp_code, via);
 			fprintf(fout,
 				"$ipfw -f add reset%s tcp from %s %s to %s %s in %s %s\n",
 				logit, dst, dports, src, sports, icmp_code, via);
-			}
+		}
 		/* Correctly reject tcp */
-		if ( !strcmp(proto, "tcp") )
-			{
+		if (!strcmp(proto, "tcp")) {
 			fprintf(fout,
 				"$ipfw -f add reset%s %s from %s %s to %s %s out %s %s\n",
 				logit, proto, src, sports, dst, dports, icmp_code, via);
 			fprintf(fout,
 				"$ipfw -f add reset%s %s from %s %s to %s %s in %s %s\n",
 				logit, proto, dst, dports, src, sports, icmp_code, via);
-			}
-		else
-			{
+		} else {
 			fprintf(fout,
 				"$ipfw -f add reject%s %s from %s %s to %s %s out %s %s\n",
 				logit, proto, src, sports, dst, dports, icmp_code, via);
 			fprintf(fout,
 				"$ipfw -f add reject%s %s from %s %s to %s %s in %s %s\n",
 				logit, proto, dst, dports, src, sports, icmp_code, via);
-			}
+		}
 		break;
 	case DENY_OUT:
 		fprintf(fout,
@@ -218,47 +214,39 @@ char *interface;
 		break;
 	case REJECT_OUT:
 		/* Add an additional rule to correctly reject tcp when rejecting all */
-		if ( !strcmp(proto, "all") )
-			{
+		if (!strcmp(proto, "all")) {
 			fprintf(fout,
 				"$ipfw -f add reset%s tcp from %s %s to %s %s out %s %s\n",
 				logit, src, sports, dst, dports, icmp_code, via);
-			}
+		}
 		/* Correctly reject tcp */
-		if ( !strcmp(proto, "tcp") )
-			{
+		if (!strcmp(proto, "tcp")) {
 			fprintf(fout,
 				"$ipfw -f add reset%s %s from %s %s to %s %s out %s %s\n",
 				logit, proto, src, sports, dst, dports, icmp_code, via);
-			}
-		else
-			{
+		} else {
 			fprintf(fout,
 				"$ipfw -f add reject%s %s from %s %s to %s %s out %s %s\n",
 				logit, proto, src, sports, dst, dports, icmp_code, via);
-			}
+		}
 		break;
 	case REJECT_IN:
 		/* Add an additional rule to correctly reject tcp when rejecting all */
-		if ( !strcmp(proto, "all") )
-			{
+		if (!strcmp(proto, "all")) {
 			fprintf(fout,
 				"$ipfw -f add reset%s tcp from %s %s to %s %s in %s %s\n",
 				logit, dst, dports, src, sports, icmp_code, via);
-			}
+		}
 		/* Correctly reject tcp */
-		if ( !strcmp(proto, "tcp") )
-			{
+		if (!strcmp(proto, "tcp")) {
 			fprintf(fout,
 				"$ipfw -f add reset%s %s from %s %s to %s %s in %s %s\n",
 				logit, proto, dst, dports, src, sports, icmp_code, via);
-			}
-		else
-			{
+		} else {
 			fprintf(fout,
 				"$ipfw -f add reject%s %s from %s %s to %s %s in %s %s\n",
 				logit, proto, dst, dports, src, sports, icmp_code, via);
-			}
+		}
 		break;
 	}
 	free(via);
