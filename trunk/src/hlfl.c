@@ -1291,7 +1291,7 @@ main(argc, argv)
    translator_definitions[active_translator].translator_start((fout != (void *)0) ? fout : stdout);
 
    if (opt_count < argc) {
-      char *input_fname; // name of rule file to read
+      char *input_fname; /* name of rule file to read */
 
       while (opt_count < argc) {
             input_fname = argv[opt_count++];
