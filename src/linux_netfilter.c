@@ -228,25 +228,25 @@ if (log)
     fprintf(fout, "$iptables -A FORWARD -s %s  -d %s -p %s %s %s -j %sREJECT %s\n",
 	   dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
     break;
-   case DENY_OUTPUT:
+   case DENY_OUT:
     fprintf(fout, "$iptables -A OUTPUT -s %s -d %s -p %s %s %s -j %sDROP %s\n",
 	   src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
     fprintf(fout, "$iptables -A FORWARD -s %s -d %s -p %s %s %s -j %sDROP %s\n",
 	   src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
     break;
-   case DENY_INPUT:
+   case DENY_IN:
     fprintf(fout, "$iptables -A INPUT -s %s -d %s -p %s %s %s -j %sDROP %s\n", 
 	   dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
     fprintf(fout, "$iptables -A FORWARD -s %s -d %s -p %s %s %s -j %sDROP %s\n", 
 	   dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
     break;
-   case REJECT_OUTPUT:
+   case REJECT_OUT:
     fprintf(fout, "$iptables -A OUTPUT -s %s -d %s -p %s %s %s -j %sREJECT %s\n",
 	   src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
     fprintf(fout, "$iptables -A FORWARD -s %s -d %s -p %s %s %s -j %sREJECT %s\n",
 	   src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
     break;
-   case REJECT_INPUT:
+   case REJECT_IN:
     fprintf(fout, "$iptables -A INPUT -s %s -d %s -p %s %s %s -j %sREJECT %s\n", 
 	   dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
     fprintf(fout, "$iptables -A FORWARD -s %s -d %s -p %s %s %s -j %sREJECT %s\n", 
