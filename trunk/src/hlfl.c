@@ -58,7 +58,7 @@ struct definition *definitions = NULL;
 
 #ifdef HAVE_GETOPT
 /* option string for getopt() or getopt_long() */
-char *optstr = "hvV:c:t:o:";
+char *optstr = "c:t:o:hvV";
 #ifdef HAVE_GETOPT_LONG
 /* array of long option structs for getopt_long() */
 struct option long_options[] = {
@@ -66,7 +66,7 @@ struct option long_options[] = {
 	{"output", 1, 0, 'o'},
 	{"type", 1, 0, 't'},
 	{"version", 0, 0, 'V'},
-	{"verbose", 1, 0, 'v'},
+	{"verbose", 0, 0, 'v'},
 	{"check", 1, 0, 'c'},
 	{0, 0, 0, 0}
 };
@@ -1166,7 +1166,7 @@ char **argv;
 				break;
 			}
 		case 'v':{
-				verbose_level = atoi(optarg);
+				verbose_level = 1;
 				break;
 			}
 		case 'V':{
