@@ -104,8 +104,10 @@ get_definition(d)
 
  while (d[0] == ' ')
   d++;
+	
  while (d[strlen(d) - 1] == ' ')
   d[strlen(d) - 1] = '\0';
+
  if ((t = strchr(d, ' ')))
   t[0] = '\0';
 
@@ -114,18 +116,18 @@ get_definition(d)
     if (!strcmp(k->definition, d))
       {
        if (t)
-	 {
-	  char *ret = malloc(strlen(k->value) + strlen(t + 1) + 2);
-	  sprintf(ret, "%s %s", k->value, t + 1);
-	  t[0] = ' ';
-	  free(o_d);
-	  return ret;
-	 }
-       else
-	 {
-	  free(o_d);
-	  return strdup(k->value);
-	 }
+						 {
+								char *ret = malloc(strlen(k->value) + strlen(t + 1) + 2);
+								sprintf(ret, "%s %s", k->value, t + 1);
+								t[0] = ' ';
+								free(o_d);
+								return ret;
+							}
+     else
+							{
+								free(o_d);
+								return strdup(k->value);
+							}
       }
     k = k->next;
    }
@@ -207,7 +209,8 @@ check_proto(proto)
 {
  if ((!strcmp(proto, "all")) ||
      (!strcmp(proto, "tcp")) ||
-     (!strcmp(proto, "udp")) || (!strcmp(proto, "icmp")))
+     (!strcmp(proto, "udp")) || 
+					(!strcmp(proto, "icmp")))
   return 0;
  else
   return 1;
@@ -1056,7 +1059,7 @@ usage(n)
  fprintf(stderr, "\tipfwadm - Linux 2.0.x ipfwadm\n");
  fprintf(stderr, "\tipchains - Linux 2.2.x ipchains\n");
  fprintf(stderr, "\tnetfilter - Linux 2.3.x netfilter\n");
- fprintf(stderr, "\tcisco - Cisco rules\n\n");
+ fprintf(stderr, "\tcisco - Cisco rules (IOS 12.1(2)T)\n\n");
  exit(1);
 }
 
