@@ -231,22 +231,31 @@ so the 'if(
 .br
 % only include the following in the case we are generating an
 .br
-% ipchains firewall
+% ipchains firewall. Generate a warning if we are not using
+.br
+% ipchains
 
 .br
 
 !if(ipchains) ipchains -s 192.168.1.0 -d 0/0 -i eth1 -j MASQ
+.br
+! else echo "Warning - NAT is not handled in this configuration"
+.br
 
   
 .SH EXAMPLE
 
 see ${prefix}/share/hlfl/ for real-life examples.
 
-.SH AUTHOR
+.SH AUTHORS
 
-hlfl was written by Renaud Deraison <deraison@cvs.nessus.org> because the day
+hlfl was written by Renaud Deraison <deraison@hlfl.org> because the day
 he had to rewrite his ipfw firewall to ipfilter, he sweared he'd never do that
 again.
+.br
+Arnaud Launay <asl@hlfl.org> joined later on, and took actively part in
+the project.
+.br
 
 .SH BUGS
 
