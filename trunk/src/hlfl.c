@@ -187,7 +187,7 @@ char *t;
 		return;
 
 	while (t[0] != '\0') {
-		if( t[0] == '\t' )
+		if (t[0] == '\t')
 			t[0] = ' ';
 		t++;
 	}
@@ -274,10 +274,8 @@ char *proto;
 int check_proto(proto)
 char *proto;
 {
-	if ((!strcmp(proto, "all")) ||
-	    (!strcmp(proto, "tcp")) ||
-	    (!strcmp(proto, "udp")) ||
-	    (!strcmp(proto, "icmp")))
+	if ((!strcmp(proto, "all")) || (!strcmp(proto, "tcp")) ||
+	    (!strcmp(proto, "udp")) || (!strcmp(proto, "icmp")))
 		return 0;
 	else
 		return 1;
@@ -1073,40 +1071,40 @@ char *n;
 	fprintf(stderr, "Operation modes:\n");
 	fprintf(stderr, "   -h"
 #ifdef HAVE_GETOPT_LONG
-			", --help"
+		", --help"
 #endif
-			"\t\tprint this help and exit\n");
+		"\t\tprint this help and exit\n");
 	fprintf(stderr, "   -V"
 #ifdef HAVE_GETOPT_LONG
-			", --version"
+		", --version"
 #else
-			"\t"
+		"\t"
 #endif
-			"\tprint version number, then exit\n");
+		"\tprint version number, then exit\n");
 	fprintf(stderr, "   -v"
 #ifdef HAVE_GETOPT_LONG
-			", --verbose"
+		", --verbose"
 #else
-			"\t"
+		"\t"
 #endif
-			"\tbe verbose, print comments\n");
+		"\tbe verbose, print comments\n");
 	fprintf(stderr, "   -c"
 #ifdef HAVE_GETOPT_LONG
-			", --check\t"
+		", --check\t"
 #else
-			"\t"
+		"\t"
 #endif
-			"\tcheck netmasks before computing\n");
-	fprintf(stderr,	"   -t"
+		"\tcheck netmasks before computing\n");
+	fprintf(stderr, "   -t"
 #ifdef HAVE_GETOPT_LONG
-			", --type="
+		", --type="
 #endif
-			"TYPE\tgenerate output formatted for TYPE of firewall\n");
+		"TYPE\tgenerate output formatted for TYPE of firewall\n");
 	fprintf(stderr, "   -o"
 #ifdef HAVE_GETOPT_LONG
-			", --output="
+		", --output="
 #endif
-			"FILE\tsave output in FILE (stdout is the default)\n");
+		"FILE\tsave output in FILE (stdout is the default)\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "TYPE options are:\n");
 	fprintf(stderr, "   ipfw - BSD ipfw\n");
