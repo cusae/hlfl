@@ -52,6 +52,14 @@ case "$CC" in
 *xlc | *xlc\ * | *lcc | *lcc\ *) am_opt=--include-deps;;
 esac
 
+autoconf_version=`autoconf${AUTOCONF_SUFFIX} --version 2>&1 | sed -n 's/^.* \([0-9]*\.[0-9.]*\).*$/\1/p'`
+case $autoconf_version in
+	2.1*)
+		grep "AC_INIT.*hlfl@hlfl.org" configure.in > /dev/null &&
+		( sed -e 's#^AC_INIT(.*#AC_INIT(src/hlfl.c)#' \
+		configure.in >configure.in.new && mv configure.in.new configure.in )
+esac
+
 # do not change the sequence without understanding the implications
 for dir in .
 do 
