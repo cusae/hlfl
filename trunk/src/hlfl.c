@@ -822,6 +822,7 @@ process(buffer)
  /* src */
  if(t[0]!='(')
    {
+   
     error = HLFL_SYNTAX_ERROR;
     return -1;
    }
@@ -869,12 +870,12 @@ process(buffer)
    return -1;
   }
 
- dst = t++;
+ dst = t+1;
  t = matching_items(t, '(', ')');
  
  if(!t)
    {
-    error = HLFL_SYNTAX_ERROR;
+   error = HLFL_SYNTAX_ERROR;
    return -1;
    }
  
