@@ -69,7 +69,8 @@ install_sh = @install_sh@
 datadir = @datadir@/hlfl
 
 man_MANS = hlfl.1
-data_DATA = sample_1.hlfl sample_2.hlfl sample_3.hlfl services.hlfl syntax.txt
+data_DATA = services.hlfl sample_1.hlfl sample_2.hlfl sample_3.hlfl syntax.txt test.hlfl RoadMap TODO
+EXTRA_DIST = $(data_DATA)
 subdir = doc
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/src/config.h
