@@ -69,7 +69,7 @@ am__quote = @am__quote@
 install_sh = @install_sh@
 
 bin_PROGRAMS = hlfl
-hlfl_SOURCES = bsd_ipfw.c hlfl.c linux_ipfwadm.c linux_ipchains.c linux_netfilter.c ipfilter.c cisco.c getpts.c utils.c
+hlfl_SOURCES = bsd_ipfw.c bsd_ipfw.h cisco.c cisco.h errors.h getpts.c getpts.h hlfl.c hlfl.h includes.h ipfilter.c ipfilter.h linux_ipchains.c linux_ipchains.h linux_ipfwadm.c linux_ipfwadm.h linux_netfilter.c linux_netfilter.h utils.c utils.h
 hlfl_CFLAGS = -DFILES=\"${datadir}/hlfl\"
 subdir = src
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -78,10 +78,11 @@ CONFIG_CLEAN_FILES =
 bin_PROGRAMS = hlfl$(EXEEXT)
 PROGRAMS = $(bin_PROGRAMS)
 
-am_hlfl_OBJECTS = hlfl-bsd_ipfw.$(OBJEXT) hlfl-hlfl.$(OBJEXT) \
-	hlfl-linux_ipfwadm.$(OBJEXT) hlfl-linux_ipchains.$(OBJEXT) \
-	hlfl-linux_netfilter.$(OBJEXT) hlfl-ipfilter.$(OBJEXT) \
-	hlfl-cisco.$(OBJEXT) hlfl-getpts.$(OBJEXT) hlfl-utils.$(OBJEXT)
+am_hlfl_OBJECTS = hlfl-bsd_ipfw.$(OBJEXT) hlfl-cisco.$(OBJEXT) \
+	hlfl-getpts.$(OBJEXT) hlfl-hlfl.$(OBJEXT) \
+	hlfl-ipfilter.$(OBJEXT) hlfl-linux_ipchains.$(OBJEXT) \
+	hlfl-linux_ipfwadm.$(OBJEXT) hlfl-linux_netfilter.$(OBJEXT) \
+	hlfl-utils.$(OBJEXT)
 hlfl_OBJECTS = $(am_hlfl_OBJECTS)
 hlfl_LDADD = $(LDADD)
 hlfl_DEPENDENCIES =
@@ -170,13 +171,13 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
 hlfl-bsd_ipfw.$(OBJEXT): bsd_ipfw.c
-hlfl-hlfl.$(OBJEXT): hlfl.c
-hlfl-linux_ipfwadm.$(OBJEXT): linux_ipfwadm.c
-hlfl-linux_ipchains.$(OBJEXT): linux_ipchains.c
-hlfl-linux_netfilter.$(OBJEXT): linux_netfilter.c
-hlfl-ipfilter.$(OBJEXT): ipfilter.c
 hlfl-cisco.$(OBJEXT): cisco.c
 hlfl-getpts.$(OBJEXT): getpts.c
+hlfl-hlfl.$(OBJEXT): hlfl.c
+hlfl-ipfilter.$(OBJEXT): ipfilter.c
+hlfl-linux_ipchains.$(OBJEXT): linux_ipchains.c
+hlfl-linux_ipfwadm.$(OBJEXT): linux_ipfwadm.c
+hlfl-linux_netfilter.$(OBJEXT): linux_netfilter.c
 hlfl-utils.$(OBJEXT): utils.c
 hlfl$(EXEEXT): $(hlfl_OBJECTS) $(hlfl_DEPENDENCIES) 
 	@rm -f hlfl$(EXEEXT)
@@ -225,66 +226,6 @@ hlfl-bsd_ipfw.obj: bsd_ipfw.c
 @AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-bsd_ipfw.obj `cygpath -w bsd_ipfw.c`
 
-hlfl-hlfl.o: hlfl.c
-@AMDEP_TRUE@	source='hlfl.c' object='hlfl-hlfl.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-hlfl.Po' tmpdepfile='$(DEPDIR)/hlfl-hlfl.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-hlfl.o `test -f hlfl.c || echo '$(srcdir)/'`hlfl.c
-
-hlfl-hlfl.obj: hlfl.c
-@AMDEP_TRUE@	source='hlfl.c' object='hlfl-hlfl.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-hlfl.Po' tmpdepfile='$(DEPDIR)/hlfl-hlfl.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-hlfl.obj `cygpath -w hlfl.c`
-
-hlfl-linux_ipfwadm.o: linux_ipfwadm.c
-@AMDEP_TRUE@	source='linux_ipfwadm.c' object='hlfl-linux_ipfwadm.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-linux_ipfwadm.Po' tmpdepfile='$(DEPDIR)/hlfl-linux_ipfwadm.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-linux_ipfwadm.o `test -f linux_ipfwadm.c || echo '$(srcdir)/'`linux_ipfwadm.c
-
-hlfl-linux_ipfwadm.obj: linux_ipfwadm.c
-@AMDEP_TRUE@	source='linux_ipfwadm.c' object='hlfl-linux_ipfwadm.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-linux_ipfwadm.Po' tmpdepfile='$(DEPDIR)/hlfl-linux_ipfwadm.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-linux_ipfwadm.obj `cygpath -w linux_ipfwadm.c`
-
-hlfl-linux_ipchains.o: linux_ipchains.c
-@AMDEP_TRUE@	source='linux_ipchains.c' object='hlfl-linux_ipchains.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-linux_ipchains.Po' tmpdepfile='$(DEPDIR)/hlfl-linux_ipchains.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-linux_ipchains.o `test -f linux_ipchains.c || echo '$(srcdir)/'`linux_ipchains.c
-
-hlfl-linux_ipchains.obj: linux_ipchains.c
-@AMDEP_TRUE@	source='linux_ipchains.c' object='hlfl-linux_ipchains.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-linux_ipchains.Po' tmpdepfile='$(DEPDIR)/hlfl-linux_ipchains.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-linux_ipchains.obj `cygpath -w linux_ipchains.c`
-
-hlfl-linux_netfilter.o: linux_netfilter.c
-@AMDEP_TRUE@	source='linux_netfilter.c' object='hlfl-linux_netfilter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-linux_netfilter.Po' tmpdepfile='$(DEPDIR)/hlfl-linux_netfilter.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-linux_netfilter.o `test -f linux_netfilter.c || echo '$(srcdir)/'`linux_netfilter.c
-
-hlfl-linux_netfilter.obj: linux_netfilter.c
-@AMDEP_TRUE@	source='linux_netfilter.c' object='hlfl-linux_netfilter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-linux_netfilter.Po' tmpdepfile='$(DEPDIR)/hlfl-linux_netfilter.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-linux_netfilter.obj `cygpath -w linux_netfilter.c`
-
-hlfl-ipfilter.o: ipfilter.c
-@AMDEP_TRUE@	source='ipfilter.c' object='hlfl-ipfilter.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-ipfilter.Po' tmpdepfile='$(DEPDIR)/hlfl-ipfilter.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-ipfilter.o `test -f ipfilter.c || echo '$(srcdir)/'`ipfilter.c
-
-hlfl-ipfilter.obj: ipfilter.c
-@AMDEP_TRUE@	source='ipfilter.c' object='hlfl-ipfilter.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-ipfilter.Po' tmpdepfile='$(DEPDIR)/hlfl-ipfilter.TPo' @AMDEPBACKSLASH@
-@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-ipfilter.obj `cygpath -w ipfilter.c`
-
 hlfl-cisco.o: cisco.c
 @AMDEP_TRUE@	source='cisco.c' object='hlfl-cisco.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-cisco.Po' tmpdepfile='$(DEPDIR)/hlfl-cisco.TPo' @AMDEPBACKSLASH@
@@ -308,6 +249,66 @@ hlfl-getpts.obj: getpts.c
 @AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-getpts.Po' tmpdepfile='$(DEPDIR)/hlfl-getpts.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-getpts.obj `cygpath -w getpts.c`
+
+hlfl-hlfl.o: hlfl.c
+@AMDEP_TRUE@	source='hlfl.c' object='hlfl-hlfl.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-hlfl.Po' tmpdepfile='$(DEPDIR)/hlfl-hlfl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-hlfl.o `test -f hlfl.c || echo '$(srcdir)/'`hlfl.c
+
+hlfl-hlfl.obj: hlfl.c
+@AMDEP_TRUE@	source='hlfl.c' object='hlfl-hlfl.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-hlfl.Po' tmpdepfile='$(DEPDIR)/hlfl-hlfl.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-hlfl.obj `cygpath -w hlfl.c`
+
+hlfl-ipfilter.o: ipfilter.c
+@AMDEP_TRUE@	source='ipfilter.c' object='hlfl-ipfilter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-ipfilter.Po' tmpdepfile='$(DEPDIR)/hlfl-ipfilter.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-ipfilter.o `test -f ipfilter.c || echo '$(srcdir)/'`ipfilter.c
+
+hlfl-ipfilter.obj: ipfilter.c
+@AMDEP_TRUE@	source='ipfilter.c' object='hlfl-ipfilter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-ipfilter.Po' tmpdepfile='$(DEPDIR)/hlfl-ipfilter.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-ipfilter.obj `cygpath -w ipfilter.c`
+
+hlfl-linux_ipchains.o: linux_ipchains.c
+@AMDEP_TRUE@	source='linux_ipchains.c' object='hlfl-linux_ipchains.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-linux_ipchains.Po' tmpdepfile='$(DEPDIR)/hlfl-linux_ipchains.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-linux_ipchains.o `test -f linux_ipchains.c || echo '$(srcdir)/'`linux_ipchains.c
+
+hlfl-linux_ipchains.obj: linux_ipchains.c
+@AMDEP_TRUE@	source='linux_ipchains.c' object='hlfl-linux_ipchains.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-linux_ipchains.Po' tmpdepfile='$(DEPDIR)/hlfl-linux_ipchains.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-linux_ipchains.obj `cygpath -w linux_ipchains.c`
+
+hlfl-linux_ipfwadm.o: linux_ipfwadm.c
+@AMDEP_TRUE@	source='linux_ipfwadm.c' object='hlfl-linux_ipfwadm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-linux_ipfwadm.Po' tmpdepfile='$(DEPDIR)/hlfl-linux_ipfwadm.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-linux_ipfwadm.o `test -f linux_ipfwadm.c || echo '$(srcdir)/'`linux_ipfwadm.c
+
+hlfl-linux_ipfwadm.obj: linux_ipfwadm.c
+@AMDEP_TRUE@	source='linux_ipfwadm.c' object='hlfl-linux_ipfwadm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-linux_ipfwadm.Po' tmpdepfile='$(DEPDIR)/hlfl-linux_ipfwadm.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-linux_ipfwadm.obj `cygpath -w linux_ipfwadm.c`
+
+hlfl-linux_netfilter.o: linux_netfilter.c
+@AMDEP_TRUE@	source='linux_netfilter.c' object='hlfl-linux_netfilter.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-linux_netfilter.Po' tmpdepfile='$(DEPDIR)/hlfl-linux_netfilter.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-linux_netfilter.o `test -f linux_netfilter.c || echo '$(srcdir)/'`linux_netfilter.c
+
+hlfl-linux_netfilter.obj: linux_netfilter.c
+@AMDEP_TRUE@	source='linux_netfilter.c' object='hlfl-linux_netfilter.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@	depfile='$(DEPDIR)/hlfl-linux_netfilter.Po' tmpdepfile='$(DEPDIR)/hlfl-linux_netfilter.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(hlfl_CFLAGS) $(CFLAGS) -c -o hlfl-linux_netfilter.obj `cygpath -w linux_netfilter.c`
 
 hlfl-utils.o: utils.c
 @AMDEP_TRUE@	source='utils.c' object='hlfl-utils.o' libtool=no @AMDEPBACKSLASH@
