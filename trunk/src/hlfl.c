@@ -19,6 +19,7 @@
  */
 #include "includes.h"
 #include "bsd_ipfw.h"
+#include "linux_ipfwadm.h"
 #include "linux_ipchains.h"
 #include "linux_netfilter.h"
 #include "ipfilter.h"
@@ -1039,6 +1040,7 @@ usage(n)
  fprintf(stderr, "Where <type> can be one of :\n");
  fprintf(stderr, "\tipfw - BSD ipfw\n");
  fprintf(stderr, "\tipfilter - Darren Reeds's ipfilter\n");
+	fprintf(stderr, "\tipfwadm - Linux 2.0.x ipfwadm\n");
  fprintf(stderr, "\tipchains - Linux 2.2.x ipchains\n");
  fprintf(stderr, "\tnetfilter - Linux 2.3.x netfilter\n");
  fprintf(stderr, "\tcisco - Cisco rules\n\n");
@@ -1073,6 +1075,15 @@ main(argc, argv)
     comment = print_comment;
     exit_func = nop;
     include_text_func = include_text_ipchains;
+   }
+
+ else if (!strcmp(argv[1], "ipfwadm"))
+   {
+    translator_start = translate_linux_ipfwadm_start;
+    translate_func = translate_linux_ipfwadm;
+    comment = print_comment;
+    exit_func = nop;
+    include_text_func = include_text_ipfwadm;
    }
 
  else if (!strcmp(argv[1], "ipfilter"))

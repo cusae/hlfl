@@ -2,6 +2,7 @@ sinclude ../hlfl.tmpl
 
 prefix=/usr/local
 OBJS=	bsd_ipfw.o \
+	linux_ipfwadm.o \
 	linux_ipchains.o \
 	linux_netfilter.o \
 	ipfilter.o \
@@ -19,6 +20,9 @@ getpts.o : getpts.c includes.h config.h
 bsd_ipfw.o : bsd_ipfw.c includes.h config.h bsd_ipfw.h
 	$(CC) $(CFLAGS) -c bsd_ipfw.c
 	
+linux_ipfwadm.o : linux_ipfwadm.c includes.h config.h hlfl.h linux_ipfwadm.h
+	$(CC) $(CFLAGS) -c linux_ipfwadm.c
+
 linux_ipchains.o : linux_ipchains.c includes.h config.h hlfl.h linux_ipchains.h
 	$(CC) $(CFLAGS) -c linux_ipchains.c
 
