@@ -1,22 +1,23 @@
-dnl
-dnl autoconf script for hlfl
-dnl
-
-
-AC_INIT(.root-dir)
-AC_REVISION($Revision$)dnl
-
 dnl Set up the main lines of the config script
-AC_CONFIG_HEADER(src/config.h)
-AC_PREFIX_DEFAULT("/usr/local")
-AC_LANG_C
+
+AC_INIT(hlfl, `cat $srcdir/VERSION`, hlfl@hlfl.org)
+AM_CONFIG_HEADER([src/config.h])
 
 dnl Check for several programs
 AC_PROG_CC
-AC_PROG_MAKE_SET
 AC_PROG_INSTALL
-AC_CHECK_HEADERS(stdio.h stdlib.h string.h sys/types.h sys/socket.h netinet/in.h arpa/inet.h)
+AC_PROG_MAKE_SET
 
-AC_DEFINE(DATADIR, "$datadir")
-AC_SUBST(VERSION, `cat VERSION`)
-AC_OUTPUT(hlfl.tmpl)
+# Checks for header files.
+AC_HEADER_STDC
+AC_CHECK_HEADERS([arpa/inet.h netinet/in.h stdio.h stdlib.h string.h sys/socket.h sys/types.h])
+
+# Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+
+# Checks for library functions.
+AC_FUNC_MALLOC
+AC_CHECK_FUNCS([bzero inet_ntoa strchr strdup strstr])
+
+AM_INIT_AUTOMAKE(hlfl, `cat $srcdir/VERSION`)
+AC_OUTPUT([Makefile doc/Makefile doc/hlfl.1 src/Makefile hlfl.spec hlfl.tmpl])

@@ -1,10 +1,52 @@
-#ifndef HLFL_CONFIG_H__
-#define HLFL_CONFIG_H__
-#undef HAVE_STDIO_H
-#undef HAVE_STDLIB_H
-#undef HAVE_STRING_H
-#undef HAVE_SYS_TYPES_H
-#undef HAVE_SYS_SOCKET_H
-#undef HAVE_NETINET_IN_H
+/* src/config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
-#endif
+
+/* Define if you have the `bzero' function. */
+#undef HAVE_BZERO
+
+/* Define if you have the `inet_ntoa' function. */
+#undef HAVE_INET_NTOA
+
+/* Define if your system has a working `malloc' function. */
+#undef HAVE_MALLOC
+
+/* Define if you have the <netinet/in.h> header file. */
+#undef HAVE_NETINET_IN_H
+
+/* Define if you have the <stdio.h> header file. */
+#undef HAVE_STDIO_H
+
+/* Define if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define if you have the `strchr' function. */
+#undef HAVE_STRCHR
+
+/* Define if you have the `strdup' function. */
+#undef HAVE_STRDUP
+
+/* Define if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define if you have the `strstr' function. */
+#undef HAVE_STRSTR
+
+/* Define if you have the <sys/socket.h> header file. */
+#undef HAVE_SYS_SOCKET_H
+
+/* Define if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Version number of package */
+#undef VERSION
+
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
