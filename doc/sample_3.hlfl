@@ -1,0 +1,74 @@
+#
+# sample.3 : firewall of a cable modem, written in full text
+#	     Security level : Low
+#
+#
+# Setup :
+#
+#	eth0 : connected to the internal LAN
+#	eth1 : connected to the outside
+#
+
+include <services.hlfl>
+
+# loopback
+all (any) accept (any) on lo
+
+
+#
+# eth0
+#
+# We trust all the users of the internal LAN
+# (I do this because I'm _alone_ in the LAN. You
+#  may want to write more restrictive rules)
+#
+% I'm generating an ipchains firewall, I add
+% my masquerading directive here
+# Masquerading :
+! if(ipchains) $ipchains -A forward -s 192.168.0.0/16 -d 0/0 -j MASQ
+#
+#
+
+
+# accept whatever on eth0
+all (any) accept (any) on eth0
+
+
+# spoofing
+all (any) deny to (192.168.0.0/16 | 172.16.0.0/12 | 10.0.0.0/8 | 127.0.0.0/8) on eth1
+all (192.168.0.0/16 | 172.16.0.0/12 | 10.0.0.0/8 | 127.0.0.0/8) reject to (any) on eth1
+
+
+# accept DHCP via UDP and TCP
+udp|tcp (any bootpc) accept established to (212.198.0.0/16 bootps) on eth1
+
+# accept DNS
+udp (any domain,1024-) accept to (any domain) on eth1
+
+# accept NTP
+udp (any ntp) accept to (any ntp) on eth1
+
+# reject auth
+tcp (any auth) reject from (any) on eth1
+
+# Accept established TCP
+tcp (any) accept established (any) on eth1
+
+# ICMP echo
+icmp (any echo-request) accept to (any) on eth1
+icmp (any) accept from (any echo-reply) on eth1
+
+# unreach
+icmp (any) accept from and to (any destination-unreachable) on eth1
+
+
+# UDP : accept whatever going to port 1024-65535 from port 1024-65535
+# (this is not risky because our gateway does not run any udp
+#  service)
+
+udp (any 1024-) accept from and to (any 1024-) on eth1
+
+
+# reject what's left and coming on eth1
+
+all (any) reject log from (any) on eth1
