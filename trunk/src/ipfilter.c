@@ -174,6 +174,14 @@ char *interface;
 			logit, via, p, dst, dports, src, sports, icmp_code);
 		break;
 	case REJECT_ALL:
+		/* If protocol is all, add decent rejecting rules for tcp
+		Carlos */
+		if (!strcmp(proto, "all"))
+			{
+			fprintf(fout,
+				"block return-rst in%s quick %s proto tcp from %s %s to %s %s %s\n",
+				logit, via, dst, dports, src, sports, icmp_code);
+			}
 		if (!strcmp(proto, "tcp"))
 			fprintf(fout,
 				"block return-rst in%s quick %s %s from %s %s to %s %s %s\n",
@@ -202,6 +210,14 @@ char *interface;
 			logit, via, p, src, sports, dst, dports, icmp_code);
 		break;
 	case REJECT_IN:
+		/* If protocol is all, add decent rejecting rules for tcp
+		Carlos */
+		if (!strcmp(proto, "all"))
+			{
+			fprintf(fout,
+				"block return-rst in%s quick %s proto tcp from %s %s to %s %s %s\n",
+				logit, via, dst, dports, src, sports, icmp_code);
+			}
 		if (!strcmp(proto, "tcp"))
 			fprintf(fout,
 				"block return-rst in%s quick %s %s from %s %s to %s %s %s\n",
