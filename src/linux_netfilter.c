@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * Reference : http://netfilter.kernelnotes.org/iptables-HOWTO-7.html
+ * Reference : http://www.netfilter.org/documentation/HOWTO/packet-filtering-HOWTO-7.html
  */
 
 #include "includes.h"
