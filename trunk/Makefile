@@ -33,10 +33,4 @@ distclean : clean
 	rm -f config.cache config.status config.log hlfl.tmpl src/config.h
 
 release : distclean
-	echo `cat VERSION`
-	rm -rf ChangeLog /tmp/hlfl-`cat VERSION`.tar* ../hlfl-`cat VERSION`
-	rcs2log -v -u "asl:Arnaud Launay:launay@hlfl.org" -u "renaud:Renaud Deraison:deraison@hlfl.org" * >ChangeLog
-	cp -a ../hlfl ../hlfl-`cat VERSION`
-	tar cvf /tmp/hlfl-`cat VERSION`.tar -C .. hlfl-`cat VERSION`
-	bzip2 -9 -k /tmp/hlfl-`cat VERSION`.tar
-	gzip -9 /tmp/hlfl-`cat VERSION`.tar
+	./build-release
