@@ -62,6 +62,51 @@ tcp (local) X (remote) [interface]
 tcp (local) X! (remote) [interface]
 
 
+
+# l-> 
+tcp (local) l-> (remote) [interface]
+
+# <-l
+tcp (local) <-l (remote) [interface]
+
+# <-l>
+tcp (local) <-l> (remote) [interface]
+
+# <=l>>
+
+tcp (local) <=l>> (remote) [interface]
+
+# <<=l>
+
+tcp (local) <<=l> (remote) [interface]
+
+
+# <-Xl
+
+tcp (local) <-Xl (remote) [interface]
+
+# Xl->
+
+tcp (local) Xl-> (remote) [interface]
+
+# <-Xl!
+
+tcp (local) <-Xl! (remote) [interface]
+
+# Xl!->
+
+tcp (local) Xl!-> (remote) [interface]
+
+# X
+
+tcp (local) Xl (remote) [interface]
+
+# X!
+
+tcp (local) Xl! (remote) [interface]
+
+
+
 # More complicated
 define a 192.168.1.1
 define b 192.168.2.1
