@@ -19,7 +19,7 @@ TAG="hlfl-`echo $VERSION | tr . -`-rel"
 
 sed -e "s/${OVERSION}/ ${VERSION}/g" configure.in >configure.in.new; mv configure.in.new configure.in
 
-rcs2log -v -u "asl:Arnaud Launay:launay@hlfl.org" -u "renaud:Renaud Deraison:deraison@hlfl.org" | cat - ChangeLog > ChangeLog.$$ && mv ChangeLog.$$ ChangeLog
+rcs2log -v -u "asl:Arnaud Launay:launay@hlfl.org" -u "renaud:Renaud Deraison:deraison@hlfl.org" > ChangeLog
 #${EDITOR} ChangeLog
 
 # now, tag the release
