@@ -1,3 +1,7 @@
+2001-02-23  Renaud Deraiso <deraison@hlfl.org>
+
+	* cisco rules now work for real
+
 2000-12-06  Arnaud Launay  <launay@hlfl.org>
 
 	* /usr/local/cvs/hlfl/NEWS 1.2: News uptodate for release
