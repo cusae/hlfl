@@ -58,14 +58,16 @@ struct definition *definitions = NULL;
 
 #ifdef HAVE_GETOPT
 /* option string for getopt() or getopt_long() */
-char *optstr = "hvt:o:";
+char *optstr = "hvV:c:t:o:";
 #ifdef HAVE_GETOPT_LONG
 /* array of long option structs for getopt_long() */
 struct option long_options[] = {
 	{"help", 0, 0, 'h'},
 	{"output", 1, 0, 'o'},
 	{"type", 1, 0, 't'},
-	{"version", 0, 0, 'v'},
+	{"version", 0, 0, 'V'},
+	{"verbose", 1, 0, 'v'},
+	{"check", 1, 0, 'c'},
 	{0, 0, 0, 0}
 };
 #endif				/* HAVE_GETOPT_LONG */
@@ -94,6 +96,10 @@ char *output_fname = (void *) 0;
 
 FILE *fin = (void *) 0;
 FILE *fout = (void *) 0;
+
+int verbose_level = 0;
+int check_mask = 0;
+int include_level = 0;
 
 /*--------------------------------------------------------------
 
@@ -1056,13 +1062,27 @@ char *n;
 			", --help"
 #endif
 			"\t\tprint this help and exit\n");
-	fprintf(stderr, "   -v"
+	fprintf(stderr, "   -V"
 #ifdef HAVE_GETOPT_LONG
 			", --version"
 #else
 			"\t"
 #endif
 			"\tprint version number, then exit\n");
+	fprintf(stderr, "   -v"
+#ifdef HAVE_GETOPT_LONG
+			", --verbose"
+#else
+			"\t"
+#endif
+			"\tbe verbose, print comments\n");
+	fprintf(stderr, "   -c"
+#ifdef HAVE_GETOPT_LONG
+			", --check"
+#else
+			"\t"
+#endif
+			"\tcheck netmasks before computing\n");
 	fprintf(stderr,	"   -t"
 #ifdef HAVE_GETOPT_LONG
 			", --type="
@@ -1109,8 +1129,16 @@ char **argv;
 				break;
 			}
 		case 'v':{
+				 verbose_level = atoi(optarg);
+				 break;
+			}
+		case 'V':{
 				version(argv[0]);
 				break;
+			}
+		case 'c':{
+				 check_mask = atoi(optarg);
+				 break;
 			}
 		case 't':{
 				active_translator = translator_name_to_type(optarg);

@@ -1,4 +1,4 @@
-.TH HLFL 1 "October 2002" "" "User Manuals"
+.TH HLFL 1 "June 8, 2003" "" "User Manuals"
 .SH NAME
 hlfl \- High Level Firewall Language
 .SH SYNOPSIS
@@ -13,8 +13,14 @@ FILE (stdout is the default)
 .IP "-h or --help"
 prints help
 .br
-.IP "-v or --version"
+.IP "-V or --version"
 prints version
+.br
+.IP "-c or --check"
+check netmasks before computing
+.br
+.IP "-v or --verbose"
+be verbose, print comments
 
 .SH DESCRIPTION
 
