@@ -885,18 +885,12 @@ process(buffer)
 
     /* log */
 
-    if (index(op, 'l') != NULL)
+    if (strchr(op, 'l'))
       {
-       m = 0;
-       for (n = 0; op[n] != '0'; n++)
-	 {
-	  if (op[n] != 'l')
-	    {
-	     *(op + m) = *(op + n);
-	     m++;
-	    }
-	 }
-       op = strdup(op);
+       char * x;
+       x = strchr(op, 'l');
+       memcpy(x, x+1, strlen(x+1));
+       op[strlen(op)-1]='\0';
        log = 1;
       }
 
