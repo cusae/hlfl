@@ -2,6 +2,15 @@
 #define __HLFL_INCLUDES__
 
 #include "config.h"
+
+#ifdef HAVE_CTYPE_H
+#include <ctype.h>
+#endif
+
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
+#endif
+
 #ifdef HAVE_STDIO_H
 #include <stdio.h>
 #endif
@@ -18,24 +27,20 @@
 #include <unistd.h>
 #endif
 
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>
+#ifdef HAVE_ARPA_INET_H
+#include <arpa/inet.h>
 #endif
 
 #ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #endif
 
-#ifdef HAVE_ARPA_INET_H
-#include <arpa/inet.h>
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
 #endif
 
-#ifdef HAVE_GETOPT_H
-#include <getopt.h>
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
 #endif
 
 #define ACCEPT	 		1
