@@ -180,15 +180,28 @@ char *t;
 	return t;
 }
 
+void tab_2_space(t)
+char *t;
+{
+	if (!t)
+		return;
+
+	while (t[0] != '\0') {
+		if( t[0] == '\t' )
+			t[0] = ' ';
+		t++;
+	}
+	return;
+}
+
 char *next_op(op)
 char *op;
 {
 	if (!op)
 		return NULL;
 
-	op = strchr(op, ' ');
 	if (op) {
-		while (op[0] == ' ')
+		while (op[0] == ' ' || (op[0] == '\t'))
 			op++;
 	}
 	return op;
@@ -220,7 +233,7 @@ int int_op(char *op)
 		}
 		if (o->str) {
 			ret |= o->mask;
-			op = next_op(op);
+			op = next_op(op + o->len);
 		} else {
 			error = HLFL_SYNTAX_ERROR;
 			ret = -1;
@@ -372,12 +385,12 @@ int level;
 	 */
 
 	t = strdup(src);
-	t = remove_spaces(t);
 
 	ret = malloc(n * sizeof(char *));
 	memset(ret, 0, n * sizeof(char *));
 
 	while (t) {
+		t = remove_spaces(t);
 		s = strchr_items(t, '|', '(', ')');
 		if (s)
 			s[0] = '\0';
@@ -484,14 +497,13 @@ int level;
 		return ret;
 	}
 
-	t = remove_spaces(iface);
-
 	ret = malloc(n * sizeof(char *));
 	memset(ret, 0, n * sizeof(char *));
 
 	t = iface;
 	while (t) {
 		char *v;
+		t = remove_spaces(iface);
 		s = strchr(t, ',');
 		if (s)
 			s[0] = '\0';
@@ -821,6 +833,8 @@ char *buffer;
 	 *     proto (src) op (dst) [interface] flags
 	 */
 
+	tab_2_space(t);
+
 	/* proto */
 	proto = t;
 	t = strchr(proto + 1, ' ');
@@ -1078,7 +1092,7 @@ char *n;
 			"\tbe verbose, print comments\n");
 	fprintf(stderr, "   -c"
 #ifdef HAVE_GETOPT_LONG
-			", --check"
+			", --check\t"
 #else
 			"\t"
 #endif
@@ -1129,16 +1143,16 @@ char **argv;
 				break;
 			}
 		case 'v':{
-				 verbose_level = atoi(optarg);
-				 break;
+				verbose_level = atoi(optarg);
+				break;
 			}
 		case 'V':{
 				version(argv[0]);
 				break;
 			}
 		case 'c':{
-				 check_mask = atoi(optarg);
-				 break;
+				check_mask = atoi(optarg);
+				break;
 			}
 		case 't':{
 				active_translator = translator_name_to_type(optarg);
