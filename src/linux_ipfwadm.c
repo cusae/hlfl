@@ -19,7 +19,8 @@
 
 #include "includes.h"
 #include "hlfl.h"
-#include "linux_ipfwadm.h"
+
+static FILE *fout;
 
 extern int matched_if;
 
@@ -108,7 +109,7 @@ translate_linux_ipfwadm(op, proto, src, log, dst, sports, dports, interface)
  switch (op)
    {
    case ACCEPT_ONE_WAY:
-    printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
+    fprintf(fout, "$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
 	   logit, src, sports, dst, dports, proto, via);
     break;
    case ACCEPT_ONE_WAY_REVERSE:
@@ -116,84 +117,84 @@ translate_linux_ipfwadm(op, proto, src, log, dst, sports, dports, interface)
 				 * XXXX ugly hack here, because ifpwadm
 				 * wants the icmp code to be with -S
 				 */
-     printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n", logit,
+     fprintf(fout, "$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n", logit,
 	    dst, dports, src, sports, proto, via);
     else
-     printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n", logit,
+     fprintf(fout, "$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n", logit,
 	    dst, sports, src, dports, proto, via);
     break;
    case ACCEPT_TWO_WAYS:
-    printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
+    fprintf(fout, "$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
 	   logit, src, sports, dst, dports, proto, via);
-    printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n", logit,
+    fprintf(fout, "$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED:
     if (!strcmp(proto, "tcp"))
       {
-       printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
+       fprintf(fout, "$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
 	      logit, src, sports, dst, dports, proto, via);
-       printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -y -a deny %s\n",
+       fprintf(fout, "$ipfwadm -I%s -S %s %s -D %s %s -P %s -y -a deny %s\n",
 	      logit, dst, dports, src, sports, proto, via);
-       printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n",
+       fprintf(fout, "$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n",
 	      logit, dst, dports, src, sports, proto, via);
       }
     else
       {
        /* XXX stateful needed here */
-       printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
+       fprintf(fout, "# (warning. A stateful firewall would be better here)\n");
+       fprintf(fout, "$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
 	      logit, src, sports, dst, dports, proto, via);
-       printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n",
+       fprintf(fout, "$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n",
 	      logit, dst, dports, src, sports, proto, via);
       }
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
     if (!strcmp(proto, "tcp"))
       {
-       printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n",
+       fprintf(fout, "$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n",
 	      logit, dst, dports, src, sports, proto, via);
-       printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -y -a deny %s\n",
+       fprintf(fout, "$ipfwadm -O%s -S %s %s -D %s %s -P %s -y -a deny %s\n",
 	      logit, src, sports, dst, dports, proto, via);
-       printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
+       fprintf(fout, "$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
 	      logit, src, sports, dst, dports, proto, via);
       }
     else
       {
        /* XXX stateful needed here */
-       printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n",
+       fprintf(fout, "# (warning. A stateful firewall would be better here)\n");
+       fprintf(fout, "$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n",
 	      logit, dst, dports, src, sports, proto, via);
-       printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
+       fprintf(fout, "$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
 	      logit, src, sports, dst, dports, proto, via);
       }
     break;
    case DENY_ALL:
-    printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a deny %s\n", logit,
+    fprintf(fout, "$ipfwadm -O%s -S %s %s -D %s %s -P %s -a deny %s\n", logit,
 	   src, sports, dst, dports, proto, via);
-    printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a deny %s\n", logit,
+    fprintf(fout, "$ipfwadm -I%s -S %s %s -D %s %s -P %s -a deny %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
    case REJECT_ALL:
-    printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a reject %s\n",
+    fprintf(fout, "$ipfwadm -O%s -S %s %s -D %s %s -P %s -a reject %s\n",
 	   logit, src, sports, dst, dports, proto, via);
-    printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a reject %s\n", logit,
+    fprintf(fout, "$ipfwadm -I%s -S %s %s -D %s %s -P %s -a reject %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
    case DENY_OUT:
-    printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a deny %s\n", logit,
+    fprintf(fout, "$ipfwadm -O%s -S %s %s -D %s %s -P %s -a deny %s\n", logit,
 	   src, sports, dst, dports, proto, via);
     break;
    case DENY_IN:
-    printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a deny %s\n", logit,
+    fprintf(fout, "$ipfwadm -I%s -S %s %s -D %s %s -P %s -a deny %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
    case REJECT_OUT:
-    printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a reject %s\n",
+    fprintf(fout, "$ipfwadm -O%s -S %s %s -D %s %s -P %s -a reject %s\n",
 	   logit, src, sports, dst, dports, proto, via);
     break;
    case REJECT_IN:
-    printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a reject %s\n", logit,
+    fprintf(fout, "$ipfwadm -I%s -S %s %s -D %s %s -P %s -a reject %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
    }
@@ -204,21 +205,31 @@ translate_linux_ipfwadm(op, proto, src, log, dst, sports, dports, interface)
 }
 
 int
-translate_linux_ipfwadm_start()
+translate_linux_ipfwadm_start(FILE *output_file)
 {
- printf("#!/bin/sh\n");
- printf("# Firewall rules generated by hlfl\n\n");
+ fout = output_file;
 
- printf("ipfwadm=\"/sbin/ipfwadm\"\n\n");
- printf("$ipfwadm -I -f\n");
- printf("$ipfwadm -O -f\n");
- printf("$ipfwadm -F -f\n");
- printf("$ipfwadm -A -f\n");
+ fprintf(fout, "#!/bin/sh\n");
+ fprintf(fout, "# Firewall rules generated by hlfl\n\n");
 
- printf("$ipfwadm -I -p deny\n");
- printf("$ipfwadm -O -p deny\n");
- printf("$ipfwadm -F -p deny\n");
+ fprintf(fout, "ipfwadm=\"/sbin/ipfwadm\"\n\n");
+ fprintf(fout, "$ipfwadm -I -f\n");
+ fprintf(fout, "$ipfwadm -O -f\n");
+ fprintf(fout, "$ipfwadm -F -f\n");
+ fprintf(fout, "$ipfwadm -A -f\n");
+
+ fprintf(fout, "$ipfwadm -I -p deny\n");
+ fprintf(fout, "$ipfwadm -O -p deny\n");
+ fprintf(fout, "$ipfwadm -F -p deny\n");
+
  return 0;
+}
+
+void
+print_comment_ipfwadm(buffer)
+ char *buffer;
+{
+ fprintf(fout, buffer);
 }
 
 void
@@ -229,12 +240,12 @@ include_text_ipfwadm(c)
    {
     if (!strncmp("if(ipfwadm)", c, strlen("if(ipfwadm)")))
       {
-       printf("%s", c + strlen("if(ipfwadm)"));
+       fprintf(fout, "%s", c + strlen("if(ipfwadm)"));
        matched_if = 1;
       }
     else
      matched_if = 0;
    }
  else
-  printf("%s", c);
+  fprintf(fout, "%s", c);
 }

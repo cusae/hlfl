@@ -19,7 +19,8 @@
 
 #include "includes.h"
 #include "hlfl.h"
-#include "linux_ipchains.h"
+
+static FILE *fout;
 
 extern int matched_if;
 
@@ -98,85 +99,85 @@ translate_linux_ipchains(op, proto, src, log, dst, sports, dports, interface)
  switch (op)
    {
    case ACCEPT_ONE_WAY:
-    printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
+    fprintf(fout, "$ipchains -A output%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
 	   logit, src, sports, dst, dports, proto, via);
     break;
    case ACCEPT_ONE_WAY_REVERSE:
-    printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n", logit,
+    fprintf(fout, "$ipchains -A input%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
    case ACCEPT_TWO_WAYS:
-    printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
+    fprintf(fout, "$ipchains -A output%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
 	   logit, src, sports, dst, dports, proto, via);
-    printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n", logit,
+    fprintf(fout, "$ipchains -A input%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED:
     if (!strcmp(proto, "tcp"))
       {
-       printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
+       fprintf(fout, "$ipchains -A output%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
 	      logit, src, sports, dst, dports, proto, via);
-       printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -y -j DENY %s\n",
+       fprintf(fout, "$ipchains -A input%s -s %s %s -d %s %s -p %s -y -j DENY %s\n",
 	      logit, dst, dports, src, sports, proto, via);
-       printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
+       fprintf(fout, "$ipchains -A input%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
 	      logit, dst, dports, src, sports, proto, via);
       }
     else
       {
        /* XXX stateful needed here */
-       printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
+       fprintf(fout, "# (warning. A stateful firewall would be better here)\n");
+       fprintf(fout, "$ipchains -A output%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
 	      logit, src, sports, dst, dports, proto, via);
-       printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
+       fprintf(fout, "$ipchains -A input%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
 	      logit, dst, dports, src, sports, proto, via);
       }
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
     if (!strcmp(proto, "tcp"))
       {
-       printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
+       fprintf(fout, "$ipchains -A input%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
 	      logit, dst, dports, src, sports, proto, via);
-       printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -y -j DENY %s\n",
+       fprintf(fout, "$ipchains -A output%s -s %s %s -d %s %s -p %s -y -j DENY %s\n",
 	      logit, src, sports, dst, dports, proto, via);
-       printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
+       fprintf(fout, "$ipchains -A output%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
 	      logit, src, sports, dst, dports, proto, via);
       }
     else
       {
        /* XXX stateful needed here */
-       printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
+       fprintf(fout, "# (warning. A stateful firewall would be better here)\n");
+       fprintf(fout, "$ipchains -A input%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
 	      logit, dst, dports, src, sports, proto, via);
-       printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
+       fprintf(fout, "$ipchains -A output%s -s %s %s -d %s %s -p %s -j ACCEPT %s\n",
 	      logit, src, sports, dst, dports, proto, via);
       }
     break;
    case DENY_ALL:
-    printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -j DENY %s\n", logit,
+    fprintf(fout, "$ipchains -A output%s -s %s %s -d %s %s -p %s -j DENY %s\n", logit,
 	   src, sports, dst, dports, proto, via);
-    printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -j DENY %s\n", logit,
+    fprintf(fout, "$ipchains -A input%s -s %s %s -d %s %s -p %s -j DENY %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
    case REJECT_ALL:
-    printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -j REJECT %s\n",
+    fprintf(fout, "$ipchains -A output%s -s %s %s -d %s %s -p %s -j REJECT %s\n",
 	   logit, src, sports, dst, dports, proto, via);
-    printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -j REJECT %s\n", logit,
+    fprintf(fout, "$ipchains -A input%s -s %s %s -d %s %s -p %s -j REJECT %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
    case DENY_OUT:
-    printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -j DENY %s\n", logit,
+    fprintf(fout, "$ipchains -A output%s -s %s %s -d %s %s -p %s -j DENY %s\n", logit,
 	   src, sports, dst, dports, proto, via);
     break;
    case DENY_IN:
-    printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -j DENY %s\n", logit,
+    fprintf(fout, "$ipchains -A input%s -s %s %s -d %s %s -p %s -j DENY %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
    case REJECT_OUT:
-    printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -j REJECT %s\n",
+    fprintf(fout, "$ipchains -A output%s -s %s %s -d %s %s -p %s -j REJECT %s\n",
 	   logit, src, sports, dst, dports, proto, via);
     break;
    case REJECT_IN:
-    printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -j REJECT %s\n", logit,
+    fprintf(fout, "$ipchains -A input%s -s %s %s -d %s %s -p %s -j REJECT %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
    }
@@ -187,19 +188,29 @@ translate_linux_ipchains(op, proto, src, log, dst, sports, dports, interface)
 }
 
 int
-translate_linux_ipchains_start()
+translate_linux_ipchains_start(FILE *output_file)
 {
- printf("#!/bin/sh\n");
- printf("# Firewall rules generated by hlfl\n\n");
+ fout = output_file;
 
- printf("ipchains=\"/sbin/ipchains\"\n\n");
- printf("$ipchains -F\n");
- printf("$ipchains -X\n");
- printf("$ipchains -P input DENY\n");
- printf("$ipchains -P forward DENY\n");
- printf("$ipchains -P output DENY\n");
+ fprintf(fout, "#!/bin/sh\n");
+ fprintf(fout, "# Firewall rules generated by hlfl\n\n");
+
+ fprintf(fout, "ipchains=\"/sbin/ipchains\"\n\n");
+ fprintf(fout, "$ipchains -F\n");
+ fprintf(fout, "$ipchains -X\n");
+ fprintf(fout, "$ipchains -P input DENY\n");
+ fprintf(fout, "$ipchains -P forward DENY\n");
+ fprintf(fout, "$ipchains -P output DENY\n");
  return 0;
 }
+
+void
+print_comment_ipchains(buffer)
+ char *buffer;
+{
+ fprintf(fout, buffer);
+}
+
 
 void
 include_text_ipchains(c)
@@ -209,12 +220,12 @@ include_text_ipchains(c)
    {
     if (!strncmp("if(ipchains)", c, strlen("if(ipchains)")))
       {
-       printf("%s", c + strlen("if(ipchains)"));
+       fprintf(fout, "%s", c + strlen("if(ipchains)"));
        matched_if = 1;
       }
     else
      matched_if = 0;
    }
  else
-  printf("%s", c);
+  fprintf(fout, "%s", c);
 }

@@ -19,7 +19,8 @@
 
 #include "includes.h"
 #include "hlfl.h"
-#include "ipfilter.h"
+
+static FILE *fout;
 
 /*------------------------------------------------------------------
  * Private utilities
@@ -131,30 +132,30 @@ translate_ipfilter(op, proto, src, log, dst, sports, dports, interface)
  switch (op)
    {
    case ACCEPT_ONE_WAY:
-    printf("pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+    fprintf(fout, "pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	   src, sports, dst, dports, icmp_code);
     break;
    case ACCEPT_ONE_WAY_REVERSE:
-    printf("pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p, dst,
+    fprintf(fout, "pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p, dst,
 	   dports, src, sports, icmp_code);
     break;
    case ACCEPT_TWO_WAYS:
-    printf("pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+    fprintf(fout, "pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	   src, sports, dst, dports, icmp_code);
-    printf("pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p, dst,
+    fprintf(fout, "pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p, dst,
 	   dports, src, sports, icmp_code);
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED:
     if (!strcmp(proto, "tcp") || !strcmp(proto, "udp"))
       {
-       printf("pass out%s quick %s %s from %s %s to %s %s keep state\n", logit,
+       fprintf(fout, "pass out%s quick %s %s from %s %s to %s %s keep state\n", logit,
 	      via, p, src, sports, dst, dports);
       }
     else
       {
-       printf("pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+       fprintf(fout, "pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	      dst, dports, src, sports, icmp_code);
-       printf("pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+       fprintf(fout, "pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	      src, sports, dst, dports, icmp_code);
       }
     break;
@@ -162,52 +163,52 @@ translate_ipfilter(op, proto, src, log, dst, sports, dports, interface)
    case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
     if (!strcmp(proto, "tcp") || !strcmp(proto, "udp"))
       {
-       printf("pass in%s quick %s %s from %s %s to %s %s keep state\n", logit,
+       fprintf(fout, "pass in%s quick %s %s from %s %s to %s %s keep state\n", logit,
 	      via, p, dst, dports, src, sports);
       }
     else
       {
-       printf("pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+       fprintf(fout, "pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	      dst, dports, src, sports, icmp_code);
-       printf("pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+       fprintf(fout, "pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	      src, sports, dst, dports, icmp_code);
       }
     break;
 
    case DENY_ALL:
-    printf("block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+    fprintf(fout, "block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	   src, sports, dst, dports, icmp_code);
-    printf("block in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+    fprintf(fout, "block in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	   dst, dports, src, sports, icmp_code);
     break;
    case REJECT_ALL:
     if (!strcmp(proto, "tcp"))
-     printf("block return-rst in%s quick %s %s from %s %s to %s %s %s\n", logit,
+     fprintf(fout, "block return-rst in%s quick %s %s from %s %s to %s %s %s\n", logit,
 	    via, p, dst, dports, src, sports, icmp_code);
     else
-     printf("block return-icmp in%s quick %s %s from %s %s to %s %s %s\n",
+     fprintf(fout, "block return-icmp in%s quick %s %s from %s %s to %s %s %s\n",
 	    logit, via, p, dst, dports, src, sports, icmp_code);
-    printf("block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+    fprintf(fout, "block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	   src, sports, dst, dports, icmp_code);
     break;
    case DENY_OUT:
-    printf("block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+    fprintf(fout, "block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	   src, sports, dst, dports, icmp_code);
     break;
    case DENY_IN:
-    printf("block in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+    fprintf(fout, "block in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	   dst, dports, src, sports, icmp_code);
     break;
    case REJECT_OUT:
-    printf("block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+    fprintf(fout, "block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	   src, sports, dst, dports, icmp_code);
     break;
    case REJECT_IN:
     if (!strcmp(proto, "tcp"))
-     printf("block return-rst in%s quick %s %s from %s %s to %s %s %s\n", logit,
+     fprintf(fout, "block return-rst in%s quick %s %s from %s %s to %s %s %s\n", logit,
 	    via, p, dst, dports, src, sports, icmp_code);
     else
-     printf("block return-icmp in%s quick %s %s from %s %s to %s %s %s\n",
+     fprintf(fout, "block return-icmp in%s quick %s %s from %s %s to %s %s %s\n",
 	    logit, via, p, dst, dports, src, sports, icmp_code);
     break;
    }
@@ -226,11 +227,21 @@ translate_ipfilter(op, proto, src, log, dst, sports, dports, interface)
 }
 
 int
-translate_ipfilter_start()
+translate_ipfilter_start(FILE *output_file)
 {
- printf("#\n# ipf(5) rules\n#\n");
- printf("# Firewall rules generated by hlfl\n\n");
+ fout = output_file;
+
+ fprintf(fout, "#\n# ipf(5) rules\n#\n");
+ fprintf(fout, "# Firewall rules generated by hlfl\n\n");
+
  return 0;
+}
+
+void
+print_comment_ipfilter(buffer)
+ char *buffer;
+{
+ fprintf(fout, buffer);
 }
 
 void
@@ -241,12 +252,12 @@ include_text_ipfilter(c)
    {
     if (!strncmp("if(ipfilter)", c, strlen("if(ipfilter)")))
       {
-       printf("%s", c + strlen("if(ipfilter)"));
+       fprintf(fout, "%s", c + strlen("if(ipfilter)"));
        matched_if = 1;
       }
     else
      matched_if = 0;
    }
  else
-  printf("%s", c);
+  fprintf(fout, "%s", c);
 }

@@ -21,12 +21,25 @@
 #include "includes.h"
 #include "hlfl.h"
 
-typedef int (*translator_start_t) (void);
-typedef int (*translate_t) (int, char *, char *, int, char *, char *, char *,
-			    char *);
-typedef void (*comment_t) (char *);
-typedef void (*include_text_t) (char *);
-typedef void (*exit_t) ();
+static char *translator_names[TRANSLATOR_MAX] = {
+ "ipfw",
+ "ipfw4",
+ "ipfilter",
+ "ipfwadm",
+ "ipchains",
+ "netfilter",
+ "cisco"
+ };
+
+static translator_definition translator_definitions[TRANSLATOR_MAX] = {
+ { translate_bsd_ipfw_start, translate_bsd_ipfw, print_comment_ipfw, include_text_ipfw, nop },
+ { translate_bsd_ipfw_start, translate_bsd_ipfw, print_comment_ipfw, include_text_ipfw, nop },
+ { translate_ipfilter_start, translate_ipfilter, print_comment_ipfilter, include_text_ipfilter, nop },
+ { translate_linux_ipfwadm_start, translate_linux_ipfwadm, print_comment_ipfwadm, include_text_ipfwadm, nop },
+ { translate_linux_ipchains_start, translate_linux_ipchains, print_comment_ipchains, include_text_ipchains, nop },
+ { translate_linux_netfilter_start, translate_linux_netfilter, print_comment_netfilter, include_text_netfilter, nop },
+ { translate_cisco_start, translate_cisco, cisco_comment, include_text_cisco, cisco_exit },
+};
 
 struct definition {
  char *definition;
@@ -35,6 +48,25 @@ struct definition {
 };
 
 struct definition *definitions = NULL;
+
+#ifdef HAVE_GETOPT_H
+/* option string for getopt() or getopt_long() */
+char *optstr = "hvt:o:";
+#ifdef HAVE_GETOPT_LONG
+/* array of long option structs for getopt_long() */
+struct option long_options[] = {
+ { "help", 0, 0, 'h' },
+ { "output", 1, 0, 'o' },
+ { "type", 1, 0, 't' },
+ { "version", 0, 0, 'v' },
+ { 0, 0, 0, 0 }
+};
+#endif /* HAVE_GETOPT_LONG */
+int ch;
+int opt_idx = 0;
+int opt_count = 1;
+#endif /* HAVE_GETOPT_H */
+
 int error = 0;
 char *error_str[] = {
  HLFL_NO_ERROR_STR,
@@ -50,13 +82,12 @@ char *error_str[] = {
 };
 
 int matched_if = 0;
-char *lang = 0;
 
-translator_start_t translator_start;
-translate_t translate_func;
-comment_t comment;
-exit_t exit_func;
-include_text_t include_text_func;
+translator_t active_translator = TRANSLATOR_UNKNOWN;
+char *output_fname = (void *)0;
+
+FILE *fin = (void *)0;
+FILE *fout = (void *)0;
 
 /*--------------------------------------------------------------
 
@@ -721,7 +752,7 @@ translate(proto, src, op, dst, interface, flags)
 		   int l = 0;
 		   while (dports[l])
 		     {
-		      translate_func(opi, protos[np],
+		      translator_definitions[active_translator].translate_func(opi, protos[np],
 				     s,
 				     log,
 				     d,
@@ -769,7 +800,7 @@ translate(proto, src, op, dst, interface, flags)
 		   int l = 0;
 		   while (dports[l])
 		     {
-		      translate_func(opi, protos[np],
+		      translator_definitions[active_translator].translate_func(opi, protos[np],
 				     s,
 				     log,
 				     d,
@@ -1125,13 +1156,6 @@ process(buffer)
 }
 
 void
-print_comment(buffer)
- char *buffer;
-{
- printf(buffer);
-}
-
-void
 read_file(file, fname)
  FILE *file;
  char *fname;
@@ -1153,7 +1177,7 @@ read_file(file, fname)
        exit(1);
       }
     if (n == COMMENT)
-     comment(buffer);
+     translator_definitions[active_translator].comment(buffer);
     else if (n == INCLUDE_TEXT)
       {
        char *t = buffer;
@@ -1169,10 +1193,27 @@ read_file(file, fname)
 	   printf("%s", t + strlen("else"));
 	 }
        else
-	include_text_func(t);
+	translator_definitions[active_translator].include_text_func(t);
       }
     memset(buffer, 0, sizeof(buffer));
    }
+}
+
+translator_t
+translator_name_to_type(name)
+ char *name;
+{
+
+ translator_t result = TRANSLATOR_UNKNOWN;
+ int i;
+
+ for (i = 0; i < TRANSLATOR_MAX; i++)
+     if (strcmp(translator_names[i], name) == 0) {
+        result = i;
+        break;
+        }
+
+ return(result);
 }
 
 /*---------------------------------------------------------------------
@@ -1186,18 +1227,31 @@ usage(n)
  char *n;
 {
 
- fprintf(stderr, "%s version %s\n", n, VERSION);
- fprintf(stderr, "Copyright (C) 2000-2002 Renaud Deraison");
- fprintf(stderr, " < deraison @ hlfl.org > \n\n");
- fprintf(stderr, "Usage : %s type < input > output\n", n);
- fprintf(stderr, "Where <type> can be one of :\n");
- fprintf(stderr, "\tipfw - BSD ipfw\n");
- fprintf(stderr, "\tipfw4 - BSD ipfw 4 (stateful)\n");
- fprintf(stderr, "\tipfilter - Darren Reeds's ipfilter\n");
- fprintf(stderr, "\tipfwadm - Linux 2.0.x ipfwadm\n");
- fprintf(stderr, "\tipchains - Linux 2.2.x ipchains\n");
- fprintf(stderr, "\tnetfilter - Linux 2.4.x netfilter\n");
- fprintf(stderr, "\tcisco - Cisco rules (IOS 12.1(2)T)\n\n");
+ fprintf(stderr, "%s v%s\n", n, VERSION);
+ fprintf(stderr, "Copyright (C) 2000-2002 Renaud Deraison (deraison @ hlfl.org)\n\n");
+ fprintf(stderr, "Usage: %s [OPTIONS] <rulefile>\n\n", n);
+ fprintf(stderr, "Operation modes:\n");
+ fprintf(stderr, "   -h, --help\t\tprint this help and exit\n");
+ fprintf(stderr, "   -v, --version\tprint version number, then exit\n");
+ fprintf(stderr, "   -t, --type=TYPE\tgenerate output formatted for TYPE of firewall\n");
+ fprintf(stderr, "   -o, --output=FILE\tsave output in FILE (stdout is the default)\n");
+ fprintf(stderr, "\n");
+ fprintf(stderr, "TYPE options are:\n");
+ fprintf(stderr, "   ipfw - BSD ipfw\n");
+ fprintf(stderr, "   ipfw4 - BSD ipfw 4 (stateful)\n");
+ fprintf(stderr, "   ipfilter - Darren Reeds's ipfilter\n");
+ fprintf(stderr, "   ipfwadm - Linux 2.0.x ipfwadm\n");
+ fprintf(stderr, "   ipchains - Linux 2.2.x ipchains\n");
+ fprintf(stderr, "   netfilter - Linux 2.4.x netfilter\n");
+ fprintf(stderr, "   cisco - Cisco rules (IOS 12.1(2)T)\n\n");
+ exit(1);
+}
+
+void
+version(n)
+ char *n;
+{
+ fprintf(stderr, "%s v%s\n", n, VERSION);
  exit(1);
 }
 
@@ -1206,74 +1260,69 @@ main(argc, argv)
  int argc;
  char **argv;
 {
+#ifdef HAVE_GETOPT_H
 
- if (!argv[1] || argc != 2)
-   {
+#ifdef HAVE_GETOPT_LONG
+ while ((ch = getopt_long(argc, argv, optstr,
+                          long_options, &opt_idx)) != -1) {
+#else
+ while ((ch = getopt(argc, argv, optstr)) != -1) {
+#endif
+  switch (ch) {
+    case 'h' : { usage(argv[0]); break; }
+    case 'v' : { version(argv[0]); break; }
+    case 't' : { active_translator = translator_name_to_type(optarg); opt_count++; break; }
+    case 'o' : { output_fname = strdup(optarg); opt_count++; break; }
+    default  : { usage(argv[0]); }
+    }
+
+  }
+
+  if (active_translator != TRANSLATOR_UNKNOWN) {
+
+   /*
+    * Always define the symbol 'any'
+    */
+   add_definition("any", "0.0.0.0/0");
+
+   if (output_fname)
+      fout = fopen(output_fname, "w");
+
+   translator_definitions[active_translator].translator_start((fout != (void *)0) ? fout : stdout);
+
+   if (opt_count < argc) {
+      char *input_fname; // name of rule file to read
+
+      while (opt_count < argc) {
+            input_fname = argv[opt_count++];
+
+            if ((fin = fopen(input_fname, "r")) != (void *)0) {
+               read_file(fin, input_fname);
+               translator_definitions[active_translator].exit_func();
+               fclose(fin);
+               }
+              else
+               fprintf(stderr, "%s: Could not read rule file '%s'.\n", argv[0], input_fname);
+
+            }
+      }
+     else {
+      read_file(stdin, "stdin");
+      translator_definitions[active_translator].exit_func();
+      }
+   }
+   else {
+    fprintf(stderr, "%s: No output type specified.\n\n", argv[0]);
     usage(argv[0]);
-   }
+    }
 
- if (!strcmp(argv[1], "ipfw") || !strcmp(argv[1], "ipfw4"))
-   {
-    translator_start = translate_bsd_ipfw_start;
-    translate_func = translate_bsd_ipfw;
-    comment = print_comment;
-    exit_func = nop;
-    include_text_func = include_text_ipfw;
-   }
+ if (fout != (void *)0)
+    fclose(fout);
 
- else if (!strcmp(argv[1], "ipchains"))
-   {
-    translator_start = translate_linux_ipchains_start;
-    translate_func = translate_linux_ipchains;
-    comment = print_comment;
-    exit_func = nop;
-    include_text_func = include_text_ipchains;
-   }
+ if (output_fname != (void *)0)
+    free(output_fname);
 
- else if (!strcmp(argv[1], "ipfwadm"))
-   {
-    translator_start = translate_linux_ipfwadm_start;
-    translate_func = translate_linux_ipfwadm;
-    comment = print_comment;
-    exit_func = nop;
-    include_text_func = include_text_ipfwadm;
-   }
+#endif /* HAVE_GETOPT_H */
 
- else if (!strcmp(argv[1], "ipfilter"))
-   {
-    translator_start = translate_ipfilter_start;
-    translate_func = translate_ipfilter;
-    comment = print_comment;
-    exit_func = nop;
-    include_text_func = include_text_ipfilter;
-   }
-
- else if (!strcmp(argv[1], "netfilter"))
-   {
-    translator_start = translate_linux_netfilter_start;
-    translate_func = translate_linux_netfilter;
-    comment = print_comment;
-    exit_func = nop;
-    include_text_func = include_text_netfilter;
-   }
-
- else if (!strcmp(argv[1], "cisco"))
-   {
-    translator_start = translate_cisco_start;
-    translate_func = translate_cisco;
-    comment = cisco_comment;
-    exit_func = cisco_exit;
-    include_text_func = include_text_cisco;
-   }
- else
-  usage(argv[0]);
- /*
-  * Always define the symbol 'any'
-  */
- lang = argv[1];
- add_definition("any", "0.0.0.0/0");
- translator_start();
- read_file(stdin, "stdin");
- exit_func();
  return 0;
 }

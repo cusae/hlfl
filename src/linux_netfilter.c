@@ -20,7 +20,8 @@
 
 #include "includes.h"
 #include "hlfl.h"
-#include "linux_netfilter.h"
+
+static FILE *fout;
 
 extern int matched_if;
 
@@ -137,86 +138,85 @@ translate_linux_netfilter(op, proto, src, log, dst, sports, dports, interface)
  switch (op)
    {
    case ACCEPT_ONE_WAY:
-    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+    fprintf(fout, "$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
 	   logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
     break;
    case ACCEPT_ONE_WAY_REVERSE:
-    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n", logit,
+    fprintf(fout, "$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n", logit,
 	   dst, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    case ACCEPT_TWO_WAYS:
-    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+    fprintf(fout, "$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
 	   logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
-    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n", logit,
+    fprintf(fout, "$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n", logit,
 	   dst, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED:
     if (!strcmp(proto, "tcp"))
       {
-       printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+       fprintf(fout, "$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
 	      logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
-       printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s --syn -j DROP %s\n",
+       fprintf(fout, "$iptables -A INPUT%s -s %s -d %s -p %s %s %s --syn -j DROP %s\n",
 	      logit, dst, src, proto, dports_as_src, sports_as_dst, via_in);
-       printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+       fprintf(fout, "$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
 	      logit, dst, src, proto, dports_as_src, sports_as_dst, via_in);
       }
     else
       {
        /* XXX stateful needed here */
-       printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+       fprintf(fout, "# (warning. A stateful firewall would be better here)\n");
+       fprintf(fout, "$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
 	      logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
-       printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+       fprintf(fout, "$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
 	      logit, dst, src, proto, dports_as_src, sports_as_dst, via_in);
       }
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
     if (!strcmp(proto, "tcp"))
       {
-       printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+       fprintf(fout, "$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
 	      logit, dst, src, proto, dports_as_src, sports_as_dst, via_in);
-       printf
-	   ("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s --syn -j DROP %s\n",
+       fprintf(fout, "$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s --syn -j DROP %s\n",
 	    logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
-       printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+       fprintf(fout, "$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
 	      logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
       }
     else
       {
        /* XXX stateful needed here */
-       printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+       fprintf(fout, "# (warning. A stateful firewall would be better here)\n");
+       fprintf(fout, "$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
 	      logit, dst, src, proto, dports_as_src, sports_as_dst, via_in);
-       printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
+       fprintf(fout, "$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j ACCEPT %s\n",
 	      logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
       }
     break;
    case DENY_ALL:
-    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit,
+    fprintf(fout, "$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit,
 	   src, dst, proto, sports_as_src, dports_as_dst, via_out);
-    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit,
+    fprintf(fout, "$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit,
 	   dst, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    case REJECT_ALL:
-    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j REJECT %s\n",
+    fprintf(fout, "$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j REJECT %s\n",
 	   logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
-    printf("$iptables -A INPUT%s -s %s  -d %s -p %s %s %s -j REJECT %s\n",
+    fprintf(fout, "$iptables -A INPUT%s -s %s  -d %s -p %s %s %s -j REJECT %s\n",
 	   logit, dst, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    case DENY_OUT:
-    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit,
+    fprintf(fout, "$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit,
 	   src, dst, proto, sports_as_src, dports_as_dst, via_out);
     break;
    case DENY_IN:
-    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit,
+    fprintf(fout, "$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit,
 	   dst, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    case REJECT_OUT:
-    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j REJECT %s\n",
+    fprintf(fout, "$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j REJECT %s\n",
 	   logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
     break;
    case REJECT_IN:
-    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j REJECT %s\n", logit,
+    fprintf(fout, "$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j REJECT %s\n", logit,
 	   dst, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    }
@@ -237,16 +237,25 @@ translate_linux_netfilter(op, proto, src, log, dst, sports, dports, interface)
 }
 
 int
-translate_linux_netfilter_start()
+translate_linux_netfilter_start(FILE *output_file)
 {
- printf("#!/bin/sh\n");
- printf("# Firewall rules generated by hlfl\n\n");
- printf("# WARNING : netfilter output has never been tested in real life\n");
+ fout = output_file;
 
- printf("iptables=\"/sbin/iptables\"\n\n");
- printf("$iptables -F\n");
- printf("$iptables -X\n\n");
+ fprintf(fout, "#!/bin/sh\n");
+ fprintf(fout, "# Firewall rules generated by hlfl\n\n");
+ fprintf(fout, "# WARNING : netfilter output has never been tested in real life\n");
+
+ fprintf(fout, "iptables=\"/sbin/iptables\"\n\n");
+ fprintf(fout, "$iptables -F\n");
+ fprintf(fout, "$iptables -X\n\n");
  return 0;
+}
+
+void
+print_comment_netfilter(buffer)
+ char *buffer;
+{
+ fprintf(fout, buffer);
 }
 
 void
@@ -257,12 +266,12 @@ include_text_netfilter(c)
    {
     if (!strncmp("if(netfilter)", c, strlen("if(netfilter)")))
       {
-       printf("%s", c + strlen("if(netfilter)"));
+       fprintf(fout, "%s", c + strlen("if(netfilter)"));
        matched_if = 1;
       }
     else
      matched_if = 0;
    }
  else
-  printf("%s", c);
+  fprintf(fout, "%s", c);
 }
