@@ -38,4 +38,7 @@ install : hlfl
 	cp -i hlfl ${prefix}/bin/
 	cp -i doc/hlfl.1 ${prefix}/man/man1/
 clean :
-	rm -f hlfl *.o core *~ config.h
+	rm -f hlfl *.o core *~
+	
+distclean : clean
+	rm -f config.h
