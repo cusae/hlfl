@@ -63,47 +63,47 @@ tcp (local) X! (remote) [interface]
 
 
 
-# l->
-tcp (local) l-> (remote) [interface]
+# -> log
+tcp (local) log -> (remote) [interface]
 
-# <-l
-tcp (local) <-l (remote) [interface]
+# <- log
+tcp (local) log <- (remote) [interface]
 
-# <-l>
-tcp (local) <-l> (remote) [interface]
+# <-> log
+tcp (local) <-> log (remote) [interface]
 
-# <=l>>
+# <=>> log
 
-tcp (local) <=l>> (remote) [interface]
+tcp (local) <=>> log (remote) [interface]
 
-# <<=l>
+# <<=> log
 
-tcp (local) <<=l> (remote) [interface]
+tcp (local) <<=> log (remote) [interface]
 
 
-# <-Xl
+# <-X log
 
-tcp (local) <-Xl (remote) [interface]
+tcp (local) <-X log (remote) [interface]
 
-# Xl->
+# X-> log
 
-tcp (local) Xl-> (remote) [interface]
+tcp (local) X-> log (remote) [interface]
 
-# <-Xl!
+# <-X! log
 
-tcp (local) <-Xl! (remote) [interface]
+tcp (local) <-X! log (remote) [interface]
 
-# Xl!->
+# X!-> log
 
-tcp (local) Xl!-> (remote) [interface]
+tcp (local) log X!-> (remote) [interface]
 
-# X
+# X log
 
-tcp (local) Xl (remote) [interface]
+tcp (local) X log (remote) [interface]
 
-# X!
+# X! log
 
-tcp (local) Xl! (remote) [interface]
+tcp (local) X! log (remote) [interface]
 
 
 
@@ -124,6 +124,41 @@ tcp ((a|b) 1024) -> (remote) [interface]
 # tcp ((c) 1024) -> (a|b) [interface]
 
 tcp ((c) 1024) -> (a|b) [interface]
+
+
+#
+# Full text
+#
+
+
+# (a) accept to (b)
+tcp (a) accept to (b) on interface
+
+# (a) accept from (b)
+tcp (a) accept from (b) on interface
+
+# (a) accept from and to (b)
+tcp (a) accept from and to (b) on interface
+
+# (a) accept established from (b)
+tcp (a) accept established from (b) on interface
+
+# (a) accept established to (b)
+tcp (a) accept established to (b) on interface
+
+# (a) accept log established from (b)
+tcp (a) accept established log from (b) on interface
+
+# (a) reject from (b)
+tcp (a) reject from (b)
+
+# (a) reject (b)
+tcp (a) reject (b)
+
+# (a) reject from and to (b)
+tcp (a) reject from and to (b)
+
+
 
 # should conclude by an error
 tcp|udp|toto|icmp ((a|b) 1024) -> (a|b) [interface]

@@ -4,7 +4,7 @@ HLFL SYNTAX
 hlfl are a list of statements. Each statement have the following syntax :
 
 
-protocol (local) operator (remote) [interfaces] keywords
+statement ::= "protocol" ("local") "operator" ("remote") ["on"] [interfaces] keywords
 
 'local'  is the network you want to protect
 'remote' is the network you want to be protected from
@@ -36,6 +36,11 @@ ipfw -f add deny all from any to any
 
 List of operators :
 -----------------------------------------------------------------------------
+
+1. Symbolic operators
+=====================
+
+
 ->   : accept outgoing
 <-   : accept incoming
 <->  : accept outgoing and incoming
@@ -54,17 +59,41 @@ Note that <=>> and <<=> work for UDP on stateful firewalls. On stateless
 firewall, they work the same way as <-> for UDP.
 
 
-Log support :
------------------------------------------------------------------------------
+2. Non-symbolic operators
+=========================
 
-Log is supported, you just need to add an "l" character anywhere in the
-operator -- beginning, middle or end, as you wish.
+Symbolic operators may be a pain to read when writing huge and complex
+filtering rules, so another set of operators has been defined.
+Their syntax is:
 
-Example:
 
-<<l=> : accept outgoing and incoming if the communication was established
-        by the remote side, and log every matching packet
-Xl    : deny incoming and outgoing, and log every matching packet
+operator ::= "accept" | "deny" | "reject" ["from" | 
+		"to" | "and" | "established" | "log"]
+		
+		 
+
+Examples :
+
+
+# Accept outgoing packets from 192.168.1.1 and going to 
+# 192.168.2.1, and incoming packets coming from 192.168.2.1 going
+# to 192.168.2.2 (ie: the same as <->)
+
+tcp (192.168.1.1) accept (192.168.2.1) on interface0
+
+# the above statement is the same as 
+
+tcp (192.168.1.1) accept from and to (192.168.2.1) on interface0
+
+
+#
+# Accept outgoing connections from 10.1.1.1 to 10.2.2.2, and
+# log them (the same as "log <=>>")
+#
+tcp (10.1.1.1) accept established to and log (10.2.2.2) 
+
+
+
 
 (src) and (dst) format
 -------------------------------------------------------------------------
@@ -117,8 +146,9 @@ is a valid statement which prevents 172.22.0.1 to communicate
 with 192.168.1.1 and 192.168.2.1 on ports 21 and 80
 
 
-[interfaces] format
+interfaces format
 -------------------------------------------------------------------------------
+
 
 [interfaces] could be
 * empty
@@ -137,6 +167,17 @@ interface eth0.
 tcp (192.168.1.1) <-> (192.168.1.2) [fxp1,fxp2]
 means that 192.168.1.1 and 192.168.1.2 are allowed to communicate, using
 interface fxp1 or fxp2.
+
+tcp (10.0.0.1) <-> (10.254.254.254) on Ethernet0
+means that 10.0.0.1 and 10.254.254.254 are allowed to
+communicate using interface Ethernet0
+
+Other valid statements :
+
+tcp (10.0.0.1) <-> (10.1.1.1) on [eth1, eth2, eth3]
+tcp (10.0.0.1) <-> (10.1.1.1) on (eth1,eth2,eth3)
+
+
 
 
 ICMP

@@ -498,8 +498,8 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
     break;
 
 
-   case DENY:
-   case REJECT:
+   case DENY_ALL:
+   case REJECT_ALL:
     if (interface)
       {
        c = cisco_interface(interface);
