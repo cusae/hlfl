@@ -61,7 +61,7 @@ ipfilter_port(char *port)
    {
     char *ret = malloc(strlen(port) + 20);
     t[0] = '\0';
-    sprintf(ret, "port %d >< %s", atoi(port)-1, "65536");
+    sprintf(ret, "port %d >< %s", atoi(port)-1, t+1);
     t[0] = '-';
     return ret;
    }
