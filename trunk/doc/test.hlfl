@@ -125,4 +125,5 @@ tcp ((a|b) 1024) -> (remote) [interface]
 
 tcp ((c) 1024) -> (a|b) [interface]
 
-
+# should conclude by an error
+tcp|udp|toto|icmp ((a|b) 1024) -> (a|b) [interface]
