@@ -1,5 +1,6 @@
 dnl Set up the main lines of the config script
 
+AC_PREREQ(2.52)
 AC_INIT(hlfl, `cat $srcdir/VERSION`, hlfl@hlfl.org)
 AM_CONFIG_HEADER([src/config.h])
 
