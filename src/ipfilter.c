@@ -32,7 +32,7 @@ icmp_types(type)
  char *type;
 {
  char *ret = malloc(20);
- bzero(ret, 20);
+ memset(ret, 0, 20);
  if (!strlen(type))
   return ret;
  if (!strcmp(type, "echo-reply"))

@@ -366,7 +366,7 @@ translate_proto(proto)
  int current = 0;
 
  ret = malloc((MAX_PROTOS + 1) * sizeof(char *));
- bzero(ret, sizeof(char *) * (MAX_PROTOS + 1));
+ memset(ret, 0, sizeof(char *) * (MAX_PROTOS + 1));
 
  t = proto;
 if ((s = strchr(t, '|')))
@@ -475,7 +475,7 @@ ip(src, level)
  t = remove_spaces(t);
 
  ret = malloc(n * sizeof(char *));
- bzero(ret, n * sizeof(char *));
+ memset(ret, 0, n * sizeof(char *));
 
  while (t)
    {
@@ -600,7 +600,7 @@ ifaces(iface, level)
  t = remove_spaces(iface);
 
  ret = malloc(n * sizeof(char *));
- bzero(ret, n * sizeof(char *));
+ memset(ret, 0, n * sizeof(char *));
 
  t = iface;
  while (t)
@@ -1175,7 +1175,7 @@ read_file(file, fname)
 {
  char buffer[4096];
  int line = 0;
- bzero(buffer, sizeof(buffer));
+ memset(buffer, 0, sizeof(buffer));
  while (fgets(buffer, sizeof(buffer) - 1, file))
    {
     int n;
@@ -1208,7 +1208,7 @@ read_file(file, fname)
        else
         include_text_func(t);
       }
-    bzero(buffer, sizeof(buffer));
+    memset(buffer, 0, sizeof(buffer));
    }
 }
 

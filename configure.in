@@ -17,7 +17,7 @@ AC_C_CONST
 
 # Checks for library functions.
 AC_FUNC_MALLOC
-AC_CHECK_FUNCS([bzero inet_ntoa strchr strdup strstr])
+AC_CHECK_FUNCS([inet_ntoa memset strchr strdup strstr])
 
 AM_INIT_AUTOMAKE(hlfl, `cat $srcdir/VERSION`)
 AC_OUTPUT([Makefile doc/Makefile doc/hlfl.1 src/Makefile hlfl.spec hlfl.tmpl])
