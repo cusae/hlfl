@@ -1,4 +1,4 @@
-include ../hlfl.tmpl
+sinclude ../hlfl.tmpl
 
 prefix=/usr/local
 OBJS=	bsd_ipfw.o \
@@ -37,6 +37,7 @@ hlfl : hlfl.c errors.h $(OBJS)
 install : hlfl
 	cp -i hlfl ${prefix}/bin/
 	cp -i doc/hlfl.1 ${prefix}/man/man1/
+
 clean :
 	rm -f hlfl *.o core *~
 	
