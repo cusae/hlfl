@@ -21,13 +21,11 @@
 #include "hlfl.h"
 #include "linux_ipfwadm.h"
 
-
 extern int matched_if;
 
 /*------------------------------------------------------------------
  * Private functions
  *------------------------------------------------------------------*/
-
 
 static char *
 icmp_types(type)
@@ -39,22 +37,23 @@ icmp_types(type)
  if (!strlen(type))
   return ret;
 
- if (!strcmp(type, "echo-reply")) num = 0;
- else if(!strcmp(type, "destination-unreachable")) num = 3;
- else if(!strcmp(type, "echo-request")) num = 8;
- else if(!strcmp(type, "time-exceeded")) num = 11;
+ if (!strcmp(type, "echo-reply"))
+  num = 0;
+ else if (!strcmp(type, "destination-unreachable"))
+  num = 3;
+ else if (!strcmp(type, "echo-request"))
+  num = 8;
+ else if (!strcmp(type, "time-exceeded"))
+  num = 11;
  else
-  {
-  fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
-  exit(1);
- }
+   {
+    fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
+    exit(1);
+   }
 
  sprintf(ret, "%d", num);
  return ret;
 }
-
-
-
 
 /*------------------------------------------------------------------
  * Linux ipfwadm
@@ -100,7 +99,6 @@ translate_linux_ipfwadm(op, proto, src, log, dst, sports, dports, interface)
       t[0] = ':';
    }
 
-
  if (interface)
    {
     free(via);
@@ -114,15 +112,15 @@ translate_linux_ipfwadm(op, proto, src, log, dst, sports, dports, interface)
 	   logit, src, sports, dst, dports, proto, via);
     break;
    case ACCEPT_ONE_WAY_REVERSE:
-   if(!icmp(proto)) /*
-                     * XXXX ugly hack here, because ifpwadm
-   		     * wants the icmp code to be with -S
-		     */
-    printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n", logit,
-	   dst, dports, src, sports, proto, via);
-   else
-    printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n", logit,
-	   dst, sports, src, dports, proto, via);
+    if (!icmp(proto))		/*
+				 * XXXX ugly hack here, because ifpwadm
+				 * wants the icmp code to be with -S
+				 */
+     printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n", logit,
+	    dst, dports, src, sports, proto, via);
+    else
+     printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a accept %s\n", logit,
+	    dst, sports, src, dports, proto, via);
     break;
    case ACCEPT_TWO_WAYS:
     printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a accept %s\n",
@@ -205,8 +203,6 @@ translate_linux_ipfwadm(op, proto, src, log, dst, sports, dports, interface)
  return 0;
 }
 
-
-
 int
 translate_linux_ipfwadm_start()
 {
@@ -232,12 +228,12 @@ include_text_ipfwadm(c)
  if (!strncmp("if(", c, 3))
    {
     if (!strncmp("if(ipfwadm)", c, strlen("if(ipfwadm)")))
-     {
-      printf("%s", c + strlen("if(ipfwadm)"));
-      matched_if = 1;
-     }
-     else
-      matched_if = 0;
+      {
+       printf("%s", c + strlen("if(ipfwadm)"));
+       matched_if = 1;
+      }
+    else
+     matched_if = 0;
    }
  else
   printf("%s", c);

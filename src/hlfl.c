@@ -117,18 +117,18 @@ get_definition(d)
     if (!strcmp(k->definition, d))
       {
        if (t)
-						 {
-								char *ret = malloc(strlen(k->value) + strlen(t + 1) + 2);
-								sprintf(ret, "%s %s", k->value, t + 1);
-								t[0] = ' ';
-								free(o_d);
-								return ret;
-							}
-     else
-							{
-								free(o_d);
-								return strdup(k->value);
-							}
+	 {
+	  char *ret = malloc(strlen(k->value) + strlen(t + 1) + 2);
+	  sprintf(ret, "%s %s", k->value, t + 1);
+	  t[0] = ' ';
+	  free(o_d);
+	  return ret;
+	 }
+       else
+	 {
+	  free(o_d);
+	  return strdup(k->value);
+	 }
       }
     k = k->next;
    }
@@ -150,7 +150,6 @@ remove_spaces(t)
  if (!t)
   return t;
 
-
  while ((t[0] == ' ') || (t[0] == '\t'))
   t++;
  while ((t[strlen(t) - 1] == ' ') || (t[strlen(t) - 1] == '\t'))
@@ -160,15 +159,17 @@ remove_spaces(t)
 
 char *
 next_op(op)
- char * op;
+ char *op;
 {
- if(!op)
+ if (!op)
   return NULL;
 
  op = strchr(op, ' ');
- if(op){
-  while(op[0]==' ')op++;
-  }
+ if (op)
+   {
+    while (op[0] == ' ')
+     op++;
+   }
  return op;
 }
 
@@ -181,157 +182,147 @@ int_op(op)
 {
  int ret = 0;
 
-	/*
-		* FIXME op tests need to be ordered
-		* complex before, simple next
-		*/
+ /*
+  * * FIXME op tests need to be ordered
+  * * complex before, simple next
+  */
 
- while(op && strlen(op))
- {
-  if (!strncmp(op, "<->", strlen("<->")))
-  	{
-	ret |= ACCEPT_TWO_WAYS;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "<=>>", strlen("<=>>")))
-  	{
-	ret |= ACCEPT_TWO_WAYS_ESTABLISHED;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "<<=>", strlen("<<=>")))
-  	{
-	ret |= ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "X->", strlen("X->")))
-  	{
-	ret |= DENY_OUT;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "<-X", strlen("<-X")))
-  	{
-	ret |= DENY_IN;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "X!->", strlen("X!->")) ||
-  	   !strncmp(op, "!X->", strlen("!X->")))
-  	{
-	ret |= REJECT_OUT;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "<-X!", strlen("<-X!")))
-  	{
-	ret |= REJECT_IN;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "X!", strlen("X!")))
-  	{
-	ret |= REJECT_ALL;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "X", strlen("X")))
-  	{
-	ret |= DENY_ALL;
-	op = next_op(op);
-	}
-		else if (!strncmp(op, "->", strlen("->")))
-  	{
-  	ret |= ACCEPT_ONE_WAY;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "<-", strlen("<-")))
-  	{
-	ret |= ACCEPT_ONE_WAY_REVERSE;
-	op = next_op(op);
-	}
- else if(!strncmp(op, "accept", strlen("accept")))
-  {
-   ret |= ACCEPT;
-   op = next_op(op);
-  }
+ while (op && strlen(op))
+   {
+    if (!strncmp(op, "<->", strlen("<->")))
+      {
+       ret |= ACCEPT_TWO_WAYS;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "<=>>", strlen("<=>>")))
+      {
+       ret |= ACCEPT_TWO_WAYS_ESTABLISHED;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "<<=>", strlen("<<=>")))
+      {
+       ret |= ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "X->", strlen("X->")))
+      {
+       ret |= DENY_OUT;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "<-X", strlen("<-X")))
+      {
+       ret |= DENY_IN;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "X!->", strlen("X!->")) ||
+	     !strncmp(op, "!X->", strlen("!X->")))
+      {
+       ret |= REJECT_OUT;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "<-X!", strlen("<-X!")))
+      {
+       ret |= REJECT_IN;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "X!", strlen("X!")))
+      {
+       ret |= REJECT_ALL;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "X", strlen("X")))
+      {
+       ret |= DENY_ALL;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "->", strlen("->")))
+      {
+       ret |= ACCEPT_ONE_WAY;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "<-", strlen("<-")))
+      {
+       ret |= ACCEPT_ONE_WAY_REVERSE;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "accept", strlen("accept")))
+      {
+       ret |= ACCEPT;
+       op = next_op(op);
+      }
 
-  else if(!strncmp(op, "deny", strlen("deny")))
-  {
-   ret |= DENY;
-   op = next_op(op);
-  }
-  else if(!strncmp(op, "reject", strlen("reject")))
-  {
-   ret |= REJECT;
-   op = next_op(op);
-  }
-  else if(!strncmp(op, "to", strlen("to")))
-  {
-   ret |= ONE_WAY;
-   op = next_op(op);
-  }
- else
-  if(!strncmp(op, "from", strlen("from")))
-  {
-   ret |= ONE_WAY_REVERSE;
-   op = next_op(op);
-  }
- else
-  if(!strncmp(op, "established", strlen("established")))
-  {
-   ret |= ESTABLISHED;
-   op = next_op(op);
-  }
- else if(!strncmp(op, "log", strlen("log")))
- {
-  ret |= LOG;
-  op = next_op(op);
- }
- else if(!strncmp(op, "and", strlen("and")))
- {
-  op = next_op(op);
- }
- else
- {
-  error = HLFL_SYNTAX_ERROR;
-  return -1;
- }
- }
+    else if (!strncmp(op, "deny", strlen("deny")))
+      {
+       ret |= DENY;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "reject", strlen("reject")))
+      {
+       ret |= REJECT;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "to", strlen("to")))
+      {
+       ret |= ONE_WAY;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "from", strlen("from")))
+      {
+       ret |= ONE_WAY_REVERSE;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "established", strlen("established")))
+      {
+       ret |= ESTABLISHED;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "log", strlen("log")))
+      {
+       ret |= LOG;
+       op = next_op(op);
+      }
+    else if (!strncmp(op, "and", strlen("and")))
+      {
+       op = next_op(op);
+      }
+    else
+      {
+       error = HLFL_SYNTAX_ERROR;
+       return -1;
+      }
+   }
 
- if(!ret)
- {
-  error = HLFL_UNKNOWN_OP;
-  return -1;			/* error */
- }
+ if (!ret)
+   {
+    error = HLFL_UNKNOWN_OP;
+    return -1;			/* error */
+   }
 
  /*
   * Sanity checks
   */
- if(((ret & (ACCEPT|DENY|REJECT)) != ACCEPT) &&
-    ((ret & (ACCEPT|DENY|REJECT)) != DENY)   &&
-    ((ret & (ACCEPT|DENY|REJECT)) != REJECT))
- {
- 	error = HLFL_SYNTAX_ERROR;
- 	return -1;
- }
+ if (((ret & (ACCEPT | DENY | REJECT)) != ACCEPT) &&
+     ((ret & (ACCEPT | DENY | REJECT)) != DENY) &&
+     ((ret & (ACCEPT | DENY | REJECT)) != REJECT))
+   {
+    error = HLFL_SYNTAX_ERROR;
+    return -1;
+   }
 
+ if ((ret == ACCEPT) || (ret == DENY) || (ret == REJECT))
+  ret |= TWO_WAYS;
 
-
-
- if((ret == ACCEPT) ||
-    (ret == DENY)   ||
-    (ret == REJECT))
-     	ret |= TWO_WAYS;
-
-
- if((ret|LOG) == (ACCEPT|ESTABLISHED|TWO_WAYS|LOG))
- {
-  /*
-   * XXX fixme !
-   */
-  ret -= ESTABLISHED;
- }
-
+ if ((ret | LOG) == (ACCEPT | ESTABLISHED | TWO_WAYS | LOG))
+   {
+    /*
+     * XXX fixme !
+     */
+    ret -= ESTABLISHED;
+   }
 
  return ret;
 
 }
-
 
 int
 icmp(proto)
@@ -339,7 +330,6 @@ icmp(proto)
 {
  return !strcmp(proto, "icmp");
 }
-
 
 /*
  * returns TRUE if proto in {all, tcp, udp, icmp)
@@ -350,8 +340,7 @@ check_proto(proto)
 {
  if ((!strcmp(proto, "all")) ||
      (!strcmp(proto, "tcp")) ||
-     (!strcmp(proto, "udp")) ||
-					(!strcmp(proto, "icmp")))
+     (!strcmp(proto, "udp")) || (!strcmp(proto, "icmp")))
   return 0;
  else
   return 1;
@@ -370,35 +359,35 @@ translate_proto(proto)
  memset(ret, 0, sizeof(char *) * (MAX_PROTOS + 1));
 
  t = proto;
-if ((s = strchr(t, '|')))
-{
- while (s)
+ if ((s = strchr(t, '|')))
    {
-    s[0] = '\0';
+    while (s)
+      {
+       s[0] = '\0';
+       if (check_proto(remove_spaces(t)))
+	 {
+	  error = HLFL_UNKNOWN_PROTOCOL;
+	  return NULL;
+	 }
+       if (current + 1 >= MAX_PROTOS)
+	 {
+	  error = HLFL_TOO_MANY_PROTOCOLS;
+	  return NULL;
+	 }
+       ret[current++] = strdup(t);
+       t = s + 1;
+       s[0] = '|';
+       s = strchr(t, '|');
+      }
+   }
+ else
+   {
     if (check_proto(remove_spaces(t)))
       {
        error = HLFL_UNKNOWN_PROTOCOL;
        return NULL;
       }
-    if (current + 1 >= MAX_PROTOS)
-      {
-       error = HLFL_TOO_MANY_PROTOCOLS;
-       return NULL;
-      }
-    ret[current++] = strdup(t);
-    t = s + 1;
-    s[0] = '|';
-    s = strchr(t, '|');
    }
-}
-else
-{
- if (check_proto(remove_spaces(t)))
-  {
-   error = HLFL_UNKNOWN_PROTOCOL;
-   return NULL;
-  }
-}
  ret[current++] = strdup(t);
  ret[current] = NULL;
  return ret;
@@ -415,7 +404,6 @@ length(s)
  while (s[r++]);
  return r - 1;
 }
-
 
 /*
  * Returns nonzero if the IP adress <s> is valid (of the form x.y.z.t)
@@ -443,7 +431,6 @@ valid_ip(s)
   m[0] = '/';
  return ok;
 }
-
 
 /*
  * Convert : "ip ports |  ip ports | ip ports" to
@@ -484,10 +471,8 @@ ip(src, level)
     if (s)
      s[0] = '\0';
 
-
     if (!valid_ip(t))
       {
-
 
        /*
         * 't' is not a valid ip (x.y.z.t)
@@ -510,11 +495,12 @@ ip(src, level)
 	  w[0] = '\0';
 	  end = w + 1;
 	  r = ip(t, level + 1);
-	  if(!r)
-	  {
-	   if(!error)error = HLFL_UNDEF_VAR_ERROR;
-	   return NULL;
-	  }
+	  if (!r)
+	    {
+	     if (!error)
+	      error = HLFL_UNDEF_VAR_ERROR;
+	     return NULL;
+	    }
 	  while (r[i])
 	    {
 	     ret[current] = malloc(strlen(end) + strlen(r[i]) + 1);
@@ -670,21 +656,19 @@ translate(proto, src, op, dst, interface, flags)
  int ni = 0;
  int log = 0;
 
-
  if ((iface = get_definition(interface)))
    {
     interface = iface;
    }
 
-
  if (opi < 0)
   return opi;
 
- if(opi & LOG)
- {
-  log ++;
-  opi -= LOG;
- }
+ if (opi & LOG)
+   {
+    log++;
+    opi -= LOG;
+   }
  if (!(protos = translate_proto(proto)))
    {
     error = HLFL_UNKNOWN_PROTOCOL;
@@ -703,7 +687,6 @@ translate(proto, src, op, dst, interface, flags)
 
        srcs = ip(src, 0);
        dsts = ip(dst, 0);
-
 
        if (!srcs || !dsts)
 	 {
@@ -828,7 +811,6 @@ translate(proto, src, op, dst, interface, flags)
  return 0;
 }
 
-
 /*---------------------------------------------------------------------
 
 			       (ugly) Parser
@@ -890,7 +872,6 @@ include(file)
  return 0;
 }
 
-
 /*
  * Define a variable
  *
@@ -925,7 +906,6 @@ define(order)
  return 0;
 }
 
-
 /*
  * Process one single line
  */
@@ -944,10 +924,8 @@ process(buffer)
  char old_t;
  int n;
 
-
  while ((t[0] == ' ') || (t[0] == '\t') || (t[0] == '\n'))
   t++;
-
 
  /*
   * Drop the comments
@@ -961,13 +939,11 @@ process(buffer)
  if (t[0] == '!')
   return INCLUDE_TEXT;
 
-
  /*
   * Our syntax is :
   *
   *     proto (src) op (dst) [interface] flags
   */
-
 
  /* proto */
  proto = t;
@@ -1002,7 +978,6 @@ process(buffer)
     while (t[0] == ' ')
      t++;
 
-
     /* src */
     if (t[0] != '(')
       {
@@ -1033,16 +1008,14 @@ process(buffer)
 
     t = strchr(op + 1, '(');
     if (!t)
-	 {
-	  error = HLFL_SYNTAX_ERROR;
-	  return -1;
-	 }
+      {
+       error = HLFL_SYNTAX_ERROR;
+       return -1;
+      }
     old_t = t[0];
     t[0] = '\0';
     op = strdup(op);
     t[0] = old_t;
-
-
 
     while ((t[0] == ' ') || (t[0] == '\t'))
      t++;
@@ -1088,54 +1061,56 @@ process(buffer)
        while (t[0] == ' ')
 	t++;
       }
-    else
-     if(!strncmp(t, "on", 2))
-     {
-      t+=2;
-      while(t[0]==' ')t++;
-      if(t[0]=='(')
+    else if (!strncmp(t, "on", 2))
       {
-       interface = t + 1;
-       if(! (t = matching_items(t, '(', ')')))
-       {
-        error = HLFL_SYNTAX_ERROR;
-	return -1;
-       }
-       t[0] = '\0';
-       interface = strdup(interface);
-       t++;
-       while(t[0] == ' ')
-       	t++;
-      }
-      else if(t[0]=='[')
-      {
-       interface = t+1;
-       if(!(t = matching_items(t, '[', ']')))
-       {
-        error = HLFL_SYNTAX_ERROR;
-	return -1;
-	}
-	t[0] = '\0';
-	interface = strdup(interface);
+       t += 2;
+       while (t[0] == ' ')
 	t++;
-	while(t[0] == ' ')
-		t++;
-       }
+       if (t[0] == '(')
+	 {
+	  interface = t + 1;
+	  if (!(t = matching_items(t, '(', ')')))
+	    {
+	     error = HLFL_SYNTAX_ERROR;
+	     return -1;
+	    }
+	  t[0] = '\0';
+	  interface = strdup(interface);
+	  t++;
+	  while (t[0] == ' ')
+	   t++;
+	 }
+       else if (t[0] == '[')
+	 {
+	  interface = t + 1;
+	  if (!(t = matching_items(t, '[', ']')))
+	    {
+	     error = HLFL_SYNTAX_ERROR;
+	     return -1;
+	    }
+	  t[0] = '\0';
+	  interface = strdup(interface);
+	  t++;
+	  while (t[0] == ' ')
+	   t++;
+	 }
        else
-       {
-        interface = t;
-	t = strchr(t+1, ' ');
-	if(t)t[0]='\0';
-	interface = strdup(interface);
-	if(interface[strlen(interface) - 1] == '\n')
-	 interface[strlen(interface) - 1] = '\0';
-	if(t)
-		{
-		t++;
-		while(t[0] && t[0]==' ')t++;
-		}
-	}
-    }
+	 {
+	  interface = t;
+	  t = strchr(t + 1, ' ');
+	  if (t)
+	   t[0] = '\0';
+	  interface = strdup(interface);
+	  if (interface[strlen(interface) - 1] == '\n')
+	   interface[strlen(interface) - 1] = '\0';
+	  if (t)
+	    {
+	     t++;
+	     while (t[0] && t[0] == ' ')
+	      t++;
+	    }
+	 }
+      }
     /* extra flags (optional) */
 
     if (t && t[0] && (t[0] != '\n'))
@@ -1144,7 +1119,6 @@ process(buffer)
       }
     else
      flags = NULL;
-
 
     n = translate(remove_spaces(proto),
 		  remove_spaces(src),
@@ -1167,7 +1141,6 @@ print_comment(buffer)
 {
  printf(buffer);
 }
-
 
 void
 read_file(file, fname)
@@ -1201,13 +1174,13 @@ read_file(file, fname)
        while (t[0] == '\n' || t[0] == '\t' || t[0] == ' ')
 	t++;
 
-       if(!strncmp(t, "else", strlen("else")))
-        {
-	 if(!matched_if)
-          printf("%s", t+strlen("else"));
-	}
+       if (!strncmp(t, "else", strlen("else")))
+	 {
+	  if (!matched_if)
+	   printf("%s", t + strlen("else"));
+	 }
        else
-        include_text_func(t);
+	include_text_func(t);
       }
     memset(buffer, 0, sizeof(buffer));
    }
@@ -1226,7 +1199,7 @@ usage(n)
 
  fprintf(stderr, "%s version %s\n", n, VERSION);
  fprintf(stderr, "Copyright (C) 2000-2002 Renaud Deraison");
- fprintf(stderr, "< deraison @ hlfl.org > \n\n");
+ fprintf(stderr, " < deraison @ hlfl.org > \n\n");
  fprintf(stderr, "Usage : %s type < input > output\n", n);
  fprintf(stderr, "Where <type> can be one of :\n");
  fprintf(stderr, "\tipfw - BSD ipfw\n");
@@ -1245,14 +1218,12 @@ main(argc, argv)
  char **argv;
 {
 
-
  if (!argv[1] || argc != 2)
    {
     usage(argv[0]);
    }
 
-
-	if (!strcmp(argv[1], "ipfw") || !strcmp(argv[1], "ipfw4"))
+ if (!strcmp(argv[1], "ipfw") || !strcmp(argv[1], "ipfw4"))
    {
     translator_start = translate_bsd_ipfw_start;
     translate_func = translate_bsd_ipfw;
@@ -1310,7 +1281,7 @@ main(argc, argv)
  /*
   * Always define the symbol 'any'
   */
-	lang = argv[1];
+ lang = argv[1];
  add_definition("any", "0.0.0.0/0");
  translator_start();
  read_file(stdin, "stdin");

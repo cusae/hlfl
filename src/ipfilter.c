@@ -48,7 +48,6 @@ icmp_types(type)
  return ret;
 }
 
-
 static char *
 ipfilter_port(char *port)
 {
@@ -61,10 +60,10 @@ ipfilter_port(char *port)
    {
     char *ret = malloc(strlen(port) + 20);
     t[0] = '\0';
-    if ((atoi(t+1)+1)>65535)
-    sprintf(ret, "port %d >< 65535", atoi(port)-1);
+    if ((atoi(t + 1) + 1) > 65535)
+     sprintf(ret, "port %d >< 65535", atoi(port) - 1);
     else
-    sprintf(ret, "port %d >< %d", atoi(port)-1, atoi(t+1)+1);
+     sprintf(ret, "port %d >< %d", atoi(port) - 1, atoi(t + 1) + 1);
     t[0] = '-';
     return ret;
    }
@@ -123,9 +122,6 @@ translate_ipfilter(op, proto, src, log, dst, sports, dports, interface)
     sprintf(p, "proto %s", proto);
    }
 
-
-
-
  if (interface)
    {
     free(via);
@@ -143,10 +139,10 @@ translate_ipfilter(op, proto, src, log, dst, sports, dports, interface)
 	   dports, src, sports, icmp_code);
     break;
    case ACCEPT_TWO_WAYS:
-    printf("pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p, src,
-	   sports, dst, dports, icmp_code);
-    printf("pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
-	   dst, dports, src, sports, icmp_code);
+    printf("pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+	   src, sports, dst, dports, icmp_code);
+    printf("pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p, dst,
+	   dports, src, sports, icmp_code);
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED:
     if (!strcmp(proto, "tcp") || !strcmp(proto, "udp"))
@@ -186,11 +182,11 @@ translate_ipfilter(op, proto, src, log, dst, sports, dports, interface)
     break;
    case REJECT_ALL:
     if (!strcmp(proto, "tcp"))
-    printf("block return-rst in%s quick %s %s from %s %s to %s %s %s\n", logit,
-	   via, p, dst, dports, src, sports, icmp_code);
-    else
-    printf("block return-icmp in%s quick %s %s from %s %s to %s %s %s\n", logit,
+     printf("block return-rst in%s quick %s %s from %s %s to %s %s %s\n", logit,
 	    via, p, dst, dports, src, sports, icmp_code);
+    else
+     printf("block return-icmp in%s quick %s %s from %s %s to %s %s %s\n",
+	    logit, via, p, dst, dports, src, sports, icmp_code);
     printf("block out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	   src, sports, dst, dports, icmp_code);
     break;
@@ -207,12 +203,12 @@ translate_ipfilter(op, proto, src, log, dst, sports, dports, interface)
 	   src, sports, dst, dports, icmp_code);
     break;
    case REJECT_IN:
-    if(!strcmp(proto, "tcp"))
-    printf("block return-rst in%s quick %s %s from %s %s to %s %s %s\n", logit,
-	   via, p, dst, dports, src, sports, icmp_code);
+    if (!strcmp(proto, "tcp"))
+     printf("block return-rst in%s quick %s %s from %s %s to %s %s %s\n", logit,
+	    via, p, dst, dports, src, sports, icmp_code);
     else
-    printf("block return-icmp in%s quick %s %s from %s %s to %s %s %s\n", logit,
-	   via, p, dst, dports, src, sports, icmp_code);
+     printf("block return-icmp in%s quick %s %s from %s %s to %s %s %s\n",
+	    logit, via, p, dst, dports, src, sports, icmp_code);
     break;
    }
 
@@ -229,7 +225,6 @@ translate_ipfilter(op, proto, src, log, dst, sports, dports, interface)
  return 0;
 }
 
-
 int
 translate_ipfilter_start()
 {
@@ -245,11 +240,12 @@ include_text_ipfilter(c)
  if (!strncmp("if(", c, 3))
    {
     if (!strncmp("if(ipfilter)", c, strlen("if(ipfilter)")))
-     {
-      printf("%s", c + strlen("if(ipfilter)"));
-      matched_if = 1;
-     }
-     else matched_if = 0;
+      {
+       printf("%s", c + strlen("if(ipfilter)"));
+       matched_if = 1;
+      }
+    else
+     matched_if = 0;
    }
  else
   printf("%s", c);
