@@ -1,4 +1,4 @@
-.TH HLFL 1 "April 2000" "" "User Manuals"
+.TH HLFL 1 "February 2001" "" "User Manuals"
 .SH NAME
 hlfl \- High Level Firewall Language
 .SH SYNOSIS
@@ -22,6 +22,7 @@ requires no modification to the original script
 .SH HLFL - THE 'LANGUAGE'
 
 
+A complete description of the hlfl syntax is in ${prefix}/share/hlfl/syntax.txt
 Each order must fit on one line. The syntax is :
 .LP
 .br
@@ -101,10 +102,13 @@ X    : deny outgoing and incoming
 X!   : reject outgoing and incoming
 .br
 
-In addition to this, it is possible to generate logs message
-for each rule if you add a 'l' anywhere in an operator
-(as in <<=l>, Xl, <-l, and so on...)
+Full text operators are allowed. The syntax is :
+.br
+operator ::= "accept" | "deny" | "reject" ["from" | "to" | "and" | "established" | "log"]
+.br
 
+It is possible to combine full text operators with symbolic ones. This
+can be done for logging support.
 
 .IP [interface]
 
@@ -255,16 +259,10 @@ More details at http://www.hlfl.org.
 .SH AUTHORS
 
 hlfl was written by Renaud Deraison <deraison@hlfl.org> because the day
-he had to rewrite his ipfw firewall to ipfilter, he sweared he'd never do that
+he had to convert his ipfw firewall to ipfilter, he sweared he'd never do that
 again.
 .br
 Arnaud Launay <launay@hlfl.org> joined later on, and took actively part in
 the project.
 .br
 
-.SH BUGS
-
-hlfl has been tested in real life for ipchains,
-ipfw, ipfwadm and ipfilter. netfilter and cisco generated rules
-are supposed to be syntaxically correct, but were never
-tested. So beware.

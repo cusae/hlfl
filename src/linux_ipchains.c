@@ -157,13 +157,13 @@ translate_linux_ipchains(op, proto, src, log, dst, sports, dports, interface)
 	      logit, src, sports, dst, dports, proto, via);
       }
     break;
-   case DENY:
+   case DENY_ALL:
     printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -j DENY %s\n", logit,
 	   src, sports, dst, dports, proto, via);
     printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -j DENY %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
-   case REJECT:
+   case REJECT_ALL:
     printf("$ipchains -A output%s -s %s %s -d %s %s -p %s -j REJECT %s\n",
 	   logit, src, sports, dst, dports, proto, via);
     printf("$ipchains -A input%s -s %s %s -d %s %s -p %s -j REJECT %s\n", logit,

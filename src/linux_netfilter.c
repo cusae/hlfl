@@ -198,13 +198,13 @@ translate_linux_netfilter(op, proto, src, log, dst, sports, dports, interface)
 	      logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
       }
     break;
-   case DENY:
+   case DENY_ALL:
     printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit, src,
 	   dst, proto, sports_as_src, dports_as_dst, via_out);
     printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit, dst,
 	   src, proto, dports_as_src, sports_as_dst, via_in);
     break;
-   case REJECT:
+   case REJECT_ALL:
     printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j REJECT %s\n",
 	   logit, src, dst, proto, sports_as_src, dports_as_dst, via_out);
     printf("$iptables -A INPUT%s -s %s  -d %s -p %s %s %s -j REJECT %s\n",

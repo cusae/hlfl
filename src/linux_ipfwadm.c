@@ -170,13 +170,13 @@ translate_linux_ipfwadm(op, proto, src, log, dst, sports, dports, interface)
 	      logit, src, sports, dst, dports, proto, via);
       }
     break;
-   case DENY:
+   case DENY_ALL:
     printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a deny %s\n", logit,
 	   src, sports, dst, dports, proto, via);
     printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a deny %s\n", logit,
 	   dst, dports, src, sports, proto, via);
     break;
-   case REJECT:
+   case REJECT_ALL:
     printf("$ipfwadm -O%s -S %s %s -D %s %s -P %s -a reject %s\n",
 	   logit, src, sports, dst, dports, proto, via);
     printf("$ipfwadm -I%s -S %s %s -D %s %s -P %s -a reject %s\n", logit,
