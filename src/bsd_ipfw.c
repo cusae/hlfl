@@ -20,6 +20,8 @@
 #include "includes.h"
 #include "bsd_ipfw.h"
 extern int icmp(char *);
+extern int matched_if;
+
 
 static char *
 icmp_types(type)
@@ -201,7 +203,11 @@ include_text_ipfw(c)
  if (!strncmp("if(", c, 3))
    {
     if (!strncmp("if(ipfw)", c, strlen("if(ipfw)")))
-     printf("%s", c + strlen("if(ipfw)"));
+     {
+      matched_if = 1;
+      printf("%s", c + strlen("if(ipfw)"));
+     }
+    else matched_if = 0;
    }
  else
   printf("%s", c);

@@ -35,7 +35,7 @@ struct cisco_interfaces {
 
 static struct cisco_interfaces *ci = NULL;
 
-
+extern int matched_if;
 
 
 
@@ -596,7 +596,12 @@ include_text_cisco(c)
  if (!strncmp("if(", c, 3))
    {
     if (!strncmp("if(cisco)", c, strlen("if(cisco)")))
-     printf("%s", c + strlen("if(cisco)"));
+     {
+      matched_if = 1;
+      printf("%s", c + strlen("if(cisco)"));
+     }
+     else
+      matched_if = 0;
    }
  else
   printf("%s", c);
