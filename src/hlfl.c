@@ -1,4 +1,4 @@
-/* vi:set tw=80 sts=1 ts=1 sw=1:
+/* vi:set tw=80 sts=4 ts=4:
  * hlfl
  * Copyright (C) 2000-2002 Renaud Deraison
  *
@@ -197,151 +197,54 @@ next_op(op)
  * Returns the integer value of the operator
  */
 int
-int_op(op)
- char *op;
+int_op(char *op)
 {
- int ret = 0;
+	struct {
+		char *str;
+		int len;
+		int mask;
+	} ops[] = {
+#define DEF(str,mask) \
+	{ str, mask, strlen(str) },
+#include "hlfl.def"
+	{ NULL, 0, 0}
+#undef DEF
+	}, *o;
+	int ret = 0;
 
- /*
-  * * FIXME op tests need to be ordered
-  * * complex before, simple next
-  */
+	while (op && strlen(op)) {
+		for (o = ops; o->str; o++) {
+			if (!strncmp(op, o->str, o->len))
+				break;
+		}
+		if (o->str) {
+			ret |= o->mask;
+			op = next_op(op);
+		} else {
+			error = HLFL_SYNTAX_ERROR;
+			ret = -1;
+			break;
+		}
+	}
 
- while (op && strlen(op))
-   {
-    if (!strncmp(op, "<->", strlen("<->")))
-      {
-       ret |= ACCEPT_TWO_WAYS;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "<=>>", strlen("<=>>")))
-      {
-       ret |= ACCEPT_TWO_WAYS_ESTABLISHED;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "<<=>", strlen("<<=>")))
-      {
-       ret |= ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "X->", strlen("X->")))
-      {
-       ret |= DENY_OUT;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "<-X", strlen("<-X")))
-      {
-       ret |= DENY_IN;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "X!->", strlen("X!->")) ||
-	     !strncmp(op, "!X->", strlen("!X->")))
-      {
-       ret |= REJECT_OUT;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "<-X!", strlen("<-X!")))
-      {
-       ret |= REJECT_IN;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "X!", strlen("X!")))
-      {
-       ret |= REJECT_ALL;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "X", strlen("X")))
-      {
-       ret |= DENY_ALL;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "->", strlen("->")))
-      {
-       ret |= ACCEPT_ONE_WAY;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "<-", strlen("<-")))
-      {
-       ret |= ACCEPT_ONE_WAY_REVERSE;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "accept", strlen("accept")))
-      {
-       ret |= ACCEPT;
-       op = next_op(op);
-      }
-
-    else if (!strncmp(op, "deny", strlen("deny")))
-      {
-       ret |= DENY;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "reject", strlen("reject")))
-      {
-       ret |= REJECT;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "to", strlen("to")))
-      {
-       ret |= ONE_WAY;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "from", strlen("from")))
-      {
-       ret |= ONE_WAY_REVERSE;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "established", strlen("established")))
-      {
-       ret |= ESTABLISHED;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "log", strlen("log")))
-      {
-       ret |= LOG;
-       op = next_op(op);
-      }
-    else if (!strncmp(op, "and", strlen("and")))
-      {
-       op = next_op(op);
-      }
-    else
-      {
-       error = HLFL_SYNTAX_ERROR;
-       return -1;
-      }
-   }
-
- if (!ret)
-   {
-    error = HLFL_UNKNOWN_OP;
-    return -1;			/* error */
-   }
-
- /*
-  * Sanity checks
-  */
- if (((ret & (ACCEPT | DENY | REJECT)) != ACCEPT) &&
-     ((ret & (ACCEPT | DENY | REJECT)) != DENY) &&
-     ((ret & (ACCEPT | DENY | REJECT)) != REJECT))
-   {
-    error = HLFL_SYNTAX_ERROR;
-    return -1;
-   }
-
- if ((ret == ACCEPT) || (ret == DENY) || (ret == REJECT))
-  ret |= TWO_WAYS;
-
- if ((ret | LOG) == (ACCEPT | ESTABLISHED | TWO_WAYS | LOG))
-   {
-    /*
-     * XXX fixme !
-     */
-    ret -= ESTABLISHED;
-   }
-
- return ret;
-
+	if (!ret) {
+		error = HLFL_UNKNOWN_OP;
+		ret = -1;
+	} else if (ret != -1) {
+		/* Sanity checks */
+		if (((ret & (ACCEPT | DENY | REJECT)) != ACCEPT) &&
+		    ((ret & (ACCEPT | DENY | REJECT)) != DENY) &&
+		    ((ret & (ACCEPT | DENY | REJECT)) != REJECT)) {
+			error = HLFL_SYNTAX_ERROR;
+			ret = -1;
+		} else {
+			if ((ret == ACCEPT) || (ret == DENY) || (ret == REJECT))
+				ret |= TWO_WAYS;
+			if ((ret | LOG) == (ACCEPT | ESTABLISHED | TWO_WAYS | LOG))
+				ret -= ESTABLISHED;		/* XXX fixme ! */
+		}
+	}
+	return ret;
 }
 
 int
