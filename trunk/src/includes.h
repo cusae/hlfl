@@ -1,5 +1,6 @@
 #ifndef __HLFL_INCLUDES__
 #define __HLFL_INCLUDES__
+
 #include "config.h"
 #ifdef HAVE_STDIO_H
 #include <stdio.h>
@@ -11,6 +12,10 @@
 
 #ifdef HAVE_STRING_H
 #include <string.h>
+#endif
+
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
 #endif
 
 #ifdef HAVE_SYS_TYPES_H
@@ -27,6 +32,10 @@
 
 #ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
+#endif
+
+#ifdef HAVE_GETOPT_H
+#include <getopt.h>
 #endif
 
 #define ACCEPT	 		1
@@ -52,4 +61,5 @@
 
 #define COMMENT 1
 #define INCLUDE_TEXT 2
+
 #endif				/* __HLFL_INCLUDES__ */

@@ -1,7 +1,8 @@
 dnl Set up the main lines of the config script
 
 AC_PREREQ(2.52)
-AC_INIT(hlfl, `cat $srcdir/VERSION`, hlfl@hlfl.org)
+
+AC_INIT([hlfl], [0.60.0], [hlfl@hlfl.org])
 AM_CONFIG_HEADER(src/config.h)
 
 dnl Check for several programs
@@ -11,14 +12,14 @@ AC_PROG_MAKE_SET
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([arpa/inet.h netinet/in.h stdio.h stdlib.h string.h sys/socket.h sys/types.h])
+AC_CHECK_HEADERS([arpa/inet.h netinet/in.h stdio.h stdlib.h string.h unistd.h getopt.h sys/socket.h sys/types.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 
 # Checks for library functions.
 AC_FUNC_MALLOC
-AC_CHECK_FUNCS([inet_aton inet_ntoa memset strchr strdup strstr])
+AC_CHECK_FUNCS([inet_aton inet_ntoa getopt getopt_long memset strchr strdup strstr])
 
 # Needed for Solaris
 AC_CHECK_LIB(nsl, inet_ntoa)
