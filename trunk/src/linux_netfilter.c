@@ -22,7 +22,6 @@
 #include "hlfl.h"
 #include "linux_netfilter.h"
 
-
 extern int matched_if;
 
 /*------------------------------------------------------------------
@@ -46,9 +45,6 @@ icmp_types(type)
   fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
  return ret;
 }
-
-
-
 
 static char *
 netfilter_sports(ports)
@@ -130,9 +126,6 @@ translate_linux_netfilter(op, proto, src, log, dst, sports, dports, interface)
     dports_as_dst = netfilter_dports(dports);
    }
 
-
-
-
  if (interface)
    {
     free(via_in);
@@ -199,10 +192,10 @@ translate_linux_netfilter(op, proto, src, log, dst, sports, dports, interface)
       }
     break;
    case DENY_ALL:
-    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit, src,
-	   dst, proto, sports_as_src, dports_as_dst, via_out);
-    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit, dst,
-	   src, proto, dports_as_src, sports_as_dst, via_in);
+    printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit,
+	   src, dst, proto, sports_as_src, dports_as_dst, via_out);
+    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit,
+	   dst, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    case REJECT_ALL:
     printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j REJECT %s\n",
@@ -215,8 +208,8 @@ translate_linux_netfilter(op, proto, src, log, dst, sports, dports, interface)
 	   src, dst, proto, sports_as_src, dports_as_dst, via_out);
     break;
    case DENY_IN:
-    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit , dst,
-	   src, proto, dports_as_src, sports_as_dst, via_in);
+    printf("$iptables -A INPUT%s -s %s -d %s -p %s %s %s -j DROP %s\n", logit,
+	   dst, src, proto, dports_as_src, sports_as_dst, via_in);
     break;
    case REJECT_OUT:
     printf("$iptables -A OUTPUT%s -s %s -d %s -p %s %s %s -j REJECT %s\n",
@@ -243,8 +236,6 @@ translate_linux_netfilter(op, proto, src, log, dst, sports, dports, interface)
  return 0;
 }
 
-
-
 int
 translate_linux_netfilter_start()
 {
@@ -265,11 +256,12 @@ include_text_netfilter(c)
  if (!strncmp("if(", c, 3))
    {
     if (!strncmp("if(netfilter)", c, strlen("if(netfilter)")))
-     {
-      printf("%s", c + strlen("if(netfilter)"));
-      matched_if = 1;
-     }
-     else matched_if = 0;
+      {
+       printf("%s", c + strlen("if(netfilter)"));
+       matched_if = 1;
+      }
+    else
+     matched_if = 0;
    }
  else
   printf("%s", c);

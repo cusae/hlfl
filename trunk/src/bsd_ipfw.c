@@ -23,7 +23,6 @@ extern int icmp(char *);
 extern int matched_if;
 extern char *lang;
 
-
 static char *
 icmp_types(type)
  char *type;
@@ -79,7 +78,6 @@ translate_bsd_ipfw(op, proto, src, log, dst, sports, dports, interface)
     dports = "";
    }
 
-
  if (!sports)
   sports = "";
  if (!dports)
@@ -117,22 +115,28 @@ translate_bsd_ipfw(op, proto, src, log, dst, sports, dports, interface)
        printf("$ipfw -f add accept%s %s from %s %s to %s %s in %s\n", logit,
 	      proto, dst, dports, src, sports, via);
       }
-    else {
-	    if (!strcmp(lang, "ipfw4"))
-	    {
-		    printf("$ipfw -f add allow%s %s from %s %s to %s %s out %s %s keep state\n", logit, proto, src, sports, dst, dports, icmp_code, via);
-		    printf("$ipfw -f add allow%s %s from %s %s to %s %s in %s %s keep state\n", logit, proto, dst, dports, src, sports, icmp_code, via);
-	    }
-	    else
-	    {
-		    /* XXX stateful needed here */
-		    printf("# (warning. A stateful firewall would be better here); you could use ipfw4.\n");
-		    printf("$ipfw -f add allow%s %s from %s %s to %s %s out %s %s\n", logit,
-				    proto, src, sports, dst, dports, icmp_code, via);
-		    printf("$ipfw -f add allow%s %s from %s %s to %s %s in %s %s\n", logit,
-				    proto, dst, dports, src, sports, icmp_code, via);
-	    }
-   }
+    else
+      {
+       if (!strcmp(lang, "ipfw4"))
+	 {
+	  printf
+	      ("$ipfw -f add allow%s %s from %s %s to %s %s out %s %s keep state\n",
+	       logit, proto, src, sports, dst, dports, icmp_code, via);
+	  printf
+	      ("$ipfw -f add allow%s %s from %s %s to %s %s in %s %s keep state\n",
+	       logit, proto, dst, dports, src, sports, icmp_code, via);
+	 }
+       else
+	 {
+	  /* XXX stateful needed here */
+	  printf
+	      ("# (warning. A stateful firewall would be better here); you could use ipfw4.\n");
+	  printf("$ipfw -f add allow%s %s from %s %s to %s %s out %s %s\n",
+		 logit, proto, src, sports, dst, dports, icmp_code, via);
+	  printf("$ipfw -f add allow%s %s from %s %s to %s %s in %s %s\n",
+		 logit, proto, dst, dports, src, sports, icmp_code, via);
+	 }
+      }
     break;
 
    case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
@@ -192,7 +196,6 @@ translate_bsd_ipfw(op, proto, src, log, dst, sports, dports, interface)
  return 0;
 }
 
-
 int
 translate_bsd_ipfw_start()
 {
@@ -211,11 +214,12 @@ include_text_ipfw(c)
  if (!strncmp("if(", c, 3))
    {
     if (!strncmp("if(ipfw)", c, strlen("if(ipfw)")))
-     {
-      matched_if = 1;
-      printf("%s", c + strlen("if(ipfw)"));
-     }
-    else matched_if = 0;
+      {
+       matched_if = 1;
+       printf("%s", c + strlen("if(ipfw)"));
+      }
+    else
+     matched_if = 0;
    }
  else
   printf("%s", c);

@@ -19,7 +19,6 @@
 
 #include "includes.h"
 
-
 /*---------------------------------------------------------
  *		Private functions
  *---------------------------------------------------------*/
@@ -42,8 +41,6 @@ qsort_compar(const void *a, const void *b)
  else
   return (*aa - *bb);
 }
-
-
 
 /*
  * getpts()
@@ -232,9 +229,6 @@ get_ports_ranges(expr)
  int current = 0;
  char *s = NULL;
 
-
-
-
  if (expr)
    {
     while (expr[0] == ' ')
@@ -264,7 +258,6 @@ get_ports_ranges(expr)
       }
     free(expr);
    }
-
 
  if (!s || !ports)
    {

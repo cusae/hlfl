@@ -31,7 +31,6 @@
 #define HLFL_DEFINE_RECURSIVE 9
 #define HLFL_DEFINE_RECURSIVE_STR "Recursive definition or too many elements in the definition"
 
-
 #define HLFL_TOO_MANY_PROTOCOLS 10
 #define HLFL_TOO_MANY_PROTOCOLS_STR "Too many protocols"
 #endif				/* ERRORS_H__ */

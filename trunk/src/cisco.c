@@ -23,7 +23,6 @@
 
 #define MAX_RULES 1024
 
-
 struct cisco_interfaces {
  char *name;
  int in;
@@ -37,15 +36,9 @@ static struct cisco_interfaces *ci = NULL;
 
 extern int matched_if;
 
-
-
 /*------------------------------------------------------------------
  * Private utilities
  *------------------------------------------------------------------*/
-
-
-
-
 
 static char *
 icmp_types(type)
@@ -81,7 +74,6 @@ cisco_get_interface(name)
    }
  return NULL;
 }
-
 
 static struct cisco_interfaces *
 cisco_add_interface(name)
@@ -121,8 +113,6 @@ cisco_interface(name)
  return c;
 }
 
-
-
 static void
 cisco_add_rule(rule, interface)
  char *rule;
@@ -137,7 +127,6 @@ cisco_add_rule(rule, interface)
    }
 }
 
-
 void
 cisco_exit()
 {
@@ -145,17 +134,17 @@ cisco_exit()
 
  printf("\n\n!\n");
  printf("! ACL definitions\n!\n!\n\n\n");
- while(iface)
+ while (iface)
    {
-     int i;
-     printf("! clear the old acl, if any\n");
-     printf("no ip access-list extended %d\n", iface->in);
-     printf("no ip access-list extended %d\n", iface->out);
-     printf("! Define a new ACL\n");
-     for (i = 0; i < iface->num_rules; i++)
+    int i;
+    printf("! clear the old acl, if any\n");
+    printf("no ip access-list extended %d\n", iface->in);
+    printf("no ip access-list extended %d\n", iface->out);
+    printf("! Define a new ACL\n");
+    for (i = 0; i < iface->num_rules; i++)
      printf("%s", iface->rules[i]);
-     iface = iface->next;
-     printf("\n\n");
+    iface = iface->next;
+    printf("\n\n");
    }
 
  iface = ci;
@@ -168,7 +157,6 @@ cisco_exit()
     printf("\tip access-group %d out\n", iface->out);
     iface = iface->next;
    }
-
 
 }
 
@@ -301,8 +289,6 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
  else
   p = strdup("");
 
-
-
  buffer = malloc(size);
  memset(buffer, 0, size);
  size--;
@@ -389,8 +375,8 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 		   c->out, p, src, sports, dst, dports, logit);
 	  cisco_add_rule(buffer, interface);
 	  snprintf(buffer, size,
-		   "access-list %d permit %s %s %s %s %s established %s\n", c->in,
-		   p, dst, dports, src, sports, logit);
+		   "access-list %d permit %s %s %s %s %s established %s\n",
+		   c->in, p, dst, dports, src, sports, logit);
 	  cisco_add_rule(buffer, interface);
 	 }
        else
@@ -427,11 +413,13 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 	  while (c)
 	    {
 
-	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
-		      c->out, p, src, sports, dst, dports, icmp_code, logit);
+	     snprintf(buffer, size,
+		      "access-list %d permit %s %s %s %s %s %s %s\n", c->out, p,
+		      src, sports, dst, dports, icmp_code, logit);
 	     cisco_add_rule(buffer, c->name);
-	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
-		      c->in, p, dst, dports, src, sports, icmp_code, logit);
+	     snprintf(buffer, size,
+		      "access-list %d permit %s %s %s %s %s %s %s\n", c->in, p,
+		      dst, dports, src, sports, icmp_code, logit);
 	     cisco_add_rule(buffer, c->name);
 	     c = c->next;
 	    }
@@ -449,8 +437,8 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 		   c->in, p, dst, dports, src, sports, logit);
 	  cisco_add_rule(buffer, c->name);
 	  snprintf(buffer, size,
-		   "access-list %d permit %s %s %s %s %s established %s\n", c->out,
-		   p, src, sports, dst, dports, logit);
+		   "access-list %d permit %s %s %s %s %s established %s\n",
+		   c->out, p, src, sports, dst, dports, logit);
 	  cisco_add_rule(buffer, c->name);
 	 }
        else
@@ -485,11 +473,13 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 	 {
 	  while (c)
 	    {
-	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
-		      c->out, p, src, sports, dst, dports, icmp_code, logit);
+	     snprintf(buffer, size,
+		      "access-list %d permit %s %s %s %s %s %s %s\n", c->out, p,
+		      src, sports, dst, dports, icmp_code, logit);
 	     cisco_add_rule(buffer, c->name);
-	     snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
-		      c->in, p, dst, dports, src, sports, icmp_code, logit);
+	     snprintf(buffer, size,
+		      "access-list %d permit %s %s %s %s %s %s %s\n", c->in, p,
+		      dst, dports, src, sports, icmp_code, logit);
 	     cisco_add_rule(buffer, c->name);
 	     c = c->next;
 	    }
@@ -497,17 +487,16 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
       }
     break;
 
-
    case DENY_ALL:
    case REJECT_ALL:
     if (interface)
       {
        c = cisco_interface(interface);
-       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n", c->out,
-		p, src, sports, dst, dports, icmp_code, logit);
+       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n",
+		c->out, p, src, sports, dst, dports, icmp_code, logit);
        cisco_add_rule(buffer, c->name);
-       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n", c->in,
-		p, dst, dports, src, sports, icmp_code, logit);
+       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n",
+		c->in, p, dst, dports, src, sports, icmp_code, logit);
        cisco_add_rule(buffer, c->name);
       }
     else
@@ -531,8 +520,8 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
       {
        c = cisco_interface(interface);
 
-       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n", c->out,
-		p, src, sports, dst, dports, icmp_code, logit);
+       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n",
+		c->out, p, src, sports, dst, dports, icmp_code, logit);
        cisco_add_rule(buffer, c->name);
       }
     else
@@ -551,8 +540,8 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
     if (interface)
       {
        c = cisco_interface(interface);
-       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n", c->in,
-		p, dst, dports, src, sports, icmp_code, logit);
+       snprintf(buffer, size, "access-list %d deny %s %s %s %s %s %s %s\n",
+		c->in, p, dst, dports, src, sports, icmp_code, logit);
        cisco_add_rule(buffer, c->name);
       }
     else
@@ -566,7 +555,6 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 	 }
       }
     break;
-
 
    }
 
@@ -584,7 +572,6 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
  free(p);
  return 0;
 }
-
 
 int
 translate_cisco_start()
@@ -612,12 +599,12 @@ include_text_cisco(c)
  if (!strncmp("if(", c, 3))
    {
     if (!strncmp("if(cisco)", c, strlen("if(cisco)")))
-     {
-      matched_if = 1;
-      printf("%s", c + strlen("if(cisco)"));
-     }
-     else
-      matched_if = 0;
+      {
+       matched_if = 1;
+       printf("%s", c + strlen("if(cisco)"));
+      }
+    else
+     matched_if = 0;
    }
  else
   printf("%s", c);

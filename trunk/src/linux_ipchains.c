@@ -21,13 +21,11 @@
 #include "hlfl.h"
 #include "linux_ipchains.h"
 
-
 extern int matched_if;
 
 /*------------------------------------------------------------------
  * Private functions
  *------------------------------------------------------------------*/
-
 
 static char *
 icmp_types(type)
@@ -46,9 +44,6 @@ icmp_types(type)
   fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
  return ret;
 }
-
-
-
 
 /*------------------------------------------------------------------
  * Linux ipchains
@@ -93,7 +88,6 @@ translate_linux_ipchains(op, proto, src, log, dst, sports, dports, interface)
      while ((t = strchr(dports, '-')))
       t[0] = ':';
    }
-
 
  if (interface)
    {
@@ -192,8 +186,6 @@ translate_linux_ipchains(op, proto, src, log, dst, sports, dports, interface)
  return 0;
 }
 
-
-
 int
 translate_linux_ipchains_start()
 {
@@ -216,12 +208,12 @@ include_text_ipchains(c)
  if (!strncmp("if(", c, 3))
    {
     if (!strncmp("if(ipchains)", c, strlen("if(ipchains)")))
-     {
-      printf("%s", c + strlen("if(ipchains)"));
-      matched_if = 1;
-     }
-     else
-      matched_if = 0;
+      {
+       printf("%s", c + strlen("if(ipchains)"));
+       matched_if = 1;
+      }
+    else
+     matched_if = 0;
    }
  else
   printf("%s", c);
