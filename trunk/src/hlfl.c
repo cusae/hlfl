@@ -61,6 +61,7 @@ char *error_str[] = {
 };
 
 int matched_if = 0;
+char *lang = 0;
 
 translator_start_t translator_start;
 translate_t translate_func;
@@ -1249,16 +1250,8 @@ main(argc, argv)
     usage(argv[0]);
    }
 
- if (!strcmp(argv[1], "ipfw4"))
-   {
-    translator_start = translate_ipfw4_start;
-    translate_func = translate_ipfw4;
-    comment = print_comment;
-    exit_func = nop;
-    include_text_func = include_text_ipfw4;
-   }
 
-	else if (!strcmp(argv[1], "ipfw"))
+	if (!strcmp(argv[1], "ipfw") || !strcmp(argv[1], "ipfw4"))
    {
     translator_start = translate_bsd_ipfw_start;
     translate_func = translate_bsd_ipfw;
@@ -1316,6 +1309,7 @@ main(argc, argv)
  /*
   * Always define the symbol 'any'
   */
+	lang = argv[1];
  add_definition("any", "0.0.0.0/0");
  translator_start();
  read_file(stdin, "stdin");
