@@ -218,9 +218,9 @@ translate_linux_ipfwadm_start(FILE *output_file)
  fprintf(fout, "$ipfwadm -F -f\n");
  fprintf(fout, "$ipfwadm -A -f\n");
 
- fprintf(fout, "$ipfwadm -I -p deny\n");
- fprintf(fout, "$ipfwadm -O -p deny\n");
- fprintf(fout, "$ipfwadm -F -p deny\n");
+ fprintf(fout, "$ipfwadm -I -p accept\n");
+ fprintf(fout, "$ipfwadm -O -p accept\n");
+ fprintf(fout, "$ipfwadm -F -p accept\n");
 
  return 0;
 }
