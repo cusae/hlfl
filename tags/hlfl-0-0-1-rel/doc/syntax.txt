@@ -1,0 +1,311 @@
+HLFL SYNTAX
+-----------------------------------------------------------------------------
+
+hlfl are a list of statements. Each statement have the following syntax :
+
+
+statement ::= "protocol" ("local") "operator" ("remote") ["on"] [interfaces] keywords
+
+'local'  is the network you want to protect
+'remote' is the network you want to be protected from
+
+
+Example :
+
+tcp (192.168.1.1) X (192.168.2.1) [fxp0,xl1]
+
+
+Means in bsd ipfw language :
+
+ipfw -f add deny tcp from 192.168.1.1  to 192.168.2.1  out  via fxp0
+ipfw -f add deny tcp from 192.168.2.1  to 192.168.1.1  in  via fxp0
+ipfw -f add deny tcp from 192.168.1.1  to 192.168.2.1  out  via xl1
+ipfw -f add deny tcp from 192.168.2.1  to 192.168.1.1  in  via xl1
+
+And this means in a human language :
+
+	'deny communication between 192.168.1.1 and 192.168.2.1'
+
+
+
+all (any) X (any)
+
+Means :
+
+ipfw -f add deny all from any to any
+
+List of operators :
+-----------------------------------------------------------------------------
+
+1. Symbolic operators
+=====================
+
+
+->   : accept outgoing
+<-   : accept incoming
+<->  : accept outgoing and incoming
+<=>> : accept outgoing and incoming if the communication was established
+<<=> : accept outgoing and incoming if the communication was established
+       by the remote side
+X    : deny incoming and outgoing
+X!   : reject incoming and outgoing
+X->  : deny outgoing
+<-X  : deny incoming
+X!-> : reject outgoing
+<-X! : reject incoming
+
+
+Note that <=>> and <<=> work for UDP on stateful firewalls. On stateless
+firewall, they work the same way as <-> for UDP.
+
+
+2. Non-symbolic operators
+=========================
+
+Symbolic operators may be a pain to read when writing huge and complex
+filtering rules, so another set of operators has been defined.
+Their syntax is:
+
+
+operator ::= "accept" | "deny" | "reject" ["from" |
+		"to" | "and" | "established" | "log"]
+
+
+
+Examples :
+
+
+# Accept outgoing packets from 192.168.1.1 and going to
+# 192.168.2.1, and incoming packets coming from 192.168.2.1 going
+# to 192.168.2.2 (ie: the same as <->)
+
+tcp (192.168.1.1) accept (192.168.2.1) on interface0
+
+# the above statement is the same as
+
+tcp (192.168.1.1) accept from and to (192.168.2.1) on interface0
+
+
+#
+# Accept outgoing connections from 10.1.1.1 to 10.2.2.2, and
+# log them (the same as "log <=>>")
+#
+tcp (10.1.1.1) accept established to and log (10.2.2.2)
+
+
+
+
+(src) and (dst) format
+-------------------------------------------------------------------------
+
+(src) and (dst) can be :
+(ip ports)
+
+ie :
+ 	(192.168.1.1 1-1024)
+	(192.168.2.1 21,22,80,49152-65535)
+
+Or :
+(ip ports | other_ip other_ports | ....)
+
+ie :
+
+	(192.168.1.1|192.168.1.12|192.168.1.200)
+
+
+Several sources can be combined with several destinations :
+
+tcp (192.168.1.1|192.168.2.1|192.168.3.1) <=> (172.22.0.1|172.22.0.2|172.22.0.3)
+
+Means :
+	192.168.1.1 can communicate with 172.22.0.1, 172.22.0.2 and 172.22.0.3
+	192.168.2.1 can communicate with 172.22.0.1, 172.22.0.2 and 172.22.0.3
+	192.168.3.1 can communicate with 172.22.0.1, 172.22.0.2 and 172.22.0.3
+
+The keyword 'nomix' can be added at the end of a line, in this case,
+
+tcp (192.168.1.1|192.168.2.1|192.168.3.1) <=> (172.22.0.1|172.22.0.2|172.22.0.3) nomix
+  means :
+
+  192.168.1.1 can communicate with 172.22.0.1
+  192.168.2.1 can communicate with 172.22.0.2
+  192.168.3.1 can communicate with 172.22.0.3
+
+
+tcp (192.168.1.1 80 | 192.168.2.1 21) X (172.22.0.1)
+
+is a valid statement. It prevents 172.22.0.1 to communicate with
+192.168.1.1 on port 80 and 192.168.2.1 on port 21
+
+
+Finally,
+
+tcp ((192.168.1.1|192.168.2.1) 80,21) X (172.22.0.1)
+
+is a valid statement which prevents 172.22.0.1 to communicate
+with 192.168.1.1 and 192.168.2.1 on ports 21 and 80
+
+
+interfaces format
+-------------------------------------------------------------------------------
+
+
+[interfaces] could be
+* empty
+* one interface
+* or an array of interfaces separated by commas
+
+ie:
+tcp (192.168.1.1) X (192.168.1.2)
+means that 192.168.1.1 and 192.168.1.2 are not allowed to communicate,
+whatever the interface.
+
+tcp (192.168.1.1) X (192.168.1.2) [eth0]
+means that 192.168.1.1 and 192.168.1.2 are not allowed to communicate, using
+interface eth0.
+
+tcp (192.168.1.1) <-> (192.168.1.2) [fxp1,fxp2]
+means that 192.168.1.1 and 192.168.1.2 are allowed to communicate, using
+interface fxp1 or fxp2.
+
+tcp (10.0.0.1) <-> (10.254.254.254) on Ethernet0
+means that 10.0.0.1 and 10.254.254.254 are allowed to
+communicate using interface Ethernet0
+
+Other valid statements :
+
+tcp (10.0.0.1) <-> (10.1.1.1) on [eth1, eth2, eth3]
+tcp (10.0.0.1) <-> (10.1.1.1) on (eth1,eth2,eth3)
+
+
+
+
+ICMP
+-------------------------------------------------------------------------------
+
+
+The following icmp types are recognized :
+
+	echo-request
+	echo-reply
+	destination-unreachable
+	time-exceeded
+
+To have a working 'ping' :
+
+icmp (any echo-request) -> (any)
+icmp (any) <- (any echo-reply)
+
+
+
+Variables
+-------------------------------------------------------------------------------
+
+It is possible to define variables to make the rules more readable, using
+the keyword 'define'
+
+define word value
+
+ie :
+
+define inside 192.168.1.0/24
+define public_ports 1024-65535
+
+(inside public_ports) <=>> (any)
+
+
+Include
+------------------------------------------------------------------------------
+
+It is possible to include a file using the 'include' instruction.
+
+Example :
+
+o in def.hlfl :
+
+define ftp 21
+define ssh 22
+define telnet 23
+
+
+o in rules.hlfl :
+
+include def.hlfl
+
+tcp (any ssh) <<=> (any)
+
+
+
+Comments
+-------------------------------------------------------------------------------
+
+There are three kinds of comments that are handled by hlfl :
+
+- comments starting by '%' will *not* be included in the generated file.
+
+  That is :
+
+  	%
+	% This rules are written in hlfl
+	%
+
+	tcp (any) -> (any)
+
+  Will produce, in ipchains format :
+
+  	ipchains -A output -s 0/0 -d 0/0 -j ACCEPT
+
+
+- comments starting by '#' will be included in the generated file, except
+  when cisco rules are selected.
+
+  That is :
+
+  %
+  % This rules are written in hlfl
+  %
+
+  # allow all the outgoing tcp
+  tcp (any) -> (any)
+
+ Will produce :
+
+  # allow all the outgoing tcp
+  ipchains -A output -s 0/0 -d 0/0 -j ACCEPT
+
+- Comments starting by '!' will be included as COMMANDS in the generated
+  file. This reduces portabilty, since your rules will depend of the underlying
+  firewall, but this is convieniant in some cases (typically, if you
+  play with forwarding, masquerading, and so on...)
+
+  !ipchains -A forward -s 0/0 -d 0/0 -i eth0 -j ACCEPT
+  tcp (any) -> (any)
+
+  Will produce  :
+
+  ipchains -A forward -s 0/0 -d 0/0 -i eth0 -j ACCEPT
+  ipchains -A output -s 0/0 -d 0/0 -j ACCEPT
+
+  Note that if you select the ipfw output, you'll get this nonnense :
+
+  ipchains -A forward -s 0/0 -d 0/0 -i eth0 -j ACCEPT
+  ipfw add allow tcp from any to any out
+
+
+  So you can define conditional inclusion. That is :
+
+  ! if(ipchains) $ipchains -A forward -s 0/0 -d 0/0 -j eth0 -j ACCEPT
+
+
+  In that case, this rule will only be printed if you are
+  generating ipchains output.
+
+  The 'else' statement is supported, so the following is valid :
+
+  ! if(ipchains) $ipchains -A forward -s 0/0 -d 0/0 -i eth0 -j MASQ
+  ! else echo "MASQUERADING NOT IMPLEMENTED" ; exit
+
+Real-life examples
+-------------------------------------------------------------------------------
+
+See sample_1.hlfl and sample_2.hlfl

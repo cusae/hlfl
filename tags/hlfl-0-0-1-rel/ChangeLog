@@ -1,0 +1,5 @@
+If you're interested in a ChangeLog file, just run
+
+	cvs2cl --utc
+
+You could find cvs2cl at http://www.red-bean.com/cvs2cl

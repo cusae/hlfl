@@ -1,0 +1,16 @@
+proto src operator dst [ interface ] [ keywords ]
+
+proto = protocol [ "|" protocol [ "|" protocol ] ] | "all"
+protocol = "tcp" | "udp" | "icmp"
+src = ip | any [ port ] [ "|" src ]
+operator = symbolic | verbose
+symbolic = "->" | "<-" | "<->" | "<=>>" | "<<=>" | "X->" | "X!->" | "<-X" | "<-X!" | "X" | "X!"
+verbose = "accept" | "deny" | "reject" [ options ]
+options = [ "from" [ "and" | "to" ] | "to" [ "from" | "and" ] | "established" ]
+dst = ip | any [ port ] [ "|" dst ]
+interface = "interface-name"
+keywords = "nomix" | "log"
+
+port = digit [ digit [ digit [ digit [ digit ] ] ] ] [ "," port ]
+ip = host-num "." host-num "." host-num "." host-num
+host-num = digit [ digit [ digit ] ]

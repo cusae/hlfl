@@ -1,0 +1,14 @@
+Feb 20, 2002 -- Version 0.60.0
+- dev system use autoconf 2.52 / automake 1.5
+- verbose operators
+- support of ipfw4 stateful feature
+- change of logging: now uses the log keyword; the old "Xl"
+  style logging won't work anymore, use "X log"
+- change of ipfilter's <-> op: it's now correct from a logic
+  point of view, be careful if you have old rules (compare
+  new and old) not to have something you don't want
+
+Dec 6, 2000 -- Version 0.51
+- ipfwadm support
+- generic log support
+- lots of bugfixes

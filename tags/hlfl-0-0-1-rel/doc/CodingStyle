@@ -1,0 +1,11 @@
+	HLFL Coding Style
+
+Indentation is eight space long.
+Braces should be culled with else or if.
+
+K&R is right.
+
+If this hurts you when coding, you could reformat the code on which you want to
+work, and then reformat your code using indent with the following options:
+
+indent -kr -i8 -l90
