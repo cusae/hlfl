@@ -40,7 +40,8 @@ icmp_types(type)
 
  if (!strcmp(type, "echo-reply") ||
      !strcmp(type, "destination-unreachable") ||
-     !strcmp(type, "echo-request") || !strcmp(type, "time-exceeded"))
+     !strcmp(type, "echo-request") || !strcmp(type, "time-exceeded") ||
+     !strcmp(type, "source-quench") || !strcmp(type, "parameter-problem"))
   sprintf(ret, "--icmp-type %s", type);
  else
   fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
