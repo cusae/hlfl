@@ -117,7 +117,7 @@ translate_bsd_ipfw(op, proto, src, log, dst, sports, dports, interface)
        printf("$ipfw -f add accept%s %s from %s %s to %s %s in %s\n", logit,
 	      proto, dst, dports, src, sports, via);
       }
-    else
+    else {
 	    if (!strcmp(lang, "ipfw4"))
 	    {
 		    printf("$ipfw -f add allow%s %s from %s %s to %s %s out %s %s keep state\n", logit, proto, src, sports, dst, dports, icmp_code, via);
