@@ -52,17 +52,17 @@
 #define TWO_WAYS 		ONE_WAY|ONE_WAY_REVERSE
 #define LOG			64
 
-#define ACCEPT_ONE_WAY 				(ACCEPT|ONE_WAY)	/*  ->           */
-#define ACCEPT_ONE_WAY_REVERSE 			(ACCEPT|ONE_WAY_REVERSE)	/* <-            */
-#define ACCEPT_TWO_WAYS 			(ACCEPT|TWO_WAYS)	/* <->           */
-#define ACCEPT_TWO_WAYS_ESTABLISHED 		(ACCEPT|ONE_WAY|ESTABLISHED)	/* <=>>          */
-#define ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE 	(ACCEPT|ONE_WAY_REVERSE|ESTABLISHED)	/* <<=>          */
-#define DENY_ALL 				(DENY|TWO_WAYS)	/*  X            */
-#define REJECT_ALL 				(REJECT|TWO_WAYS)	/*  X!           */
-#define DENY_OUT 				(DENY|ONE_WAY)	/* X->           */
-#define DENY_IN 				(DENY|ONE_WAY_REVERSE)	/* <-X           */
-#define REJECT_OUT 				(REJECT|ONE_WAY)	/* X!->          */
-#define REJECT_IN 				(REJECT|ONE_WAY_REVERSE)	/* <-X!          */
+#define ACCEPT_ONE_WAY 				(ACCEPT|ONE_WAY)			/*  ->   */
+#define ACCEPT_ONE_WAY_REVERSE 			(ACCEPT|ONE_WAY_REVERSE)		/* <-    */
+#define ACCEPT_TWO_WAYS 			(ACCEPT|TWO_WAYS)			/* <->   */
+#define ACCEPT_TWO_WAYS_ESTABLISHED 		(ACCEPT|ONE_WAY|ESTABLISHED)		/* <=>>  */
+#define ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE 	(ACCEPT|ONE_WAY_REVERSE|ESTABLISHED)	/* <<=>  */
+#define DENY_ALL 				(DENY|TWO_WAYS)				/*  X    */
+#define REJECT_ALL 				(REJECT|TWO_WAYS)			/*  X!   */
+#define DENY_OUT 				(DENY|ONE_WAY)				/* X->   */
+#define DENY_IN 				(DENY|ONE_WAY_REVERSE)			/* <-X   */
+#define REJECT_OUT 				(REJECT|ONE_WAY)			/* X!->  */
+#define REJECT_IN 				(REJECT|ONE_WAY_REVERSE)		/* <-X!  */
 
 #define COMMENT 1
 #define INCLUDE_TEXT 2
