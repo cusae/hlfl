@@ -1,1 +1,2 @@
 SUBDIRS = doc src
+EXTRA_DIST=VERSION
