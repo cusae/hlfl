@@ -1,0 +1,29 @@
+
+20000324 :
+	- added recursive defines. This means that the following is
+	  now valid :
+	  	define a 192.168.1.0/24
+		define b 192.168.2.0/24
+		define c a|b
+
+
+	- added protocol "or". The following is now valid :
+		
+		 udp|tcp (local 2049) <-> (local 2049)
+
+
+  	- added ip group, that is :
+
+		tcp ((a|b) 2049) -> (any 2049)
+
+  	  is valid and is the same as :
+
+	  	tcp (a 2049 | b 2049) -> (any 2049)
+
+
+  Thanks to Matthias Andree <ma@dt.e-technik.uni-dortmund.de> for these
+suggestions
+
+Older versions :  
+
+ Thanks to Denis Ducamp <denis.ducamp@hsc.fr> for his suggestions.
