@@ -143,9 +143,9 @@ translate_ipfilter(op, proto, src, log, dst, sports, dports, interface)
 	   dports, src, sports, icmp_code);
     break;
    case ACCEPT_TWO_WAYS:
-    printf("pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p, src,
+    printf("pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p, src,
 	   sports, dst, dports, icmp_code);
-    printf("pass out%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
+    printf("pass in%s quick %s %s from %s %s to %s %s %s\n", logit, via, p,
 	   dst, dports, src, sports, icmp_code);
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED:
