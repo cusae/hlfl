@@ -201,7 +201,7 @@ char *op;
 		return NULL;
 
 	if (op) {
-		while (op[0] == ' ' || (op[0] == '\t'))
+		while ((op[0] == ' ') || (op[0] == '\t'))
 			op++;
 	}
 	return op;
@@ -503,7 +503,7 @@ int level;
 	t = iface;
 	while (t) {
 		char *v;
-		t = remove_spaces(iface);
+		t = remove_spaces(t);
 		s = strchr(t, ',');
 		if (s)
 			s[0] = '\0';
