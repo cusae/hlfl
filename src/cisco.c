@@ -17,9 +17,9 @@
  *
  */
 
+#include "cisco.h"
 #include "includes.h"
 #include "hlfl.h"
-#include "ipfilter.h"
 
 #define MAX_RULES 1024
 
@@ -587,7 +587,7 @@ translate_cisco_start()
  * do not print comments
  */
 void
-cisco_comment(void)
+cisco_comment()
 {
  return;
 }
