@@ -402,7 +402,7 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
 		   c->out, p, src, sports, dst, dports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
-	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s\n",
+	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
 		   c->in, p, dst, dports, src, sports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
 	 }
