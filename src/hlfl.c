@@ -259,7 +259,8 @@ char *proto;
 {
 	if ((!strcmp(proto, "all")) ||
 	    (!strcmp(proto, "tcp")) ||
-	    (!strcmp(proto, "udp")) || (!strcmp(proto, "icmp")))
+	    (!strcmp(proto, "udp")) ||
+	    (!strcmp(proto, "icmp")))
 		return 0;
 	else
 		return 1;
