@@ -405,7 +405,12 @@ char ** ifaces(iface, level)
    return NULL;
   }
   if(!iface)
-   return NULL;
+  	{ 
+	 ret = malloc(sizeof(char*)*2);
+	 ret[0] = strdup("");
+	 ret[1] = NULL;
+	 return ret;
+	}
    
   t = remove_spaces(iface);
 
@@ -462,7 +467,8 @@ ip_destroy(p)
   int i = 0;
   while(p[i])
   {
-      free(p[i++]);
+      /*free(p[i++]);*/
+      i++;
   }
   free(p);
 }
@@ -494,6 +500,8 @@ translate(proto, src, op, dst, interface, flags)
   char ** interfaces = NULL;
   int ni = 0;
   
+ 
+  
   if((iface = get_definition(interface)))
   {
    interface = iface;
@@ -511,19 +519,18 @@ translate(proto, src, op, dst, interface, flags)
   
   interfaces = ifaces(interface, 0);
   
+   while(interfaces[ni])
+   {
+    int np = 0;
+    while(protos[np])
+   {
+   if(flags && strstr(flags, "nomix"))mix = 0;
   
-  while(interfaces[ni])
-  {
-   int np = 0;
-  while(protos[np])
-  {
-  if(flags && strstr(flags, "nomix"))mix = 0;
-  
-  srcs = ip(src, 0);
-  dsts = ip(dst, 0);
+   srcs = ip(src, 0);
+   dsts = ip(dst, 0);
   
   
-  if(!srcs || !dsts)
+   if(!srcs || !dsts)
    {
     if(!error)error = HLFL_UNKNOWN_IP;
     return -1;
@@ -570,7 +577,7 @@ translate(proto, src, op, dst, interface, flags)
 			      d, 
 			      sports[k], 
 			      dports[l],
-			      interfaces[ni]);
+			      strlen(interfaces[ni])?interfaces[ni]:NULL);
 	  l++;
 	  }
 	  k++;
@@ -616,7 +623,7 @@ translate(proto, src, op, dst, interface, flags)
 			      d, 
 			      sports[k], 
 			      dports[l],
-			      interfaces[ni]);
+			      strlen(interfaces[ni])?interfaces[ni]:NULL);
 	  l++;
 	  }
 	  k++;
