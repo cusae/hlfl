@@ -14,10 +14,10 @@ strchr_items(str,chr, open, close)
 
     else if(str[0]==open)
     {
-      str = strchr(str+sizeof(char), close);
+      str = strchr(str+1, close);
       if(!str)return str;
     }
-    str+=sizeof(char);
+    str++;
   }
   if(!str[0])str = NULL;
   return str;

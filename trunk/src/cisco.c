@@ -198,7 +198,7 @@ cisco_ip(char * ip)
  
  if(t)
  {
-  int mask = atoi(t+sizeof(char));
+  int mask = atoi(t+1);
   t[0] = 0;
   if(mask == 32)
   {
