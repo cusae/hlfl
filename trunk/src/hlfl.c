@@ -59,6 +59,8 @@ char *error_str[] = {
  HLFL_DEFINE_RECURSIVE_STR
 };
 
+int matched_if = 0;
+
 translator_start_t translator_start;
 translate_t translate_func;
 comment_t comment;
@@ -1006,7 +1008,14 @@ read_file(file, fname)
        t++;			/* t[0] == '!' */
        while (t[0] == '\n' || t[0] == '\t' || t[0] == ' ')
 	t++;
-       include_text_func(t);
+	
+       if(!strncmp(t, "else", strlen("else")))
+        {
+	 if(!matched_if)
+          printf("%s", t+strlen("else"));
+	}
+       else
+        include_text_func(t);
       }
     bzero(buffer, sizeof(buffer));
    }

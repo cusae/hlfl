@@ -22,6 +22,9 @@
 #include "hlfl.h"
 #include "linux_netfilter.h"
 
+
+extern int matched_if;
+
 /*------------------------------------------------------------------
  * Private functions
  *------------------------------------------------------------------*/
@@ -262,7 +265,11 @@ include_text_netfilter(c)
  if (!strncmp("if(", c, 3))
    {
     if (!strncmp("if(netfilter)", c, strlen("if(netfilter)")))
-     printf("%s", c + strlen("if(netfilter)"));
+     {
+      printf("%s", c + strlen("if(netfilter)"));
+      matched_if = 1;
+     }
+     else matched_if = 0;
    }
  else
   printf("%s", c);

@@ -21,6 +21,9 @@
 #include "hlfl.h"
 #include "linux_ipchains.h"
 
+
+extern int matched_if;
+
 /*------------------------------------------------------------------
  * Private functions
  *------------------------------------------------------------------*/
@@ -213,7 +216,12 @@ include_text_ipchains(c)
  if (!strncmp("if(", c, 3))
    {
     if (!strncmp("if(ipchains)", c, strlen("if(ipchains)")))
-     printf("%s", c + strlen("if(ipchains)"));
+     {
+      printf("%s", c + strlen("if(ipchains)"));
+      matched_if = 1;
+     }
+     else
+      matched_if = 0;
    }
  else
   printf("%s", c);

@@ -25,6 +25,8 @@
  * Private utilities
  *------------------------------------------------------------------*/
 
+extern int matched_if;
+
 static char *
 icmp_types(type)
  char *type;
@@ -234,7 +236,11 @@ include_text_ipfilter(c)
  if (!strncmp("if(", c, 3))
    {
     if (!strncmp("if(ipfilter)", c, strlen("if(ipfilter)")))
-     printf("%s", c + strlen("if(ipfilter)"));
+     {
+      printf("%s", c + strlen("if(ipfilter)"));
+      matched_if = 1;
+     }
+     else matched_if = 0;
    }
  else
   printf("%s", c);
