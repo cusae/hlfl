@@ -17,6 +17,8 @@ VERSION="`echo $OVERSION | awk -F . '{printf("%d.%d.%d\n", $1, $2, $3 + 1);}'`"
 
 TAG="hlfl-`echo $VERSION | tr . -`-rel"
 
+sed -e "s/${OVERSION}/ ${VERSION}/g" configure.in >configure.in.new; mv configure.in.new configure.in
+
 rcs2log -v -u "asl:Arnaud Launay:launay@hlfl.org" -u "renaud:Renaud Deraison:deraison@hlfl.org" | cat - ChangeLog > ChangeLog.$$ && mv ChangeLog.$$ ChangeLog
 #${EDITOR} ChangeLog
 
