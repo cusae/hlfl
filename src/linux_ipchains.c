@@ -198,9 +198,9 @@ translate_linux_ipchains_start(FILE *output_file)
  fprintf(fout, "ipchains=\"/sbin/ipchains\"\n\n");
  fprintf(fout, "$ipchains -F\n");
  fprintf(fout, "$ipchains -X\n");
- fprintf(fout, "$ipchains -P input DENY\n");
- fprintf(fout, "$ipchains -P forward DENY\n");
- fprintf(fout, "$ipchains -P output DENY\n");
+ fprintf(fout, "$ipchains -P input ACCEPT\n");
+ fprintf(fout, "$ipchains -P forward ACCEPT\n");
+ fprintf(fout, "$ipchains -P output ACCEPT\n");
  return 0;
 }
 
