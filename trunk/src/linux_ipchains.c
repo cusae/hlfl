@@ -34,7 +34,7 @@ icmp_types(type)
  char *type;
 {
  char *ret = malloc(40 + strlen(type));
- bzero(ret, 40 + strlen(type));
+ memset(ret, 0, 40 + strlen(type));
  if (!strlen(type))
   return ret;
 

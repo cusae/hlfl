@@ -52,7 +52,7 @@ icmp_types(type)
  char *type;
 {
  char *ret = malloc(20);
- bzero(ret, 20);
+ memset(ret, 0, 20);
  if (!strlen(type))
   return ret;
  if (!strcmp(type, "echo-reply"))
@@ -93,7 +93,7 @@ cisco_add_interface(name)
   while (c->next)
    c = c->next;
  iface = malloc(sizeof(struct cisco_interfaces));
- bzero(iface, sizeof(*iface));
+ memset(iface, 0, sizeof(*iface));
  iface->name = strdup(name);
  if (c)
    {
@@ -304,7 +304,7 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
 
 
  buffer = malloc(size);
- bzero(buffer, size);
+ memset(buffer, 0, size);
  size--;
 
  switch (op)
@@ -323,7 +323,7 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
       {
        while (c)
 	 {
-	  bzero(buffer, size);
+	  memset(buffer, 0, size);
 	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
 		   c->out, p, dst, dports, dst, dports, icmp_code, logit);
 	  cisco_add_rule(buffer, c->name);
@@ -343,7 +343,7 @@ translate_cisco(op, proto, src, log, dst, sports, dports, interface)
       {
        while (c)
 	 {
-	  bzero(buffer, size);
+	  memset(buffer, 0, size);
 
 	  snprintf(buffer, size, "access-list %d permit %s %s %s %s %s %s %s\n",
 		   c->in, p, dst, dports, src, sports, icmp_code, logit);

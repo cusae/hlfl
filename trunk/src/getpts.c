@@ -148,7 +148,7 @@ clean_expr(expr)
  char *e;
  char ret[65000];
 
- bzero(ret, sizeof(ret));
+ memset(ret, 0, sizeof(ret));
  if (!expr)
   return NULL;
  while ((e = strchr(s, ',')))
@@ -269,7 +269,7 @@ get_ports_ranges(expr)
  if (!s || !ports)
    {
     ret = malloc(2 * sizeof(char *));
-    bzero(ret, 2 * sizeof(char *));
+    memset(ret, 0, 2 * sizeof(char *));
     ret[0] = malloc(1);
     ret[0][0] = 0;
     return ret;
@@ -278,7 +278,7 @@ get_ports_ranges(expr)
  n = number_of_ranges(ports);
 
  ret = malloc((n + 1) * sizeof(char *));
- bzero(ret, (n + 1) * sizeof(char *));
+ memset(ret, 0, (n + 1) * sizeof(char *));
  start = end = ports[0];
  while (ports[i])
    {
@@ -312,7 +312,7 @@ get_icmp_codes(codes)
 {
  char **ret = malloc(2 * sizeof(char *));
  char *t;
- bzero(ret, 2 * sizeof(char *));
+ memset(ret, 0, 2 * sizeof(char *));
 
  if (codes)
    {
