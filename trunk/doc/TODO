@@ -18,5 +18,6 @@ Priority classification:
 9   cvsup
 9   hypermail
 9   cvsweb
-5   labels (?)
-3   real IP syntax verif (?)
+5   labels
+3   real IP syntax verif
+3   graphic interface "ala FW1"
