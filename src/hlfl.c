@@ -1,6 +1,5 @@
-/*
- * hlfl
- * Copyright (C) 2000-2002 Renaud Deraison
+/* hlfl
+ * Copyright ® 2000-2003 Renaud Deraison
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -1050,7 +1049,7 @@ char *n;
 
 	fprintf(stderr, "%s v%s\n", n, VERSION);
 	fprintf(stderr,
-		"Copyright (C) 2000-2002 Renaud Deraison (deraison @ hlfl.org)\n\n");
+		"Copyright © 2000-2003 Renaud Deraison (deraison @ hlfl.org)\n\n");
 	fprintf(stderr, "Usage: %s [OPTIONS] <rulefile>\n\n", n);
 	fprintf(stderr, "Operation modes:\n");
 	fprintf(stderr, "   -h"

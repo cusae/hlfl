@@ -1,7 +1,7 @@
 #
 # spec file for package hlfl (Version 0.5)
 #
-# Copyright  (c)  2000-2002 SuSE, Germany.
+# Copyright © 2000-2003 SuSE, Germany.
 #
 # please send bugfixes or comments to feedback@suse.de.
 #
@@ -14,7 +14,7 @@ Packager:     	mge@suse.de
 
 Version: 	@VERSION@
 Summary:      	High Level Firewall Language
-Copyright: 	GPL, Copyright (C) 2000-2002 Renaud Deraison <deraison@hlfl.org>
+Copyright: 	GPL, Copyright © 2000-2003 Renaud Deraison <deraison@hlfl.org>
 Group:        	unsorted
 Provides:     	hlfl
 Autoreqprov: 	on
@@ -22,13 +22,13 @@ Source0: 	hlfl-%{version}.tar.gz
 
 %description
 
-hlfl is a tool which can produce several  types  of  firewalls
+hlfl is a tool which can produce several types of firewalls
 from a given set of rules written in a special language also
 called hlfl (however awkward it is).
 
-hlfl attempts to make the best use of the features of  the
+hlfl attempts to make the best use of the features of the
 underlying firewall, so that the conversion of a stateless to
-a stateful requires no  modification  to  the  original script
+a stateful requires no modification to the original script
 
 %prep
 

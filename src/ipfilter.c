@@ -1,5 +1,5 @@
 /* hlfl
- * Copyright (C) 2000-2002 Renaud Deraison
+ * Copyright © 2000-2003 Renaud Deraison
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
