@@ -51,9 +51,9 @@ char *type;
 static char *ipfilter_port(char *port)
 {
 	char *t;
-	if (!port || !strlen(port)) {
+	if (!port || !strlen(port))
 		return strdup("");
-	} else if ((t = strchr(port, '-'))) {
+	else if ((t = strchr(port, '-'))) {
 		char *ret = malloc(strlen(port) + 20);
 		t[0] = '\0';
 		if ((atoi(t + 1) + 1) > 65535)
@@ -118,114 +118,97 @@ char *interface;
 	}
 	switch (op) {
 	case ACCEPT_ONE_WAY:
-		fprintf(fout,
-			"pass out%s quick %s %s from %s %s to %s %s %s\n",
-			logit, via, p, src, sports, dst, dports, icmp_code);
+		fprintf(fout, "pass out%s quick %s %s from %s %s to %s %s %s\n",
+				logit, via, p, src, sports, dst, dports, icmp_code);
 		break;
 	case ACCEPT_ONE_WAY_REVERSE:
-		fprintf(fout,
-			"pass in%s quick %s %s from %s %s to %s %s %s\n",
-			logit, via, p, dst, dports, src, sports, icmp_code);
+		fprintf(fout, "pass in%s quick %s %s from %s %s to %s %s %s\n",
+				logit, via, p, dst, dports, src, sports, icmp_code);
 		break;
 	case ACCEPT_TWO_WAYS:
-		fprintf(fout,
-			"pass out%s quick %s %s from %s %s to %s %s %s\n",
-			logit, via, p, src, sports, dst, dports, icmp_code);
-		fprintf(fout,
-			"pass in%s quick %s %s from %s %s to %s %s %s\n",
-			logit, via, p, dst, dports, src, sports, icmp_code);
+		fprintf(fout, "pass out%s quick %s %s from %s %s to %s %s %s\n",
+				logit, via, p, src, sports, dst, dports, icmp_code);
+		fprintf(fout, "pass in%s quick %s %s from %s %s to %s %s %s\n",
+				logit, via, p, dst, dports, src, sports, icmp_code);
 		break;
 	case ACCEPT_TWO_WAYS_ESTABLISHED:
-		if (!strcmp(proto, "tcp") || !strcmp(proto, "udp")) {
-			fprintf(fout,
-				"pass out%s quick %s %s from %s %s to %s %s keep state\n",
-				logit, via, p, src, sports, dst, dports);
-		} else {
-			fprintf(fout,
-				"pass in%s quick %s %s from %s %s to %s %s %s\n",
-				logit, via, p, dst, dports, src, sports, icmp_code);
-			fprintf(fout,
-				"pass out%s quick %s %s from %s %s to %s %s %s\n",
-				logit, via, p, src, sports, dst, dports, icmp_code);
+		if (!strcmp(proto, "tcp"))
+			fprintf(fout, "pass out%s quick %s %s from %s %s to %s %s flags S keep state\n",
+					logit, via, p, src, sports, dst, dports);
+		else if (!strcmp(proto, "udp"))
+			fprintf(fout, "pass out%s quick %s %s from %s %s to %s %s keep state\n",
+					logit, via, p, src, sports, dst, dports);
+		else if (!strcmp(proto, "icmp") && !strcmp(icmp_code, "icmp-type 8"))
+			fprintf(fout, "pass out%s quick %s %s from %s %s to %s %s %s keep state\n",
+					logit, via, p, src, sports, dst, dports, icmp_code);
+		else {
+			fprintf(fout, "pass in%s quick %s %s from %s %s to %s %s %s\n",
+					logit, via, p, dst, dports, src, sports, icmp_code);
+			fprintf(fout, "pass out%s quick %s %s from %s %s to %s %s %s\n",
+					logit, via, p, src, sports, dst, dports, icmp_code);
 		}
 		break;
 
 	case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
-		if (!strcmp(proto, "tcp") || !strcmp(proto, "udp")) {
-			fprintf(fout,
-				"pass in%s quick %s %s from %s %s to %s %s keep state\n",
-				logit, via, p, dst, dports, src, sports);
-		} else {
-			fprintf(fout,
-				"pass in%s quick %s %s from %s %s to %s %s %s\n",
-				logit, via, p, dst, dports, src, sports, icmp_code);
-			fprintf(fout,
-				"pass out%s quick %s %s from %s %s to %s %s %s\n",
-				logit, via, p, src, sports, dst, dports, icmp_code);
+		if (!strcmp(proto, "tcp"))
+			fprintf(fout, "pass in%s quick %s %s from %s %s to %s %s flags S keep state\n",
+					logit, via, p, dst, dports, src, sports);
+		else if (!strcmp(proto, "udp"))
+			fprintf(fout, "pass in%s quick %s %s from %s %s to %s %s keep state\n",
+					logit, via, p, dst, dports, src, sports);
+		else {
+			fprintf(fout, "pass in%s quick %s %s from %s %s to %s %s %s\n",
+					logit, via, p, dst, dports, src, sports, icmp_code);
+			fprintf(fout, "pass out%s quick %s %s from %s %s to %s %s %s\n",
+					logit, via, p, src, sports, dst, dports, icmp_code);
 		}
 		break;
 
 	case DENY_ALL:
-		fprintf(fout,
-			"block out%s quick %s %s from %s %s to %s %s %s\n",
-			logit, via, p, src, sports, dst, dports, icmp_code);
-		fprintf(fout,
-			"block in%s quick %s %s from %s %s to %s %s %s\n",
-			logit, via, p, dst, dports, src, sports, icmp_code);
+		fprintf(fout, "block out%s quick %s %s from %s %s to %s %s %s\n",
+				logit, via, p, src, sports, dst, dports, icmp_code);
+		fprintf(fout, "block in%s quick %s %s from %s %s to %s %s %s\n",
+				logit, via, p, dst, dports, src, sports, icmp_code);
 		break;
 	case REJECT_ALL:
 		/* If protocol is all, add decent rejecting rules for tcp
 		Carlos */
 		if (!strcmp(proto, "all"))
-			{
-			fprintf(fout,
-				"block return-rst in%s quick %s proto tcp from %s %s to %s %s %s\n",
-				logit, via, dst, dports, src, sports, icmp_code);
-			}
+			fprintf(fout, "block return-rst in%s quick %s proto tcp from %s %s to %s %s %s\n",
+					logit, via, dst, dports, src, sports, icmp_code);
 		if (!strcmp(proto, "tcp"))
-			fprintf(fout,
-				"block return-rst in%s quick %s %s from %s %s to %s %s %s\n",
-				logit, via, p, dst, dports, src, sports, icmp_code);
+			fprintf(fout, "block return-rst in%s quick %s %s from %s %s to %s %s %s\n",
+					logit, via, p, dst, dports, src, sports, icmp_code);
 		else
-			fprintf(fout,
-				"block return-icmp in%s quick %s %s from %s %s to %s %s %s\n",
-				logit, via, p, dst, dports, src, sports, icmp_code);
-		fprintf(fout,
-			"block out%s quick %s %s from %s %s to %s %s %s\n",
-			logit, via, p, src, sports, dst, dports, icmp_code);
+			fprintf(fout, "block return-icmp in%s quick %s %s from %s %s to %s %s %s\n",
+					logit, via, p, dst, dports, src, sports, icmp_code);
+		fprintf(fout, "block out%s quick %s %s from %s %s to %s %s %s\n",
+				logit, via, p, src, sports, dst, dports, icmp_code);
 		break;
 	case DENY_OUT:
-		fprintf(fout,
-			"block out%s quick %s %s from %s %s to %s %s %s\n",
-			logit, via, p, src, sports, dst, dports, icmp_code);
+		fprintf(fout, "block out%s quick %s %s from %s %s to %s %s %s\n",
+				logit, via, p, src, sports, dst, dports, icmp_code);
 		break;
 	case DENY_IN:
-		fprintf(fout,
-			"block in%s quick %s %s from %s %s to %s %s %s\n",
-			logit, via, p, dst, dports, src, sports, icmp_code);
+		fprintf(fout, "block in%s quick %s %s from %s %s to %s %s %s\n",
+				logit, via, p, dst, dports, src, sports, icmp_code);
 		break;
 	case REJECT_OUT:
-		fprintf(fout,
-			"block out%s quick %s %s from %s %s to %s %s %s\n",
-			logit, via, p, src, sports, dst, dports, icmp_code);
+		fprintf(fout, "block out%s quick %s %s from %s %s to %s %s %s\n",
+				logit, via, p, src, sports, dst, dports, icmp_code);
 		break;
 	case REJECT_IN:
 		/* If protocol is all, add decent rejecting rules for tcp
 		Carlos */
 		if (!strcmp(proto, "all"))
-			{
-			fprintf(fout,
-				"block return-rst in%s quick %s proto tcp from %s %s to %s %s %s\n",
-				logit, via, dst, dports, src, sports, icmp_code);
-			}
+			fprintf(fout, "block return-rst in%s quick %s proto tcp from %s %s to %s %s %s\n",
+					logit, via, dst, dports, src, sports, icmp_code);
 		if (!strcmp(proto, "tcp"))
-			fprintf(fout,
-				"block return-rst in%s quick %s %s from %s %s to %s %s %s\n",
-				logit, via, p, dst, dports, src, sports, icmp_code);
+			fprintf(fout, "block return-rst in%s quick %s %s from %s %s to %s %s %s\n",
+					logit, via, p, dst, dports, src, sports, icmp_code);
 		else
-			fprintf(fout,
-				"block return-icmp in%s quick %s %s from %s %s to %s %s %s\n",
-				logit, via, p, dst, dports, src, sports, icmp_code);
+			fprintf(fout, "block return-icmp in%s quick %s %s from %s %s to %s %s %s\n",
+					logit, via, p, dst, dports, src, sports, icmp_code);
 		break;
 	}
 
