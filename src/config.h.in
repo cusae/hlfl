@@ -1,4 +1,3 @@
-
 #ifndef HLFL_CONFIG_H__
 #define HLFL_CONFIG_H__
 #undef HAVE_STDIO_H
