@@ -12,15 +12,15 @@ statement ::= "protocol" ("local") "operator" ("remote") ["on"] [interfaces] key
 
 Example :
 
-tcp (192.168.1.1) X (192.168.2.1) [eth0,eth1]
+tcp (192.168.1.1) X (192.168.2.1) [fxp0,xl1]
 
 
 Means in bsd ipfw language :
 
-ipfw -f add deny tcp from 192.168.1.1  to 192.168.2.1  out  via eth0
-ipfw -f add deny tcp from 192.168.2.1  to 192.168.1.1  in  via eth0
-ipfw -f add deny tcp from 192.168.1.1  to 192.168.2.1  out  via eth1
-ipfw -f add deny tcp from 192.168.2.1  to 192.168.1.1  in  via eth1
+ipfw -f add deny tcp from 192.168.1.1  to 192.168.2.1  out  via fxp0
+ipfw -f add deny tcp from 192.168.2.1  to 192.168.1.1  in  via fxp0
+ipfw -f add deny tcp from 192.168.1.1  to 192.168.2.1  out  via xl1
+ipfw -f add deny tcp from 192.168.2.1  to 192.168.1.1  in  via xl1
 
 And this means in a human language :
 
