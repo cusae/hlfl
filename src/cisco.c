@@ -1,5 +1,5 @@
 /* hlfl
- * Copyright (C) 2000 Renaud Deraison
+ * Copyright (C) 2000-2002 Renaud Deraison
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -142,7 +142,7 @@ void
 cisco_exit()
 {
  struct cisco_interfaces *iface = ci;
- 
+
  printf("\n\n!\n");
  printf("! ACL definitions\n!\n!\n\n\n");
  while(iface)
@@ -157,9 +157,9 @@ cisco_exit()
      iface = iface->next;
      printf("\n\n");
    }
-   
+
  iface = ci;
- 
+
  printf("\n\n\n\n!\n! Now, apply our ACLs to each interface\n!\n");
  while (iface)
    {
@@ -169,7 +169,7 @@ cisco_exit()
     iface = iface->next;
    }
 
-   
+
 }
 
 char *

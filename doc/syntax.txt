@@ -67,21 +67,21 @@ filtering rules, so another set of operators has been defined.
 Their syntax is:
 
 
-operator ::= "accept" | "deny" | "reject" ["from" | 
+operator ::= "accept" | "deny" | "reject" ["from" |
 		"to" | "and" | "established" | "log"]
-		
-		 
+
+
 
 Examples :
 
 
-# Accept outgoing packets from 192.168.1.1 and going to 
+# Accept outgoing packets from 192.168.1.1 and going to
 # 192.168.2.1, and incoming packets coming from 192.168.2.1 going
 # to 192.168.2.2 (ie: the same as <->)
 
 tcp (192.168.1.1) accept (192.168.2.1) on interface0
 
-# the above statement is the same as 
+# the above statement is the same as
 
 tcp (192.168.1.1) accept from and to (192.168.2.1) on interface0
 
@@ -90,7 +90,7 @@ tcp (192.168.1.1) accept from and to (192.168.2.1) on interface0
 # Accept outgoing connections from 10.1.1.1 to 10.2.2.2, and
 # log them (the same as "log <=>>")
 #
-tcp (10.1.1.1) accept established to and log (10.2.2.2) 
+tcp (10.1.1.1) accept established to and log (10.2.2.2)
 
 
 

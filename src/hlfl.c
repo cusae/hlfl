@@ -1,6 +1,6 @@
 /* vi:set tw=80 sts=1 ts=1 sw=1:
  * hlfl
- * Copyright (C) 2000 Renaud Deraison
+ * Copyright (C) 2000-2002 Renaud Deraison
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -105,7 +105,7 @@ get_definition(d)
 
  while (d[0] == ' ')
   d++;
-	
+
  while (d[strlen(d) - 1] == ' ')
   d[strlen(d) - 1] = '\0';
 
@@ -164,7 +164,7 @@ next_op(op)
 {
  if(!op)
   return NULL;
- 
+
  op = strchr(op, ' ');
  if(op){
   while(op[0]==' ')op++;
@@ -213,7 +213,7 @@ int_op(op)
 	ret |= DENY_IN;
 	op = next_op(op);
 	}
-  else if (!strncmp(op, "X!->", strlen("X!->")) || 
+  else if (!strncmp(op, "X!->", strlen("X!->")) ||
   	   !strncmp(op, "!X->", strlen("!X->")))
   	{
 	ret |= REJECT_OUT;
@@ -249,7 +249,7 @@ int_op(op)
    ret |= ACCEPT;
    op = next_op(op);
   }
- 
+
   else if(!strncmp(op, "deny", strlen("deny")))
   {
    ret |= DENY;
@@ -271,7 +271,7 @@ int_op(op)
    ret |= ONE_WAY_REVERSE;
    op = next_op(op);
   }
- else 
+ else
   if(!strncmp(op, "established", strlen("established")))
   {
    ret |= ESTABLISHED;
@@ -286,38 +286,38 @@ int_op(op)
  {
   op = next_op(op);
  }
- else 
+ else
  {
   error = HLFL_SYNTAX_ERROR;
   return -1;
  }
  }
- 
+
  if(!ret)
  {
   error = HLFL_UNKNOWN_OP;
   return -1;			/* error */
  }
- 
+
  /*
   * Sanity checks
   */
- if(((ret & (ACCEPT|DENY|REJECT)) != ACCEPT) && 
+ if(((ret & (ACCEPT|DENY|REJECT)) != ACCEPT) &&
     ((ret & (ACCEPT|DENY|REJECT)) != DENY)   &&
     ((ret & (ACCEPT|DENY|REJECT)) != REJECT))
  {
  	error = HLFL_SYNTAX_ERROR;
  	return -1;
  }
-	
- 
 
- 
+
+
+
  if((ret == ACCEPT) ||
     (ret == DENY)   ||
     (ret == REJECT))
      	ret |= TWO_WAYS;
-	
+
 
  if((ret|LOG) == (ACCEPT|ESTABLISHED|TWO_WAYS|LOG))
  {
@@ -326,8 +326,8 @@ int_op(op)
    */
   ret -= ESTABLISHED;
  }
- 
- 	 
+
+
  return ret;
 
 }
@@ -350,7 +350,7 @@ check_proto(proto)
 {
  if ((!strcmp(proto, "all")) ||
      (!strcmp(proto, "tcp")) ||
-     (!strcmp(proto, "udp")) || 
+     (!strcmp(proto, "udp")) ||
 					(!strcmp(proto, "icmp")))
   return 0;
  else
@@ -1130,7 +1130,7 @@ process(buffer)
 	if(interface[strlen(interface) - 1] == '\n')
 	 interface[strlen(interface) - 1] = '\0';
 	if(t)
-		{ 
+		{
 		t++;
 		while(t[0] && t[0]==' ')t++;
 		}
@@ -1200,7 +1200,7 @@ read_file(file, fname)
        t++;			/* t[0] == '!' */
        while (t[0] == '\n' || t[0] == '\t' || t[0] == ' ')
 	t++;
-	
+
        if(!strncmp(t, "else", strlen("else")))
         {
 	 if(!matched_if)
@@ -1225,11 +1225,12 @@ usage(n)
 {
 
  fprintf(stderr, "%s version %s\n", n, VERSION);
- fprintf(stderr, "Copyright (C) 2000 Renaud Deraison");
+ fprintf(stderr, "Copyright (C) 2000-2002 Renaud Deraison");
  fprintf(stderr, "< deraison @ hlfl.org > \n\n");
  fprintf(stderr, "Usage : %s type < input > output\n", n);
  fprintf(stderr, "Where <type> can be one of :\n");
  fprintf(stderr, "\tipfw - BSD ipfw\n");
+ fprintf(stderr, "\tipfw4 - BSD ipfw 4 (stateful)\n");
  fprintf(stderr, "\tipfilter - Darren Reeds's ipfilter\n");
  fprintf(stderr, "\tipfwadm - Linux 2.0.x ipfwadm\n");
  fprintf(stderr, "\tipchains - Linux 2.2.x ipchains\n");
