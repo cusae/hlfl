@@ -201,7 +201,7 @@ int int_op(char *op)
 		int mask;
 	} ops[] = {
 #define DEF(str,mask) \
-	{ str, mask, strlen(str) },
+	{ str, strlen(str), mask },
 #include "hlfl.def"
 		{
 		NULL, 0, 0}
