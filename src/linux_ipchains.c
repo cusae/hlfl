@@ -217,7 +217,7 @@ int translate_linux_ipchains_start(FILE * output_file)
 void print_comment_ipchains(buffer)
 char *buffer;
 {
-	fprintf(fout, buffer);
+	fprintf(fout, "#%s", buffer);
 }
 
 

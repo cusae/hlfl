@@ -248,7 +248,7 @@ int translate_ipfilter_start(FILE * output_file)
 void print_comment_ipfilter(buffer)
 char *buffer;
 {
-	fprintf(fout, buffer);
+	fprintf(fout, "#%s", buffer);
 }
 
 void include_text_ipfilter(c)

@@ -724,6 +724,8 @@ char *file;
 {
 	FILE *f;
 
+	include_level++;
+
 	while (file[strlen(file) - 1] == '\n')
 		file[strlen(file) - 1] = '\0';
 	file = remove_spaces(file);
@@ -757,6 +759,8 @@ char *file;
 			fclose(f);
 		}
 	}
+
+	include_level--;
 	return 0;
 }
 
@@ -1012,14 +1016,18 @@ char *fname;
 #if DEBUG
 		printf("%s\n", buffer);
 #endif
+		if ((verbose_level > include_level)) {
+			translator_definitions[active_translator].comment(buffer);
+		}
+
 		if ((n = process(buffer)) < 0) {
 			fprintf(stderr, "*** %s : Error line %d : %s\n",
 				fname, line, error_str[error]);
 			exit(1);
 		}
-		if (n == COMMENT)
-			translator_definitions[active_translator].comment(buffer);
-		else if (n == INCLUDE_TEXT) {
+		if (n == COMMENT && !(verbose_level > include_level)) {
+			translator_definitions[active_translator].comment(buffer + 1);
+		} else if (n == INCLUDE_TEXT) {
 			char *t = buffer;
 			while (t[0] == '\n' || t[0] == '\t' || t[0] == ' ')
 				t++;

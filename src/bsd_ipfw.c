@@ -274,7 +274,7 @@ int translate_bsd_ipfw_start(FILE * output_file)
 void print_comment_ipfw(buffer)
 char *buffer;
 {
-	fprintf(fout, buffer);
+	fprintf(fout, "#%s", buffer);
 }
 
 void include_text_ipfw(c)

@@ -238,7 +238,7 @@ int translate_linux_ipfwadm_start(FILE * output_file)
 void print_comment_ipfwadm(buffer)
 char *buffer;
 {
-	fprintf(fout, buffer);
+	fprintf(fout, "#%s", buffer);
 }
 
 void include_text_ipfwadm(c)
