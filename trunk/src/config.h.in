@@ -3,14 +3,14 @@
 /* Define if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
 
-/* Define if you have the `bzero' function. */
-#undef HAVE_BZERO
-
 /* Define if you have the `inet_ntoa' function. */
 #undef HAVE_INET_NTOA
 
 /* Define if your system has a working `malloc' function. */
 #undef HAVE_MALLOC
+
+/* Define if you have the `memset' function. */
+#undef HAVE_MEMSET
 
 /* Define if you have the <netinet/in.h> header file. */
 #undef HAVE_NETINET_IN_H
