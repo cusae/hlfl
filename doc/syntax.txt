@@ -262,7 +262,7 @@ There are three kinds of comments that are handled by hlfl :
   The 'else' statement is supported, so the following is valid :
 
   ! if(ipchains) $ipchains -A forward -s 0/0 -d 0/0 -i eth0 -j MASQ
-  ! else echo "MASQUERADING NOT IMPLEMENTED" ; exit 
+  ! else echo "MASQUERADING NOT IMPLEMENTED" ; exit
 
 Real-life examples
 -------------------------------------------------------------------------------
