@@ -29,121 +29,110 @@ extern int matched_if;
  * Private functions
  *------------------------------------------------------------------*/
 
-static char *
-icmp_types(type)
- char *type;
+static char *icmp_types(type)
+char *type;
 {
- char *ret = malloc(40 + strlen(type));
- memset(ret, 0, 40 + strlen(type));
- if (!strlen(type))
-  return ret;
+	char *ret = malloc(40 + strlen(type));
+	memset(ret, 0, 40 + strlen(type));
+	if (!strlen(type))
+		return ret;
 
- if (!strcmp(type, "echo-reply") ||
-     !strcmp(type, "destination-unreachable") ||
-     !strcmp(type, "echo-request") || !strcmp(type, "time-exceeded") ||
-     !strcmp(type, "source-quench") || !strcmp(type, "parameter-problem"))
-  sprintf(ret, "--icmp-type %s", type);
- else
-  fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
- return ret;
+	if (!strcmp(type, "echo-reply") ||
+	    !strcmp(type, "destination-unreachable") ||
+	    !strcmp(type, "echo-request") || !strcmp(type, "time-exceeded")
+	    || !strcmp(type, "source-quench")
+	    || !strcmp(type, "parameter-problem"))
+		sprintf(ret, "--icmp-type %s", type);
+	else
+		fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
+	return ret;
 }
 
-static char *
-netfilter_sports(ports)
- char *ports;
+static char *netfilter_sports(ports)
+char *ports;
 {
- if (!ports || !strlen(ports))
-  return strdup("");
- else
-   {
-    char *ret = malloc(20 + strlen(ports));
-    sprintf(ret, "--source-port %s", ports);
-    return ret;
-   }
+	if (!ports || !strlen(ports))
+		return strdup("");
+	else {
+		char *ret = malloc(20 + strlen(ports));
+		sprintf(ret, "--source-port %s", ports);
+		return ret;
+	}
 }
 
-static char *
-netfilter_dports(ports)
- char *ports;
+static char *netfilter_dports(ports)
+char *ports;
 {
- if (!ports || !strlen(ports))
-  return strdup("");
- else
-   {
-    char *ret = malloc(20 + strlen(ports));
-    sprintf(ret, "--destination-port %s", ports);
-    return ret;
-   }
+	if (!ports || !strlen(ports))
+		return strdup("");
+	else {
+		char *ret = malloc(20 + strlen(ports));
+		sprintf(ret, "--destination-port %s", ports);
+		return ret;
+	}
 }
 
 /*------------------------------------------------------------------
  * Linux netfilter
  *------------------------------------------------------------------*/
-int
-translate_linux_netfilter(op, proto, src, log, dst, sports, dports, interface)
- int op;
- char *proto;
- char *src;
- int log;
- char *dst;
- char *sports;
- char *dports;
- char *interface;
+int translate_linux_netfilter(op, proto, src, log, dst, sports, dports, interface)
+int op;
+char *proto;
+char *src;
+int log;
+char *dst;
+char *sports;
+char *dports;
+char *interface;
 {
- char *via_in = strdup("");
- char *via_out = strdup("");
- char *t;
- char *sports_as_src = NULL;
- char *sports_as_dst = NULL;
- char *dports_as_src = NULL;
- char *dports_as_dst = NULL;
- char *icmp_code = NULL;
- char *logit = "";
- char *rejectit = "";
+	char *via_in = strdup("");
+	char *via_out = strdup("");
+	char *t;
+	char *sports_as_src = NULL;
+	char *sports_as_dst = NULL;
+	char *dports_as_src = NULL;
+	char *dports_as_dst = NULL;
+	char *icmp_code = NULL;
+	char *logit = "";
+	char *rejectit = "";
 
- if ( !strcmp(proto, "tcp") )
-   rejectit = "--reject-with tcp-reset";
+	if (!strcmp(proto, "tcp"))
+		rejectit = "--reject-with tcp-reset";
 
- if (log)
-   {
-   logit = "LOG_";
-   rejectit="";
-   }
+	if (log) {
+		logit = "LOG_";
+		rejectit = "";
+	}
 
- if (icmp(proto))
-   {
-    if (sports && strlen(sports))
-     icmp_code = icmp_types(sports);
-    else if (dports && strlen(dports))
-     icmp_code = icmp_types(dports);
-    else
-     icmp_code = icmp_types("");
+	if (icmp(proto)) {
+		if (sports && strlen(sports))
+			icmp_code = icmp_types(sports);
+		else if (dports && strlen(dports))
+			icmp_code = icmp_types(dports);
+		else
+			icmp_code = icmp_types("");
 
-    dports_as_src = dports_as_dst = icmp_code;
-    sports_as_src = sports_as_dst = "";
-   }
- else
-   {
-    while ((t = strchr(sports, '-')))
-     t[0] = ':';
-    while ((t = strchr(dports, '-')))
-     t[0] = ':';
-    sports_as_src = netfilter_sports(sports);
-    sports_as_dst = netfilter_dports(sports);
+		dports_as_src = dports_as_dst = icmp_code;
+		sports_as_src = sports_as_dst = "";
+	} else {
+		while ((t = strchr(sports, '-')))
+			t[0] = ':';
+		while ((t = strchr(dports, '-')))
+			t[0] = ':';
+		sports_as_src = netfilter_sports(sports);
+		sports_as_dst = netfilter_dports(sports);
 
-    dports_as_src = netfilter_sports(dports);
-    dports_as_dst = netfilter_dports(dports);
-   }
+		dports_as_src = netfilter_sports(dports);
+		dports_as_dst = netfilter_dports(dports);
+	}
 
- if (interface)
-   {
-    via_in = malloc(18 + strlen(interface));
-    sprintf(via_in, "--in-interface %s", interface);
-    via_out = malloc(19 + strlen(interface));
-    sprintf(via_out, "--out-interface %s", interface);
-   }
- switch (op)
-   {
+	if (interface) {
+		via_in = malloc(18 + strlen(interface));
+		sprintf(via_in, "--in-interface %s", interface);
+		via_out = malloc(19 + strlen(interface));
+		sprintf(via_out, "--out-interface %s", interface);
+	}
+	switch (op) {
 /* 
 	iptables reads the INPUT rules only for packets directed to the 
 	system an OUTPUT for packets generated by the system. So the rules 
@@ -158,116 +147,135 @@ translate_linux_netfilter(op, proto, src, log, dst, sports, dports, interface)
 
 	Carlos
 */
-   case ACCEPT_ONE_WAY:
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sACCEPT %s\n",
-	   src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
-    break;
-   case ACCEPT_ONE_WAY_REVERSE:
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sACCEPT %s\n", 
-	   dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
-    break;
-   case ACCEPT_TWO_WAYS:
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sACCEPT %s\n",
-	   src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sACCEPT %s\n", 
-	   dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
-    break;
-   case ACCEPT_TWO_WAYS_ESTABLISHED:
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sACCEPT %s\n",
-	      src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --match state\
-		       --state ESTABLISHED --jump %sACCEPT %s\n",
-	      dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
-    break;
-   case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sACCEPT %s\n",
-	   dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --match state\
-		       --state ESTABLISHED --jump %sACCEPT %s\n",
-	      src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
-    break;
-   case DENY_ALL:
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sDROP %s\n", 
-	   src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sDROP %s\n", 
-	   dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
-    break;
-   case REJECT_ALL:
-    /* Add extra rules specific to tcp protocol, when protocol is all */
-    if ( !strcmp(proto, "all") )
-       {
-       fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol tcp %s %s --jump %sREJECT %s %s\n",
-           src, dst, sports_as_src, dports_as_dst, logit, rejectit, via_out);
-       fprintf(fout, "$iptables --append ALL --source %s  --destination %s --protocol tcp %s %s --jump %sREJECT %s %s\n",
-	   dst, src, dports_as_src, sports_as_dst, logit, rejectit, via_in);
-       }	       
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sREJECT %s %s\n",
-	   src, dst, proto, sports_as_src, dports_as_dst, logit, rejectit, via_out);
-    fprintf(fout, "$iptables --append ALL --source %s  --destination %s --protocol %s %s %s --jump %sREJECT %s %s\n",
-	   dst, src, proto, dports_as_src, sports_as_dst, logit, rejectit, via_in);
-    break;
-   case DENY_OUT:
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sDROP %s\n",
-	   src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
-    break;
-   case DENY_IN:
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sDROP %s\n", 
-	   dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
-    break;
-   case REJECT_OUT:
-    /* Add an extra rule specific to tcp protocol, when protocol is all */
-    if ( !strcmp(proto, "all") )
-       {
-       fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol tcp %s %s --jump %sREJECT %s %s\n",
-           src, dst, sports_as_src, dports_as_dst, logit, rejectit, via_out);
-       }
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sREJECT %s %s\n",
-	   src, dst, proto, sports_as_src, dports_as_dst, logit, rejectit, via_out);
-    break;
-   case REJECT_IN:
-    /* Add an extra rule specific to tcp protocol, when protocol is all */
-    if ( !strcmp(proto, "all") )
-       {
-       fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol tcp %s %s --jump %sREJECT %s %s\n",
-           dst, src, dports_as_src, sports_as_dst, logit, rejectit, via_out);
-       }
-    fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sREJECT %s %s\n", 
-	   dst, src, proto, dports_as_src, sports_as_dst, logit, rejectit, via_in);
-    break;
-   }
- if (icmp(proto))
-   {
-    free(icmp_code);
-   }
- else
-   {
-    free(sports_as_src);
-    free(sports_as_dst);
-    free(dports_as_src);
-    free(dports_as_dst);
-   }
- free(via_in);
- free(via_out);
- return 0;
+	case ACCEPT_ONE_WAY:
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sACCEPT %s\n",
+			src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
+		break;
+	case ACCEPT_ONE_WAY_REVERSE:
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sACCEPT %s\n",
+			dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
+		break;
+	case ACCEPT_TWO_WAYS:
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sACCEPT %s\n",
+			src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sACCEPT %s\n",
+			dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
+		break;
+	case ACCEPT_TWO_WAYS_ESTABLISHED:
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sACCEPT %s\n",
+			src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
+		fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --match state\
+		       --state ESTABLISHED --jump %sACCEPT %s\n", dst, src,
+			proto, dports_as_src, sports_as_dst, logit, via_in);
+		break;
+	case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sACCEPT %s\n",
+			dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
+		fprintf(fout, "$iptables --append ALL --source %s --destination %s --protocol %s %s %s --match state\
+		       --state ESTABLISHED --jump %sACCEPT %s\n", src, dst,
+			proto, sports_as_src, dports_as_dst, logit, via_out);
+		break;
+	case DENY_ALL:
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sDROP %s\n",
+			src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sDROP %s\n",
+			dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
+		break;
+	case REJECT_ALL:
+		/* Add extra rules specific to tcp protocol, when protocol is all */
+		if (!strcmp(proto, "all")) {
+			fprintf(fout,
+				"$iptables --append ALL --source %s --destination %s --protocol tcp %s %s --jump %sREJECT %s %s\n",
+				src, dst, sports_as_src, dports_as_dst,
+				logit, rejectit, via_out);
+			fprintf(fout,
+				"$iptables --append ALL --source %s  --destination %s --protocol tcp %s %s --jump %sREJECT %s %s\n",
+				dst, src, dports_as_src, sports_as_dst,
+				logit, rejectit, via_in);
+		}
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sREJECT %s %s\n",
+			src, dst, proto, sports_as_src, dports_as_dst,
+			logit, rejectit, via_out);
+		fprintf(fout,
+			"$iptables --append ALL --source %s  --destination %s --protocol %s %s %s --jump %sREJECT %s %s\n",
+			dst, src, proto, dports_as_src, sports_as_dst,
+			logit, rejectit, via_in);
+		break;
+	case DENY_OUT:
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sDROP %s\n",
+			src, dst, proto, sports_as_src, dports_as_dst, logit, via_out);
+		break;
+	case DENY_IN:
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sDROP %s\n",
+			dst, src, proto, dports_as_src, sports_as_dst, logit, via_in);
+		break;
+	case REJECT_OUT:
+		/* Add an extra rule specific to tcp protocol, when protocol is all */
+		if (!strcmp(proto, "all")) {
+			fprintf(fout,
+				"$iptables --append ALL --source %s --destination %s --protocol tcp %s %s --jump %sREJECT %s %s\n",
+				src, dst, sports_as_src, dports_as_dst,
+				logit, rejectit, via_out);
+		}
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sREJECT %s %s\n",
+			src, dst, proto, sports_as_src, dports_as_dst,
+			logit, rejectit, via_out);
+		break;
+	case REJECT_IN:
+		/* Add an extra rule specific to tcp protocol, when protocol is all */
+		if (!strcmp(proto, "all")) {
+			fprintf(fout,
+				"$iptables --append ALL --source %s --destination %s --protocol tcp %s %s --jump %sREJECT %s %s\n",
+				dst, src, dports_as_src, sports_as_dst,
+				logit, rejectit, via_out);
+		}
+		fprintf(fout,
+			"$iptables --append ALL --source %s --destination %s --protocol %s %s %s --jump %sREJECT %s %s\n",
+			dst, src, proto, dports_as_src, sports_as_dst,
+			logit, rejectit, via_in);
+		break;
+	}
+	if (icmp(proto)) {
+		free(icmp_code);
+	} else {
+		free(sports_as_src);
+		free(sports_as_dst);
+		free(dports_as_src);
+		free(dports_as_dst);
+	}
+	free(via_in);
+	free(via_out);
+	return 0;
 }
 
-int
-translate_linux_netfilter_start(FILE *output_file)
+int translate_linux_netfilter_start(FILE * output_file)
 {
- fout = output_file;
+	fout = output_file;
 
- fprintf(fout, "#!/bin/sh\n");
- fprintf(fout, "# Firewall rules generated by hlfl\n\n");
+	fprintf(fout, "#!/bin/sh\n");
+	fprintf(fout, "# Firewall rules generated by hlfl\n\n");
 
- fprintf(fout, "iptables=\"/sbin/iptables\"\n\n");
- fprintf(fout, "$iptables --flush\n");
- fprintf(fout, "$iptables --delete-chain\n\n");
- fprintf(fout, "# All the rules will be appended to the user-defined chain\n");
- fprintf(fout, "# ALL, and the default chains will jump to it.\n");
- fprintf(fout, "$iptables --new-chain ALL\n");
- fprintf(fout, "$iptables --append INPUT --jump ALL\n");
- fprintf(fout, "$iptables --append OUTPUT --jump ALL\n");
- fprintf(fout, "$iptables --append FORWARD --jump ALL\n");
+	fprintf(fout, "iptables=\"/sbin/iptables\"\n\n");
+	fprintf(fout, "$iptables --flush\n");
+	fprintf(fout, "$iptables --delete-chain\n\n");
+	fprintf(fout, "# All the rules will be appended to the user-defined chain\n");
+	fprintf(fout, "# ALL, and the default chains will jump to it.\n");
+	fprintf(fout, "$iptables --new-chain ALL\n");
+	fprintf(fout, "$iptables --append INPUT --jump ALL\n");
+	fprintf(fout, "$iptables --append OUTPUT --jump ALL\n");
+	fprintf(fout, "$iptables --append FORWARD --jump ALL\n");
 
 /* 	This probably could be improved, so that if logging is not used, this 
 	chains are never created... but for the moment is easier to do it
@@ -282,50 +290,41 @@ translate_linux_netfilter_start(FILE *output_file)
 	there is no really easy way to determine if other rules use logging
 	same as it is not possible to know here if logging will be used.
 */
- fprintf(fout, "# This is intended to suppor logging, still hasn't been\n");
- fprintf(fout, "# well tested. It simply SEEMS to work.\n");
- fprintf(fout, "$iptables --new-chain LOG_ACCEPT\n");
- fprintf(fout, "$iptables --append LOG_ACCEPT --jump LOG --log-level %s \
-	--log-prefix %s\n", 
-	HLFL_LINUX_netfilter_LOG_LEVEL, HLFL_LINUX_netfilter_LOG_PREFIX); 
- fprintf(fout, "$iptables --append LOG_ACCEPT --jump ACCEPT\n"); 
- fprintf(fout, "$iptables --new-chain LOG_DROP\n");
- fprintf(fout, "$iptables --append LOG_DROP --jump LOG --log-level %s \
-	--log-prefix %s\n", 
-	HLFL_LINUX_netfilter_LOG_LEVEL, HLFL_LINUX_netfilter_LOG_PREFIX); 
- fprintf(fout, "$iptables --append LOG_DROP --jump DROP\n"); 
- fprintf(fout, "$iptables --new-chain LOG_REJECT\n");
- fprintf(fout, "$iptables --append LOG_REJECT --jump LOG --log-level %s \
-	--log-prefix %s\n", 
-	HLFL_LINUX_netfilter_LOG_LEVEL, HLFL_LINUX_netfilter_LOG_PREFIX); 
- fprintf(fout, "$iptables --append LOG_REJECT --protocol tcp --jump REJECT \
-	--reject-with tcp-reset\n"); 
- fprintf(fout, "$iptables --append LOG_REJECT --jump REJECT\n\n"); 
+	fprintf(fout, "# This is intended to suppor logging, still hasn't been\n");
+	fprintf(fout, "# well tested. It simply SEEMS to work.\n");
+	fprintf(fout, "$iptables --new-chain LOG_ACCEPT\n");
+	fprintf(fout, "$iptables --append LOG_ACCEPT --jump LOG --log-level %s \
+	--log-prefix %s\n", HLFL_LINUX_netfilter_LOG_LEVEL, HLFL_LINUX_netfilter_LOG_PREFIX);
+	fprintf(fout, "$iptables --append LOG_ACCEPT --jump ACCEPT\n");
+	fprintf(fout, "$iptables --new-chain LOG_DROP\n");
+	fprintf(fout, "$iptables --append LOG_DROP --jump LOG --log-level %s \
+	--log-prefix %s\n", HLFL_LINUX_netfilter_LOG_LEVEL, HLFL_LINUX_netfilter_LOG_PREFIX);
+	fprintf(fout, "$iptables --append LOG_DROP --jump DROP\n");
+	fprintf(fout, "$iptables --new-chain LOG_REJECT\n");
+	fprintf(fout, "$iptables --append LOG_REJECT --jump LOG --log-level %s \
+	--log-prefix %s\n", HLFL_LINUX_netfilter_LOG_LEVEL, HLFL_LINUX_netfilter_LOG_PREFIX);
+	fprintf(fout, "$iptables --append LOG_REJECT --protocol tcp --jump REJECT \
+	--reject-with tcp-reset\n");
+	fprintf(fout, "$iptables --append LOG_REJECT --jump REJECT\n\n");
 
- return 0;
+	return 0;
 }
 
-void
-print_comment_netfilter(buffer)
- char *buffer;
+void print_comment_netfilter(buffer)
+char *buffer;
 {
- fprintf(fout, buffer);
+	fprintf(fout, buffer);
 }
 
-void
-include_text_netfilter(c)
- char *c;
+void include_text_netfilter(c)
+char *c;
 {
- if (!strncmp("if(", c, 3))
-   {
-    if (!strncmp("if(netfilter)", c, strlen("if(netfilter)")))
-      {
-       fprintf(fout, "%s", c + strlen("if(netfilter)"));
-       matched_if = 1;
-      }
-    else
-     matched_if = 0;
-   }
- else
-  fprintf(fout, "%s", c);
+	if (!strncmp("if(", c, 3)) {
+		if (!strncmp("if(netfilter)", c, strlen("if(netfilter)"))) {
+			fprintf(fout, "%s", c + strlen("if(netfilter)"));
+			matched_if = 1;
+		} else
+			matched_if = 0;
+	} else
+		fprintf(fout, "%s", c);
 }
