@@ -309,7 +309,7 @@ int translate_linux_netfilter_start(FILE * output_file)
 void print_comment_netfilter(buffer)
 char *buffer;
 {
-	fprintf(fout, buffer);
+	fprintf(fout, "#%s", buffer);
 }
 
 void include_text_netfilter(c)
