@@ -366,6 +366,11 @@ ip(src, level)
 	  w[0] = '\0';
 	  end = w + 1;
 	  r = ip(t, level + 1);
+	  if(!r)
+	  {
+	   if(!error)error = HLFL_UNDEF_VAR_ERROR;
+	   return NULL;
+	  }
 	  while (r[i])
 	    {
 	     ret[current] = malloc(strlen(end) + strlen(r[i]) + 1);
