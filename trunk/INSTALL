@@ -1,0 +1,28 @@
+
+1. Installation
+-------------------------------------------------------------------------------
+
+To install hlfl, do :
+
+./configure
+make
+make install
+
+
+Everything will be stored under /usr/local. If you want hlfl to be installed
+somewhere else, then do :
+
+	./configure --prefix=/path/where/you/want/hlfl/to/live
+
+
+Some files will be stored in /usr/local/share/hlfl. If you want them
+to be stored at some other place, then do :
+
+	./configure --datadir=/path/to/the/dir/you/want
+
+2. Usage
+-------------------------------------------------------------------------------
+
+	Please read doc/syntax.txt and/or 'man hlfl'
+
+

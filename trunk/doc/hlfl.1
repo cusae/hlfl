@@ -1,0 +1,251 @@
+.TH HLFL 1 "April 2000" "" "User Manuals"
+.SH NAME
+hlfl \- High Level Firewall Language
+.SH SYNOSIS
+.B	hlfl 
+.I [ipchains | ipfw | ipfilter | netfilter | cisco ]
+< input > output
+
+.SH DESCRIPTION
+
+.B hlfl
+is a tool which can produce several types of firewalls from a given 
+set of rules written in a special language also called hlfl (however 
+awkward it is).
+
+.B hlfl
+attempts to make the best use of the features of the underlying 
+firewall, so that the conversion of a stateless to a stateful 
+requires no modification to the original script
+
+
+.SH HLFL - THE 'LANGUAGE'
+
+
+Each order must fit on one line. The syntax is :
+.LP
+.br
+protocol (local) operator (remote) [interface] keywords
+.br
+.LP
+
+Where :
+.IP protocol 
+must be one of
+.I tcp
+,
+.I udp
+,
+.I icmp
+or 
+.I all
+
+.IP "(local) and (remote) "
+contain the IP addresses (and tcp and udp ports) of both side. Multiple IPs may be specified.  For instance :
+.LP
+.br
+		(192.168.1.1 21 | 192.168.2.1 80)
+.br
+
+Means 'port 21 of 192.168.1.1 or port 80 of 192.168.2.1'. The port range
+syntax is the same as, say, nmap(1). The next statements are valid :
+.br
+	tcp (192.168.1.1 21,22,1024-3128,4000-) -> (any)
+.br
+ 	tcp ((192.168.1.1|192.168.2.1) 21,22,1024-) -> (any)
+.br	
+  
+.B Note
+: it is very important to understand that 
+.I local
+and 
+.I remote
+can 
+.B not
+be exchanged. 
+.I local
+is the thing you want to protect, and 
+.I remote
+is the other party. Be sure to understand that or your rules will not
+work and you won't like hlfl.
+
+
+
+
+.IP operator
+
+must be one of the defined operators. The following list of operators has been
+defined :
+.br
+->   : accept outgoing
+.br
+<-   : accept incoming
+.br
+<->  : accept outgoing and incoming
+.br
+<=>>  : accept outgoing and incoming if the communication was established by the local side first
+.br
+<<=> : same as above except that the communication must be established by the
+remote side first
+.br
+X->  : deny outgoing
+.br
+X!-> : reject outgoing
+.br
+<-X  : deny incoming
+.br
+<-X! : reject incoming
+.br
+X    : deny outgoing and incoming
+.br
+X!   : reject outgoing and incoming
+.br
+
+.IP [interface]
+
+interface is the name of the interface to apply the rule to
+
+.IP keyword
+
+additional keyword. At this time, only the keyword
+.I nomix
+has been defined. Imagine you write the rule:
+.LP
+.br
+	tcp (192.168.1.1 | 192.168.2.1) <-> (172.22.0.1 | 172.22.0.2)
+
+.br
+
+If the keyword
+.I nomix
+is not added at the end of the rule, then this rule means :
+.br
+- accept tcp traffic between 192.168.1.1 and 172.22.0.1
+.br
+- accept tcp traffic between 192.168.1.1 and 172.22.0.2
+.br
+- accept tcp traffic between 192.168.2.1 and 172.22.0.1
+.br
+- accept tcp traffic between 192.168.2.1 and 172.22.0.2
+.br
+
+Now, if 
+.I nomix 
+is added at the end of the rule, then it means :
+.br
+- accept tcp traffic between 192.168.1.1 and 172.22.0.1
+.br
+- accept tcp traffic between 192.168.2.1 and 172.22.0.2
+.br
+
+
+
+It is possible to define words using the 
+.I define
+instruction :
+.br
+	define my_net 192.168.1.0/24
+.br	
+	define ssh 22
+.br	
+	define my_interface ne1
+.br	
+	tcp (my_net 22) <<=> (any 1020-) [my_interface]
+
+.br
+
+The 
+.I include
+keyword allows you to include other files.
+.br
+
+	include /path/to/my/file.hlfl
+.br	
+	include file.hlfl
+.br
+
+The second 
+.I include
+statement will include the file 
+.I hflf.fl
+which is in the current working directory.
+
+It is also possible to include 'systems' file, using brackets :
+.br
+	include <services.hlfl>
+.br
+
+This statement includes the file ${prefix}/share/hlfl/services.hlfl,
+which contains the definition of common tcp and udp services.
+
+
+	
+
+Lines starting with '#' or '%' are treated as comments. '#' comments will be 
+integrated in the final file, whereas '%' comments will be dropped : 
+.br
+% include myfile.hlfl which contains useful defintions
+.br
+include myfile.hlfl
+.br
+# deny tcp
+.br
+tcp (any) X (any)
+.br
+
+Will give, in ipfw :
+.br
+# deny tcp
+.br
+ipfw -f add deny tcp from any to any
+.br
+
+
+Lines starting with a '!' will be included as commands in the generated
+file. This reduces portability, but this allow you to have all your firewall
+configuration stored in one .hlfl file. For instance, I use at home :
+.br
+!ipchains -s 192.168.1.0 -d 0/0 -i eth1 -j MASQ
+.br
+tcp (any) -> (any) [eth1]
+.br
+
+I use ipchains, so I included my ipchains masquerading policy in my 
+configuration file. If I wanted to change my firewall to something 
+else (top-notch ipfilter because ipfilter is _the_ way to go), 
+then I'll have to change (remove actually) the line starting by '!'. 
+
+.br
+
+It is possible to define conditional inclusion. For instance,
+this rule makes no sense if I am generating an ipf firewall,
+so the 'if(
+.I type
+)' statement exists :
+
+.br
+% only include the following in the case we are generating an
+.br
+% ipchains firewall
+
+.br
+
+!if(ipchains) ipchains -s 192.168.1.0 -d 0/0 -i eth1 -j MASQ
+
+  
+.SH EXAMPLE
+
+see ${prefix}/share/hlfl/ for real-life examples.
+
+.SH AUTHOR
+
+hlfl was written by Renaud Deraison <deraison@cvs.nessus.org> because the day
+he had to rewrite his ipfw firewall to ipfilter, he sweared he'd never do that
+again.
+
+.SH BUGS
+
+hlfl has been tested in real life for ipchains, 
+ipfw and ipfilter. netfilter and cisco generated rules 
+are supposed to be syntaxically correct, but were never 
+tested. So beware.
