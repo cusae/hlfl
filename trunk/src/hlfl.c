@@ -208,14 +208,14 @@ int_op(op)
 	ret |= ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE;
 	op = next_op(op);
 	}
-  else if (!strncmp(op, "X", strlen("X")))
-  	{
-	ret |= DENY_ALL;
-	op = next_op(op);
-	}
   else if (!strncmp(op, "X!", strlen("X!")))
   	{
 	ret |= REJECT_ALL;
+	op = next_op(op);
+	}
+  else if (!strncmp(op, "X", strlen("X")))
+  	{
+	ret |= DENY_ALL;
 	op = next_op(op);
 	}
   else if (!strncmp(op, "X->", strlen("X->")))
