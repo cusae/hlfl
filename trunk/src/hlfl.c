@@ -17,20 +17,9 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  */
+
 #include "includes.h"
-#include "bsd_ipfw.h"
-#include "linux_ipfwadm.h"
-#include "linux_ipchains.h"
-#include "linux_netfilter.h"
-#include "ipfilter.h"
-#include "cisco.h"
-#include "getpts.h"
-#include "errors.h"
 #include "hlfl.h"
-#include "utils.h"
-#define MAX_NETS 1024
-#define MAX_IFACES 40
-#define MAX_PROTOS 4
 
 typedef int (*translator_start_t) (void);
 typedef int (*translate_t) (int, char *, char *, int, char *, char *, char *,

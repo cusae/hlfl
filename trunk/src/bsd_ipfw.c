@@ -19,6 +19,8 @@
 
 #include "includes.h"
 #include "bsd_ipfw.h"
+#include "hlfl.h"
+
 extern int icmp(char *);
 extern int matched_if;
 extern char *lang;
