@@ -151,7 +151,7 @@ cisco_exit()
      printf("! clear the old acl, if any\n");
      printf("no ip access-list extended %d\n", iface->in);
      printf("no ip access-list extended %d\n", iface->out);
-     printf("! Define a new ACL\n", i+1);
+     printf("! Define a new ACL\n");
      for (i = 0; i < iface->num_rules; i++)
      printf("%s", iface->rules[i]);
      iface = iface->next;

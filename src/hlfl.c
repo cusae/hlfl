@@ -934,7 +934,6 @@ process(buffer)
  char *src;
  char *dst;
  char *op;
- int log = 0;
  char *interface = NULL;
  char *flags;
  char old_t;
