@@ -1,6 +1,6 @@
 dnl Set up the main lines of the config script
 
-AC_PREREQ(2.52)
+AC_PREREQ(2.13)
 
 AC_INIT(hlfl, 0.60.0, hlfl@hlfl.org)
 AM_INIT_AUTOMAKE
@@ -19,10 +19,9 @@ AC_CHECK_HEADERS([arpa/inet.h netinet/in.h stdio.h stdlib.h string.h unistd.h ge
 AC_C_CONST
 
 # Checks for library functions.
-AC_FUNC_MALLOC
-AC_CHECK_FUNCS([inet_aton inet_ntoa getopt getopt_long memset strchr strdup strstr])
+AC_CHECK_FUNCS([inet_aton inet_ntoa getopt getopt_long malloc memset strchr strdup strstr])
 
-CFLAGS="$CFLAGS -Wall -pedantic -Werror"
+CFLAGS="$CFLAGS -DFILES='\"${datadir}/hlfl\"' -Wall -pedantic -Werror"
 AC_SUBST(CFLAGS)
 
 # Needed for Solaris
