@@ -13,13 +13,13 @@ protocol (local) operator (remote) [interface] keywords
 
 Example :
 
-tcp (192.168.1.1) <-> (192.168.2.1) [eth0]
+tcp (192.168.1.1) X (192.168.2.1) [eth0]
 
 
 Means in bsd ipfw language :
 
-ipfw -f add allow tcp from 192.168.1.1 to 192.168.2.1 out via eth0
-ipfw -f add allow tcp from 192.168.2.1 to 192.168.1.1 in via eth0
+ipfw -f add deny tcp from 192.168.1.1 to 192.168.2.1 out via eth0
+ipfw -f add deny tcp from 192.168.2.1 to 192.168.1.1 in via eth0
 
 
 And this means in a human language :
