@@ -1,0 +1,32 @@
+
+- rewrite all the translators more cleanly. Whereas we used to do :
+
+
+ switch(operator)
+{
+   case ACCEPT_ALL :
+     ...
+    break;
+    case DENY_ALL :
+     ...
+    break;
+    case ACCEPT_INCOMING :
+     ...
+    break;
+}
+
+we should use a more modular approach :
+
+
+ if(operator & ACCEPT)printf("accept ");
+ if(operator & DENY)printf("deny ");
+ if(operator & LOG) printf("log ");
+ if(operator & ONE_WAY)printf("from %s ", ip);
+ .
+ .
+ .
+
+
+
+
+

@@ -1,0 +1,50 @@
+#! /bin/sh
+
+# Build an hlfl release.
+# extensively borrowed from mutt build-release
+# thanks to Thomas Roessler <roessler@guug.de> for it
+
+# update the source
+
+cvs update
+
+# bump the version number, and calculate the tags
+
+OVERSION="`grep AC_INIT configure.in|cut -d"," -f 2`"
+OTAG="hlfl-`echo $OVERSION | tr . -`-rel"
+
+VERSION="`echo $OVERSION | awk -F . '{printf("%d.%d.%d\n", $1, $2, $3 + 1);}'`"
+
+TAG="hlfl-`echo $VERSION | tr . -`-rel"
+
+sed -e "s/${OVERSION}/ ${VERSION}/g" configure.in >configure.in.new; mv configure.in.new configure.in
+
+rcs2log -v -u "asl:Arnaud Launay:launay@hlfl.org" -u "renaud:Renaud Deraison:deraison@hlfl.org" > ChangeLog
+#${EDITOR} ChangeLog
+
+# now, tag the release
+
+cvs commit -m "automatic post-release commit for hlfl-${VERSION}"
+cvs tag ${TAG}
+
+# prepare the tarballs
+
+( ./autogen.sh && ./configure && make dist && mv hlfl-${VERSION}.tar.gz /tmp &&
+cd /tmp && gunzip -c hlfl-${VERSION}.tar.gz | bzip2 -k9 >hlfl-${VERSION}.tar.bz2 )
+
+# build the diffs
+
+cvs rdiff -u -r ${OTAG} -r ${TAG} hlfl | gzip -9 \
+	> /tmp/diff-${OVERSION}-${VERSION}.gz
+cvs rdiff -u -r ${OTAG} -r ${TAG} hlfl | bzip2 -9 \
+	> /tmp/diff-${OVERSION}-${VERSION}.bz2
+
+# upload the release to the net
+DISTFILES="hlfl-${VERSION}.tar.bz2 hlfl-${VERSION}.tar.gz diff-${OVERSION}-${VERSION}.bz2 diff-${OVERSION}-${VERSION}.gz"
+
+cd /tmp && scp $DISTFILES raccoon.nessus.org:/ftp/pub/hlfl
+cd /tmp && scp $DISTFILES raccoon.nessus.org:/web/www.hlfl.org/hlfl
+
+# Announce it to people
+
+mutt -s "HLFL-${VERSION} is out" hlfl-announce@hlfl.org

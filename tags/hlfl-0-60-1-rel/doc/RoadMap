@@ -1,0 +1,44 @@
+- hlfl 'as is' should not change much in the future,
+  except that it will handle more languages in
+  the future. Its name may change though, as it will
+  become the low level of our suite
+
+- A new utility will be created (names are welcome). This
+  utility will be used for the description of the networks
+  and will generate hlfl files for each firewall.
+
+- bklein volunteered to write a GUI on top of that. I want to
+  make it optional, but it may be a good thing.
+
+So, our program will run that way :
+
+		GUI
+		 |
+		nameless high level tool to describe
+		networks and intra-network traffic
+			/      |             \
+		router1.hlfl  router2.hlfl  routeur3.hlfl
+		      |        |              |
+		    hlfl     hlfl            hlfl
+		      |        |              |
+		  config    config          config
+		  file       file  	    file
+
+
+The idea is to write small tools that can be used together, rather than
+create a single monster.
+
+bklein suggested that we could also configure routing and fancy stuff
+such as nat. We could do that with another tool (hlrl - high level
+routing language ???), which would operate at the same level as
+hlfl :
+
+		GUI
+		 |
+		 nameless prog
+		 /  \
+	config.hlfl config.hlrl
+   	 	|      |
+		hlfl	hlrl
+		 \    /
+		  config file [there may be more than one file]

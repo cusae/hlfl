@@ -1,0 +1,573 @@
+2003-10-06  Arnaud Launay  <launay@hlfl.org>
+
+	* build-release 1.5: Update the version
+
+	* src/hlfl.c 1.45:
+	Check cisco mask by Toshio Katayama <toshio.katayama@fujitec.com>
+
+2003-06-09  Arnaud Launay  <launay@hlfl.org>
+
+	* src/bsd_ipfw.c 1.18, src/cisco.c 1.21, src/hlfl.c 1.44, src/ipfilter.c 1.25, src/linux_ipchains.c 1.15, src/linux_ipfwadm.c 1.12, src/linux_netfilter.c 1.21:
+	Better manage comments and netmasks; patch by Toshio Katayama <toshio.katayama@fujitec.com>
+
+	* src/ipfilter.c 1.24, src/linux_ipfwadm.c 1.11, src/linux_netfilter.c 1.20, src/bsd_ipfw.c 1.17, src/hlfl.c 1.43:
+	reindent some things whick looked ugly
+
+	* src/hlfl.c 1.42: lisibility fix; iface assigned to t
+
+2003-06-08  Arnaud Launay  <launay@hlfl.org>
+
+	* src/hlfl.c 1.41:
+	Manage <tab> and cosmetic changes; patch by Toshio Katayama <toshio.katayama@fujitec.com>
+
+	* doc/hlfl.1.in 1.3, src/hlfl.c 1.40:
+	Add support for check and verbose options, by Toshio Katayama <toshio.katayama@fujitec.com>
+
+	* src/hlfl.c 1.39:
+	getopt(3) provides an optind var, use it (patch by Toshio Katayama <toshio.katayama@fujitec.com>)
+
+2003-06-07  Arnaud Launay  <launay@hlfl.org>
+
+	* hlfl.spec.in 1.3, src/bsd_ipfw.c 1.16, src/cisco.c 1.20, src/getpts.c 1.10, src/hlfl.c 1.38, src/ipfilter.c 1.23, src/linux_ipchains.c 1.14, src/linux_ipfwadm.c 1.10, src/linux_netfilter.c 1.19:
+	update © in prevision of new release, wanted by carlos
+
+2003-01-23  Arnaud Launay  <launay@hlfl.org>
+
+	* compile 1.2: Clean old file
+
+2002-12-26  Arnaud Launay  <launay@hlfl.org>
+
+	* src/ipfilter.c 1.22, src/hlfl.c 1.37:
+	Patch from David J Duchscher <daved@tamu.edu>:
+	- Adds the 'flag S' to tcp established connections;
+	- Adds output of keep state for icmp when echo-request is used.
+
+	Also improve readability here and there.
+
+2002-11-30  Arnaud Launay  <launay@hlfl.org>
+
+	* autogen.sh 1.6: Some autom4te versions don't use their number
+
+2002-11-16  Arnaud Launay  <launay@hlfl.org>
+
+	* clean-cvs 1.5: autom4te has not always version
+
+	* src/bsd_ipfw.c 1.15, src/ipfilter.c 1.21:
+	Patch from Carlos Villegas <villegas@math.gatech.edu>:
+	- Fix correct rejecting for rules using all in ipfilter
+	- Fixed rejecting for rules using all and tcp in ipfw and ipfw4
+	- Fixed statefull support in ipfw4 (at least for mac os x)
+
+2002-11-08  Arnaud Launay  <launay@hlfl.org>
+
+	* src/hlfl.c 1.36: Apply getopt to help
+
+	* src/hlfl.c 1.35: Check for getopt *function*, not header
+
+	* src/Makefile.am 1.6: hlfl.def needs to be included into distrib
+
+	* configure.in 1.15, src/includes.h 1.11:
+	re-order include, needed under openbsd
+
+2002-11-07  Arnaud Launay  <launay@hlfl.org>
+
+	* src/linux_netfilter.c 1.18:
+	Patch from Carlos Villegas <villegas@math.gatech.edu>:
+	- Fixed bug which wouldn't allow correct rejecting in
+	  rules involving all protocols
+
+2002-11-03  Arnaud Launay  <launay@hlfl.org>
+
+	* src/hlfl.c 1.34: Patch from François Romieu <romieu@fr.zoreil.com>:
+	- brain-dead error
+
+2002-10-30  Arnaud Launay  <launay@hlfl.org>
+
+	* autogen.sh 1.5, clean-cvs 1.4: use real syntax
+
+	* autogen.sh 1.4, clean-cvs 1.3:
+	really clean .in files generated from .am
+
+2002-10-28  Arnaud Launay  <launay@hlfl.org>
+
+	* src/includes.h 1.10: modify some indent
+
+	* src/linux_netfilter.h 1.8, src/utils.c 1.6, src/hlfl.h 1.7, src/ipfilter.c 1.20, src/ipfilter.h 1.7, src/linux_ipchains.c 1.13, src/linux_ipchains.h 1.6, src/linux_ipfwadm.c 1.9, src/linux_ipfwadm.h 1.4, src/linux_netfilter.c 1.17, src/cisco.c 1.19, src/getpts.c 1.9, src/hlfl.c 1.33, src/bsd_ipfw.c 1.14, src/bsd_ipfw.h 1.7, doc/CodingStyle 1.3, clean-cvs 1.2:
+	back to k&r style indent
+
+2002-10-27  Arnaud Launay  <launay@hlfl.org>
+
+	* src/hlfl.c 1.32, src/hlfl.def 1.1:
+	Patch from Francois Romieu <romieu@cogenit.fr>:
+	cleanup code
+
+	* src/cisco.c 1.18: Patch from Francois Romieu <romieu@cogenit.fr>:
+	- check the malloc()
+	- simplify code
+
+	* src/linux_netfilter.c 1.16:
+	Patch from Carlos Villegas <villegas@math.gatech.edu>:
+	- Added the missing support for logging of reject rules
+	- Fixed bug, that made it impossible to use the keyword
+	  log in more than one rule
+	- Cosmetic fixes, to make all options long
+	- Adjusted a couple of malloc sizes, and got rid of an
+	  extra free in a wrong place.
+	- Cosmetic comment stuff
+
+2002-10-10  Arnaud Launay  <launay@hlfl.org>
+
+	* autogen.sh 1.3: Manage the old autoconf 2.13
+
+	* clean-cvs 1.1: Script to clean the work directory
+
+	* ChangeLog 1.6: automake is pedant and wants a ChangeLog
+
+	* src/includes.h 1.9, configure.in 1.14:
+	Check for ctype.h (patch by Renaud Deraison <deraison@hlfl.org>)
+
+	* src/linux_netfilter.c 1.15:
+	Patch from Carlos Villegas <villegas@math.gatech.edu>
+	Mid: Pine.LNX.4.44.0210092014040.30609-200000@cypress.math.gatech.edu
+	Log from Carlos:
+
+	- Fixed bug that would make the output file unusable (DENY->DROP)
+
+	- Changed short options for long options to increase readability of output file
+	  (although at first sight the effect seems to me to be just the opposite)
+	  (suggested by Stéphane Bortzmeyer <bortzmeyer@nic.fr>)
+
+	- Added real "reject support" which was misssing.
+
+	- Improved the way the rules are created, to make it possible to support "host
+	  firewall" and "router firewall" boxes, some supperficial testing on both
+	  configurations, says that things look good
+
+	- Added some comments to the output file to explain it's structure
+
+	- Did some initial testing on the logging capabilities. Logging REJECT packets
+	  will fail for "tcp" and "all" protocols. Need to fix.
+
+	- Cleaned out some comments, and fixed a few indentations.
+
+	* configure.in 1.13: Just print warning, don't stop
+
+2002-10-08  Arnaud Launay  <launay@hlfl.org>
+
+	* src/Makefile.am 1.5, configure.in 1.12:
+	manage CFLAGS all in configure.in
+
+	* src/linux_netfilter.c 1.14, src/linux_netfilter.h 1.7:
+	Coding is like sex, it's better when it compiles.
+
+	* ChangeLog 1.5, build-release 1.4:
+	update build-release to reflect the loss of VERSION
+
+	* doc/hlfl.1.in 1.2:
+	Add a note about the accept default and document the options
+
+	* src/linux_netfilter.c 1.13, src/linux_netfilter.h 1.6:
+	- iptables was not working, first set of patches from Carlos Villegas <villegas@math.gatech.edu>
+	- corrects the rules and the log stuff
+
+	* src/linux_ipchains.c 1.12, src/linux_ipfwadm.c 1.8:
+	ACCEPT is the default; from a discussion on the mailing-list.
+
+2002-10-05  Arnaud Launay  <launay@hlfl.org>
+
+	* Makefile.am 1.6: local dir is not needed in SUBDIRS
+
+	* config.sub 1.5: Autoadded file
+
+	* mkinstalldirs 1.2, install-sh 1.3, missing 1.2: Autoadded files
+
+	* depcomp 1.3: depcomp is auto-added
+
+	* Makefile.am 1.5, VERSION 1.8:
+	VERSION is no more used, prepare has been superseded by autogen.sh
+
+	* configure.in 1.11: simplify init code and add pedantic flags
+
+	* autogen.sh 1.2: Make autogen like gphoto's one
+
+	* src/hlfl.c 1.31: C++ comment is forbidden in C89
+
+	* aclocal.m4 1.6: File automatically generated by aclocal
+
+2002-05-22  Arnaud Launay  <launay@hlfl.org>
+
+	* doc/grammar 1.1: HLFL ABNF grammar
+
+2002-05-18  Arnaud Launay  <launay@hlfl.org>
+
+	* src/linux_netfilter.c 1.12:
+	Add of icmp types source-quench and paramater-problem
+	From patch and request by Werner Schultheiss <ws@br-online.de>
+
+2002-03-18  Arnaud Launay  <launay@hlfl.org>
+
+	* aclocal.m4 1.5: Update to autoconf 2.53, automake 1.6
+
+	* src/includes.h 1.8, src/ipfilter.c 1.19, src/ipfilter.h 1.6, src/linux_ipchains.c 1.11, src/linux_ipchains.h 1.5, src/linux_ipfwadm.c 1.7, src/linux_ipfwadm.h 1.3, src/linux_netfilter.c 1.11, src/linux_netfilter.h 1.5, src/hlfl.h 1.6, configure.in 1.10, src/bsd_ipfw.c 1.13, src/bsd_ipfw.h 1.6, src/cisco.c 1.17, src/cisco.h 1.7, src/errors.h 1.5, src/getpts.h 1.5, src/hlfl.c 1.30:
+	Support for GNU options;
+	based on a patch by Jason Guild <asjag11@uaa.alaska.edu>
+	Note: HLFL is no longer a filter.
+
+	* Makefile.am 1.4, doc/Makefile.am 1.3:
+	Files where missing from distribution
+
+	* src/bsd_ipfw.c 1.12, src/cisco.c 1.16, src/cisco.h 1.6, src/hlfl.c 1.29, src/hlfl.h 1.5:
+	Headers cleanup; based on a patch by Jason Guild <asjag11@uaa.alaska.edu>
+
+2002-02-21  Arnaud Launay  <launay@hlfl.org>
+
+	* build-release 1.3:
+	Corrects the problems saw during yesterday release.
+
+2002-02-20  Arnaud Launay  <launay@hlfl.org>
+
+	* ChangeLog 1.4: automatic post-release commit for hlfl-0.60.0
+
+	* build-release 1.2: Use features from autoconf/make.
+
+	* NEWS 1.3: Things done since last release
+
+	* src/hlfl.c 1.28, src/includes.h 1.7, src/ipfilter.c 1.18, src/linux_ipchains.c 1.10, src/linux_ipfwadm.c 1.6, src/linux_ipfwadm.h 1.2, src/linux_netfilter.c 1.10, src/utils.c 1.5, doc/CodingStyle 1.2, src/bsd_ipfw.c 1.11, src/cisco.c 1.15, src/errors.h 1.4, src/getpts.c 1.8:
+	Cosmetic changes only.
+
+	* configure.in 1.9, src/utils.c 1.4, src/utils.h 1.5:
+	Support for Solaris, should compile and work.
+
+2002-02-13  Arnaud Launay  <launay@hlfl.org>
+
+	* src/ipfilter.c 1.17: TCP uses RST to indicate a connection refused.
+	(cf. Stevens, vol1, p. 247)
+	Reported by Adrien Huvier <nabok@nabok.org>
+
+2002-02-12  Arnaud Launay  <launay@hlfl.org>
+
+	* Makefile.am 1.3: Some files were missing from distrib
+
+	* src/stamp-h.in 1.2, Makefile.in 1.4, configure.in 1.8, hlfl.tmpl.in 1.4, src/config.h.in 1.5:
+	Cleanup:
+	 - delete some dynamically generated files;
+	 - modify configure.in to reflect new state.
+
+	* src/bsd_ipfw.c 1.10: Forgot a {.
+	Remember me to compile and test before commiting.
+
+	* src/linux_ipchains.c 1.9, src/linux_ipfwadm.c 1.5, src/linux_netfilter.c 1.9, src/bsd_ipfw.c 1.9, src/cisco.c 1.14, src/getpts.c 1.7, src/hlfl.c 1.27, src/ipfilter.c 1.16, doc/syntax.txt 1.11, doc/RoadMap 1.2, Makefile.in 1.3, TODO 1.2, depcomp 1.2, hlfl.spec.in 1.2:
+	(c) update, EOF blanks deleted, typos
+
+	* src/Makefile.am 1.4, src/bsd_ipfw.c 1.8, src/hlfl.c 1.26, src/ipfw4.c 1.2, src/ipfw4.h 1.2:
+	Simplified support for ipfw4
+
+2001-11-12  Arnaud Launay  <launay@hlfl.org>
+
+	* src/Makefile.am 1.3, src/hlfl.c 1.25, src/ipfw4.c 1.1, src/ipfw4.h 1.1:
+	Preliminary support for ipfw statefull
+
+	* src/Makefile.in 1.3, doc/Makefile.in 1.4, autogen.sh 1.1, configure 1.7, configure.in 1.7:
+	Drop dynamically generated files, and add a script to recreate them
+
+	* src/config.h.in 1.4: Forgot to update about memset
+
+	* src/bsd_ipfw.h 1.5, src/cisco.h 1.5, src/ipfilter.h 1.5:
+	typo: HLHL -> HLFL
+
+2001-11-09  Arnaud Launay  <launay@hlfl.org>
+
+	* src/linux_ipfwadm.c 1.4, src/linux_netfilter.c 1.8, configure.in 1.6, src/bsd_ipfw.c 1.7, src/cisco.c 1.13, src/getpts.c 1.6, src/hlfl.c 1.24, src/ipfilter.c 1.15, src/linux_ipchains.c 1.8:
+	bzero(3) (deprecated) -> memset(3)
+
+2001-11-06  Arnaud Launay  <launay@hlfl.org>
+
+	* src/hlfl.c 1.23:
+	Corrects Renaud's mail address and update Linux rules
+
+2001-11-05  Arnaud Launay  <launay@hlfl.org>
+
+	* doc/Makefile.in 1.3: alpha order
+
+	* src/Makefile.am 1.2, src/Makefile.in 1.2:
+	Forget every *.h for dist target
+
+	* Makefile.am 1.2, Makefile.in 1.2: VERSION is needed for dist target
+
+	* doc/Makefile.am 1.2, doc/Makefile.in 1.2:
+	Add some files as doc and hook for dist target
+
+	* LICENSE 1.3: redundant with COPYING
+
+	* src/Makefile 1.8, doc/hlfl.1 1.8, Makefile 1.7:
+	Obsolete files due to new auto{conf,make}
+
+	* src/Makefile.am 1.1, src/Makefile.in 1.1, src/config.h.in 1.3, src/stamp-h.in 1.1, COPYING 1.1, Makefile.am 1.1, Makefile.in 1.1, VERSION 1.7, aclocal.m4 1.4, compile 1.1, config.sub 1.4, configure 1.6, configure.in 1.5, depcomp 1.1, doc/Makefile.am 1.1, doc/Makefile.in 1.1, doc/hlfl.1.in 1.1, hlfl.spec.in 1.1, missing 1.1, mkinstalldirs 1.1:
+	Upgrade to autoconf 2.52 / automake 1.5
+
+2001-10-23  Arnaud Launay  <launay@hlfl.org>
+
+	* .root-dir 1.2: Old unused file
+
+2001-10-08  Arnaud Launay  <launay@hlfl.org>
+
+	* src/hlfl.c 1.22: re-order the op tests to obtain usable results
+
+2001-08-12  Arnaud Launay  <launay@hlfl.org>
+
+	* doc/syntax.txt 1.10:
+	eth0/1 have no meaning under ipfw supported platforms
+
+	* src/ipfilter.c 1.14, doc/syntax.txt 1.9: update: X is a two-ways deny
+
+2001-08-05  Arnaud Launay  <launay@hlfl.org>
+
+	* configure.in 1.4, configure 1.5: LIBS and VERSION were bad handled
+
+	* aclocal.m4 1.3, configure 1.4, configure.in 1.3:
+	Adaptation to autoconf 2.52
+
+	* config.sub 1.3:
+	Update from ftp://ftp.gnu.org/pub/gnu/config/config.sub
+
+	* src/ipfilter.c 1.13:
+	Correction of X! behaviour following Sven Huster <sven.huster@mailsurf.com> suggestion.
+
+	* src/hlfl.c 1.21: bug: X had precedence on X! and X! was then ignored.
+	workaround: test for X! before X
+
+	* src/ipfilter.c 1.12:
+	bad handle of ACCEPT_TWO_WAYS; patch from Sven Huster <sven.huster@mailsurf.com>.
+
+2001-03-19  Arnaud Launay  <launay@hlfl.org>
+
+	* src/cisco.c 1.12, src/hlfl.c 1.20: Fix gcc 3.1 warnings
+
+2001-02-25  Renaud Deraison  <deraison@hlfl.org>
+
+	* doc/sample_3.hlfl 1.1, TODO 1.1: added
+
+	* doc/test.hlfl 1.5, src/bsd_ipfw.c 1.6, src/cisco.c 1.11, src/hlfl.c 1.19, src/includes.h 1.6, src/ipfilter.c 1.11, src/linux_ipchains.c 1.7, src/linux_ipfwadm.c 1.3, src/linux_netfilter.c 1.7, VERSION 1.6, doc/hlfl.1 1.7, doc/syntax.txt 1.8:
+	full-text operators are now supported
+
+2001-02-24  Renaud Deraison  <deraison@hlfl.org>
+
+	* WARNING 1.5: removed
+
+2001-02-23  Renaud Deraison  <deraison@hlfl.org>
+
+	* src/cisco.c 1.10: comments
+
+	* ChangeLog 1.3, VERSION 1.5: updated
+
+	* src/cisco.c 1.9, src/hlfl.c 1.18: cisco support
+
+2001-01-05  Arnaud Launay  <launay@hlfl.org>
+
+	* src/hlfl.c 1.17: corrects a warning with latest gcc
+
+2000-12-26  Renaud Deraison  <deraison@hlfl.org>
+
+	* src/linux_netfilter.c 1.6: patch from kli@club-internet.fr
+
+2000-12-06  Arnaud Launay  <launay@hlfl.org>
+
+	* ChangeLog 1.2, VERSION 1.4:
+	automatic post-release commit for hlfl-0.52
+
+	* NEWS 1.2: News uptodate for release
+
+	* doc/TODO 1.8: Completed to follow ideas and roadmap
+
+	* doc/RoadMap 1.1: First glimpse at a roadmap
+
+2000-11-19  Renaud Deraison  <deraison@hlfl.org>
+
+	* src/hlfl.c 1.16: bugfix
+
+2000-11-19  Arnaud Launay  <launay@hlfl.org>
+
+	* doc/TODO 1.7: cvsweb ok
+
+2000-11-07  Arnaud Launay  <launay@hlfl.org>
+
+	* Makefile 1.6, build-release 1.1: Add automatic release tool
+
+2000-11-06  Renaud Deraison  <deraison@hlfl.org>
+
+	* configure 1.3, configure.in 1.2, hlfl.tmpl.in 1.3, src/Makefile 1.7:
+	Solaris
+
+2000-09-29  Renaud Deraison  <deraison@hlfl.org>
+
+	* Makefile 1.5, src/Makefile 1.6:
+	use std Make commands, not GNU make commands
+
+2000-09-28  Arnaud Launay  <launay@hlfl.org>
+
+	* doc/test.hlfl 1.4: Add test for unknown protocol
+
+	* src/hlfl.c 1.15: Correction of unknown protocol not reported
+	(noted by Guillaume Valadon <doug@free.fr>)
+
+	* src/getpts.c 1.5: Hey, ports could have been used uninitialized
+
+2000-09-25  Arnaud Launay  <launay@hlfl.org>
+
+	* ChangeLog 1.1: automatic release commit
+
+2000-09-21  Arnaud Launay  <launay@hlfl.org>
+
+	* NEWS 1.1: News file, resuming changes (details in ChangeLog)
+
+2000-09-19  Arnaud Launay  <launay@hlfl.org>
+
+	* src/ipfilter.c 1.10: hell. ipf doesn't like 65536.
+
+2000-09-18  Arnaud Launay  <launay@hlfl.org>
+
+	* doc/TODO 1.6: New ideas come to mind
+
+2000-09-17  Arnaud Launay  <launay@hlfl.org>
+
+	* src/hlfl.c 1.14: Unused var
+
+	* src/cisco.c 1.8: Format arg missing
+
+2000-09-17  Renaud Deraison  <deraison@hlfl.org>
+
+	* doc/hlfl.1 1.6, WARNING 1.4: ipfwadm has been tested
+
+	* src/hlfl.c 1.13: ugly tab that hurts my eye
+
+	* src/linux_ipfwadm.c 1.2: icmp support
+
+2000-09-17  Arnaud Launay  <launay@hlfl.org>
+
+	* doc/TODO 1.5, doc/hlfl.1 1.5, src/Makefile 1.5, src/config.h.in 1.2, src/hlfl.c 1.12, src/linux_ipfwadm.c 1.1, src/linux_ipfwadm.h 1.1, WARNING 1.3:
+	Support for ipfwadm (linux 2.0) rules
+
+2000-09-16  Arnaud Launay  <launay@hlfl.org>
+
+	* doc/TODO 1.4: Web items added
+
+2000-09-15  Arnaud Launay  <launay@hlfl.org>
+
+	* src/ipfilter.c 1.9: Exclusion apply to higher limit, too
+
+2000-09-14  Arnaud Launay  <launay@hlfl.org>
+
+	* src/ipfilter.c 1.8: oops... t+1 is the final port
+
+	* src/ipfilter.c 1.7: ranges are exclusives...
+
+2000-09-13  Arnaud Launay  <launay@hlfl.org>
+
+	* Makefile 1.4, src/Makefile 1.4:
+	Don't scream when hlfl.tmpl doesn't exist; target for release
+
+2000-09-12  Arnaud Launay  <launay@hlfl.org>
+
+	* doc/syntax.txt 1.7: \s\+$
+
+	* doc/TODO 1.3: ViM style
+
+	* doc/sample_1.hlfl 1.2, doc/sample_2.hlfl 1.2, doc/test.hlfl 1.3:
+	\s\+$
+
+	* README 1.1: GNUish
+
+	* INSTALL 1.2, Makefile 1.3, THANKS 1.2, WARNING 1.2, aclocal.m4 1.2, configure 1.2, install-sh 1.2:
+	\s\+$ again
+
+	* LICENSE 1.2: FSF has moved
+
+2000-09-11  Arnaud Launay  <launay@hlfl.org>
+
+	* Changes 1.2: too old :)
+
+	* doc/hlfl.1 1.4: Add ML infos
+
+2000-09-09  Renaud Deraison  <deraison@hlfl.org>
+
+	* doc/hlfl.1 1.3: updated
+
+	* doc/syntax.txt 1.6: else
+
+	* src/linux_netfilter.c 1.5, src/bsd_ipfw.c 1.5, src/cisco.c 1.7, src/hlfl.c 1.11, src/ipfilter.c 1.6, src/linux_ipchains.c 1.6:
+	'else' support
+
+	* doc/hlfl.1 1.2: logs
+
+	* doc/TODO 1.2, VERSION 1.3: updated
+
+	* src/Makefile 1.3: config.h must not be removed by 'clean'
+
+	* doc/test.hlfl 1.2: updated with the l flag
+
+	* src/hlfl.c 1.10: bug fixed
+
+	* src/cisco.c 1.6: log command for cisco
+
+2000-09-07  Arnaud Launay  <launay@hlfl.org>
+
+	* hlfl.tmpl.in 1.2: Fix hardcoded shell.
+
+	* doc/syntax.txt 1.5: Add doc for generic log support.
+
+	* src/Makefile 1.2: Simplify, general cleanup and dependencies add.
+
+	* src/utils.h 1.4, src/bsd_ipfw.c 1.4, src/bsd_ipfw.h 1.4, src/cisco.c 1.5, src/cisco.h 1.4, src/errors.h 1.3, src/getpts.h 1.4, src/hlfl.c 1.9, src/hlfl.h 1.4, src/includes.h 1.5, src/ipfilter.c 1.5, src/ipfilter.h 1.4, src/linux_ipchains.c 1.5, src/linux_ipchains.h 1.4, src/linux_netfilter.c 1.4, src/linux_netfilter.h 1.4:
+	Add generic log support; also evite segfault when compiled under high optimization.
+
+2000-08-31  Arnaud Launay  <launay@hlfl.org>
+
+	* config.sub 1.2:
+	Update from ftp://ftp.gnu.org/pub/gnu/config/config.sub
+
+	* src/cisco.c 1.4, src/cisco.h 1.3, src/errors.h 1.2, src/getpts.c 1.4, src/getpts.h 1.3, src/hlfl.c 1.8, src/hlfl.h 1.3, src/includes.h 1.4, src/ipfilter.h 1.3, src/linux_ipchains.h 1.3, src/linux_netfilter.h 1.3, src/utils.h 1.3, src/bsd_ipfw.h 1.3:
+	\s\+$ deletion and some small modifs of *.h files.
+
+	* doc/CodingStyle 1.1: Indent add.
+
+	* src/getpts.c 1.3, src/getpts.h 1.2, src/hlfl.c 1.7, src/hlfl.h 1.2, src/includes.h 1.3, src/ipfilter.c 1.4, src/ipfilter.h 1.2, src/linux_ipchains.c 1.4, src/linux_ipchains.h 1.2, src/linux_netfilter.c 1.3, src/linux_netfilter.h 1.2, src/utils.c 1.3, src/utils.h 1.2, src/bsd_ipfw.c 1.3, src/bsd_ipfw.h 1.2, src/cisco.c 1.3, src/cisco.h 1.2:
+	Indentation modifications.
+
+2000-08-29  Renaud Deraison  <deraison@hlfl.org>
+
+	* doc/syntax.txt 1.4, src/bsd_ipfw.c 1.2, src/hlfl.c 1.6, src/includes.h 1.2, src/ipfilter.c 1.3, src/linux_ipchains.c 1.3, src/linux_netfilter.c 1.2:
+	patch from Arnaud S. Launay <launay@hlfl.org>
+
+	* AUTHORS 1.1: added
+
+	* CONTRIBUTORS 1.2: removed
+
+	* src/hlfl.c 1.5, doc/syntax.txt 1.3, Makefile 1.2:
+	patch from Arnaud Launay <asl@launay.org>
+
+2000-08-07  Renaud Deraison  <deraison@hlfl.org>
+
+	* src/hlfl.c 1.4: typo
+
+	* src/cisco.c 1.2, src/getpts.c 1.2, src/hlfl.c 1.3, src/ipfilter.c 1.2, src/utils.c 1.2:
+	sizeof(char) replaced by 1
+
+	* CONTRIBUTORS 1.1: added
+
+	* src/linux_ipchains.c 1.2:
+	patch from Arnaud S. Launay <asl@launay.org>
+
+2000-08-03  Renaud Deraison  <deraison@hlfl.org>
+
+	* VERSION 1.2, src/hlfl.c 1.2: updated
+
+2000-07-26  Renaud Deraison  <deraison@hlfl.org>
+
+	* doc/syntax.txt 1.2: typo
+
+	* .root-dir 1.1.1.1, Changes 1.1.1.1, INSTALL 1.1.1.1, LICENSE 1.1.1.1, Makefile 1.1.1.1, THANKS 1.1.1.1, VERSION 1.1.1.1, WARNING 1.1.1.1, aclocal.m4 1.1.1.1, config.sub 1.1.1.1, configure 1.1.1.1, configure.in 1.1.1.1, doc/TODO 1.1.1.1, doc/hlfl.1 1.1.1.1, doc/sample_1.hlfl 1.1.1.1, doc/sample_2.hlfl 1.1.1.1, doc/services.hlfl 1.1.1.1, doc/syntax.txt 1.1.1.1, doc/test.hlfl 1.1.1.1, hlfl.tmpl.in 1.1.1.1, install-sh 1.1.1.1, src/Makefile 1.1.1.1, src/bsd_ipfw.c 1.1.1.1, src/bsd_ipfw.h 1.1.1.1, src/cisco.c 1.1.1.1, src/cisco.h 1.1.1.1, src/config.h.in 1.1.1.1, src/errors.h 1.1.1.1, src/getpts.c 1.1.1.1, src/getpts.h 1.1.1.1, src/hlfl.c 1.1.1.1, src/hlfl.h 1.1.1.1, src/includes.h 1.1.1.1, src/ipfilter.c 1.1.1.1, src/ipfilter.h 1.1.1.1, src/linux_ipchains.c 1.1.1.1, src/linux_ipchains.h 1.1.1.1, src/linux_netfilter.c 1.1.1.1, src/linux_netfilter.h 1.1.1.1, src/utils.c 1.1.1.1, src/utils.h 1.1.1.1:
+	- imported source tree
+
+	* .root-dir 1.1, Changes 1.1, INSTALL 1.1, LICENSE 1.1, Makefile 1.1, THANKS 1.1, VERSION 1.1, WARNING 1.1, aclocal.m4 1.1, config.sub 1.1, configure 1.1, configure.in 1.1, doc/TODO 1.1, doc/hlfl.1 1.1, doc/sample_1.hlfl 1.1, doc/sample_2.hlfl 1.1, doc/services.hlfl 1.1, doc/syntax.txt 1.1, doc/test.hlfl 1.1, hlfl.tmpl.in 1.1, install-sh 1.1, src/Makefile 1.1, src/bsd_ipfw.c 1.1, src/bsd_ipfw.h 1.1, src/cisco.c 1.1, src/cisco.h 1.1, src/config.h.in 1.1, src/errors.h 1.1, src/getpts.c 1.1, src/getpts.h 1.1, src/hlfl.c 1.1, src/hlfl.h 1.1, src/includes.h 1.1, src/ipfilter.c 1.1, src/ipfilter.h 1.1, src/linux_ipchains.c 1.1, src/linux_ipchains.h 1.1, src/linux_netfilter.c 1.1, src/linux_netfilter.h 1.1, src/utils.c 1.1, src/utils.h 1.1:
+	New file.
+
