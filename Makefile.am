@@ -1,3 +1,3 @@
 change_logs = ChangeLog
 SUBDIRS = . doc src
-EXTRA_DIST = VERSION
+EXTRA_DIST = VERSION prepare
