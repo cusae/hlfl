@@ -1,11 +1,10 @@
-
 HLFL SYNTAX
 -----------------------------------------------------------------------------
 
 hlfl are a list of statements. Each statement have the following syntax :
 
 
-protocol (local) operator (remote) [interface] keywords
+protocol (local) operator (remote) [interfaces] keywords
 
 'local'  is the network you want to protect
 'remote' is the network you want to be protected from
@@ -13,22 +12,23 @@ protocol (local) operator (remote) [interface] keywords
 
 Example :
 
-tcp (192.168.1.1) X (192.168.2.1) [eth0]
+tcp (192.168.1.1) X (192.168.2.1) [eth0,eth1]
 
 
 Means in bsd ipfw language :
 
-ipfw -f add deny tcp from 192.168.1.1 to 192.168.2.1 out via eth0
-ipfw -f add deny tcp from 192.168.2.1 to 192.168.1.1 in via eth0
-
+ipfw -f add deny tcp from 192.168.1.1  to 192.168.2.1  out  via eth0
+ipfw -f add deny tcp from 192.168.2.1  to 192.168.1.1  in  via eth0
+ipfw -f add deny tcp from 192.168.1.1  to 192.168.2.1  out  via eth1
+ipfw -f add deny tcp from 192.168.2.1  to 192.168.1.1  in  via eth1
 
 And this means in a human language :
-	
+
 	'protect 192.168.1.1 from 192.168.2.1'
-	
 
 
-all (any) X (any) 
+
+all (any) X (any)
 
 Means :
 
@@ -71,7 +71,7 @@ ie :
 
 	(192.168.1.1|192.168.1.12|192.168.1.200)
 
-  
+
 Several sources can be combined with several destinations :
 
 tcp (192.168.1.1|192.168.2.1|192.168.3.1) <=> (172.22.0.1|172.22.0.2|172.22.0.3)
@@ -105,6 +105,28 @@ is a valid statement which prevents 172.22.0.1 to communicate
 with 192.168.1.1 and 192.168.2.1 on ports 21 and 80
 
 
+[interfaces] format
+-------------------------------------------------------------------------------
+
+[interfaces] could be
+* empty
+* one interface
+* or an array of interfaces separated by commas
+
+ie:
+tcp (192.168.1.1) X (192.168.1.2)
+means that 192.168.1.1 and 192.168.1.2 are not allowed to communicate,
+whatever the interface.
+
+tcp (192.168.1.1) X (192.168.1.2) [eth0]
+means that 192.168.1.1 and 192.168.1.2 are not allowed to communicate, using
+interface eth0.
+
+tcp (192.168.1.1) <-> (192.168.1.2) [fxp1,fxp2]
+means that 192.168.1.1 and 192.168.1.2 are allowed to communicate, using
+interface fxp1 or fxp2.
+
+
 ICMP
 -------------------------------------------------------------------------------
 
@@ -116,17 +138,17 @@ The following icmp types are recognized :
 	destination-unreachable
 	time-exceeded
 
-To have a working 'ping' : 
+To have a working 'ping' :
 
 icmp (any echo-request) -> (any)
 icmp (any) <- (any echo-reply)
 
-	
+
 
 Variables
 -------------------------------------------------------------------------------
 
-It is possible to define variables to make the rules more readable, using 
+It is possible to define variables to make the rules more readable, using
 the keyword 'define'
 
 define word value
@@ -136,7 +158,7 @@ ie :
 define inside 192.168.1.0/24
 define public_ports 1024-65535
 
-(inside public_ports) <=>> (any) 
+(inside public_ports) <=>> (any)
 
 
 Include
@@ -160,7 +182,7 @@ include def.hlfl
 tcp (any ssh) <<=> (any)
 
 
-  
+
 Comments
 -------------------------------------------------------------------------------
 
@@ -201,7 +223,7 @@ There are three kinds of comments that are handled by hlfl :
 - Comments starting by '!' will be included as COMMANDS in the generated
   file. This reduces portabilty, since your rules will depend of the underlying
   firewall, but this is convieniant in some cases (typically, if you
-  play with forwarding, masquerading, and so on...)    
+  play with forwarding, masquerading, and so on...)
 
   !ipchains -A forward -s 0/0 -d 0/0 -i eth0 -j ACCEPT
   tcp (any) -> (any)
@@ -218,17 +240,17 @@ There are three kinds of comments that are handled by hlfl :
 
 
   So you can define conditional inclusion. That is :
-  
+
   ! if(ipchains) ipchains -A forward -s 0/0 -d 0/0 -j eth0 -j ACCEPT
- 
+
 
   In that case, this rule will only be printed if you are
   generating ipchains output.
-  
+
   Note that the 'else' statement is *not* supported.
-  
-  
+
+
 Real-life examples
 -------------------------------------------------------------------------------
 
-See sample_1.hlfl and sample_2.hlfl  
+See sample_1.hlfl and sample_2.hlfl

@@ -12,6 +12,7 @@ src/hlfl :
 	
 		
 install : src/hlfl
+	@test -d ${bindir} || $(INSTALL) -c -d ${bindir}
 	$(INSTALL) -m 0755 -o root src/hlfl ${bindir}
 	@test -d ${mandir}/man1 || $(INSTALL) -c -d ${mandir}/man1
 	$(INSTALL) -m 0444 -o root doc/hlfl.1 ${mandir}/man1/

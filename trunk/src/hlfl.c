@@ -294,14 +294,18 @@ ip(src, level)
   }
   if(!src)
    return NULL;
-  t = remove_spaces(src);
 
-  
+	/* 
+	 * Double the src string, else multiple interface won't have
+	 * multiple ip
+	 */
+
+  t = strdup(src);
+  t = remove_spaces(t);
   
   ret = malloc(n * sizeof(char*));
   bzero(ret, n*sizeof(char*));
   
-  t = src;
   while(t)
   {
     s = strchr_items(t, '|', '(', ')');
