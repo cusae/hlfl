@@ -226,7 +226,7 @@ translate_proto(proto)
  bzero(ret, sizeof(char *) * (MAX_PROTOS + 1));
 
  t = proto;
-if (s = strchr(t, '|'))
+if ((s = strchr(t, '|')))
 {
  while (s)
    {
