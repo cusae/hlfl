@@ -10,15 +10,11 @@ cvs update
 
 # bump the version number, and calculate the tags
 
-rm -f VERSION
-cvs update VERSION
-OVERSION="`cat VERSION`"
+OVERSION="`grep AC_INIT configure.in|cut -d"," -f 2`"
 OTAG="hlfl-`echo $OVERSION | tr . -`-rel"
 
-echo $OVERSION | awk -F . '{printf("%d.%d.%d\n", $1, $2, $3 + 1);}' > VERSION
-${EDITOR} VERSION
+VERSION="`echo $OVERSION | awk -F . '{printf("%d.%d.%d\n", $1, $2, $3 + 1);}'`"
 
-VERSION="`cat VERSION`"
 TAG="hlfl-`echo $VERSION | tr . -`-rel"
 
 rcs2log -v -u "asl:Arnaud Launay:launay@hlfl.org" -u "renaud:Renaud Deraison:deraison@hlfl.org" | cat - ChangeLog > ChangeLog.$$ && mv ChangeLog.$$ ChangeLog
@@ -31,7 +27,7 @@ cvs tag ${TAG}
 
 # prepare the tarballs
 
-( ./prepare && ./configure && make dist && mv hlfl-${VERSION}.tar.gz /tmp &&
+( ./autogen.sh && ./configure && make dist && mv hlfl-${VERSION}.tar.gz /tmp &&
 cd /tmp && gunzip -c hlfl-${VERSION}.tar.gz | bzip2 -k9 >hlfl-${VERSION}.tar.bz2 )
 
 # build the diffs
@@ -44,8 +40,8 @@ cvs rdiff -u -r ${OTAG} -r ${TAG} hlfl | bzip2 -9 \
 # upload the release to the net
 DISTFILES="hlfl-${VERSION}.tar.bz2 hlfl-${VERSION}.tar.gz diff-${OVERSION}-${VERSION}.bz2 diff-${OVERSION}-${VERSION}.gz"
 
-cd /tmp && scp $DISTFILES atlantis.hlfl.org:/home/ftp/pub/hlfl
-cd /tmp && scp $DISTFILES atlantis.hlfl.org:/home/hlfl/hlfl
+cd /tmp && scp $DISTFILES raccoon.nessus.org:/ftp/pub/hlfl
+cd /tmp && scp $DISTFILES raccoon.nessus.org:/web/www.hlfl.org/hlfl
 
 # Announce it to people
 
