@@ -253,14 +253,16 @@ There are three kinds of comments that are handled by hlfl :
 
   So you can define conditional inclusion. That is :
 
-  ! if(ipchains) ipchains -A forward -s 0/0 -d 0/0 -j eth0 -j ACCEPT
+  ! if(ipchains) $ipchains -A forward -s 0/0 -d 0/0 -j eth0 -j ACCEPT
 
 
   In that case, this rule will only be printed if you are
   generating ipchains output.
 
-  Note that the 'else' statement is *not* supported.
+  The 'else' statement is supported, so the following is valid :
 
+  ! if(ipchains) $ipchains -A forward -s 0/0 -d 0/0 -i eth0 -j MASQ
+  ! else echo "MASQUERADING NOT IMPLEMENTED" ; exit 
 
 Real-life examples
 -------------------------------------------------------------------------------
