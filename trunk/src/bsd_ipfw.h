@@ -4,4 +4,4 @@
 int translate_bsd_ipfw(int, char *, char *, char *, char *, char *, char *);
 int translate_bsd_ipfw_start();
 void include_text_ipfw();
-#endif
+#endif /* HLHL__BSD_IPFW_H */

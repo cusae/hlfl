@@ -181,7 +181,7 @@ cisco_port(char *port)
 }
 
 /*
- * Convert a cidr ip (192.168.1.1/24) to a 
+ * Convert a cidr ip (192.168.1.1/24) to a
  * cisco netmask (192.168.1.1 0.0.0.255)
  */
 
@@ -573,7 +573,7 @@ translate_cisco_start()
 }
 
 /*
- * Because the cisco rules are sorted by interface, we 
+ * Because the cisco rules are sorted by interface, we
  * do not print comments
  */
 void

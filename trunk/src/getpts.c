@@ -47,14 +47,14 @@ qsort_compar(const void *a, const void *b)
 
 /*
  * getpts()
- * 
+ *
  * This function is (c) Fyodor <fyodor@dhp.com> and was taken from
  * his excellent and outstanding scanner Nmap
- * See http://www.insecure.org/nmap/ for details about 
+ * See http://www.insecure.org/nmap/ for details about
  * Nmap
  */
 
-/* Convert a string like "-100,200-1024,3000-4000,60000-" into an array 
+/* Convert a string like "-100,200-1024,3000-4000,60000-" into an array
    of port numbers*/
 static unsigned short *
 getpts(char *origexpr)
@@ -216,7 +216,7 @@ clean_expr(expr)
 /*
  * This function returns the range of ports.
  *
- * ie : input  : '192.168.1.1 1-1025,80,81,82' 
+ * ie : input  : '192.168.1.1 1-1025,80,81,82'
  *      output : {'80-82','1-1025'}
  */
 char **
