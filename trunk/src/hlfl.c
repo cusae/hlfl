@@ -252,11 +252,18 @@ int int_op(char *op)
 			error = HLFL_SYNTAX_ERROR;
 			ret = -1;
 		} else {
+			int have_log = 0;
+			if ((ret & LOG) == LOG) {
+				have_log = 1;
+				ret -= LOG;
+			}
 			if ((ret == ACCEPT) || (ret == DENY)
 			    || (ret == REJECT))
 				ret |= TWO_WAYS;
 			if ((ret | LOG) == (ACCEPT | ESTABLISHED | TWO_WAYS | LOG))
 				ret -= ESTABLISHED;	/* XXX fixme ! */
+			if (have_log)
+				ret += LOG;
 		}
 	}
 	return ret;
