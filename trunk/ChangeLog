@@ -1,3 +1,55 @@
+2000-12-06  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/NEWS 1.2: News uptodate for release
+
+	* /usr/local/cvs/hlfl/doc/TODO 1.8:
+	Completed to follow ideas and roadmap
+
+	* /usr/local/cvs/hlfl/doc/RoadMap 1.1: First glimpse at a roadmap
+
+2000-11-19  Renaud Deraison  <deraison@hlfl.org>
+
+	* /usr/local/cvs/hlfl/src/hlfl.c 1.16: bugfix
+
+2000-11-19  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/TODO 1.7: cvsweb ok
+
+2000-11-07  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/Makefile 1.6, /usr/local/cvs/hlfl/build-release 1.1:
+	Add automatic release tool
+
+2000-11-06  Renaud Deraison  <deraison@hlfl.org>
+
+	* /usr/local/cvs/hlfl/configure 1.3, /usr/local/cvs/hlfl/configure.in 1.2, /usr/local/cvs/hlfl/hlfl.tmpl.in 1.3, /usr/local/cvs/hlfl/src/Makefile 1.7:
+	Solaris
+
+2000-09-29  Renaud Deraison  <deraison@hlfl.org>
+
+	* /usr/local/cvs/hlfl/Makefile 1.5, /usr/local/cvs/hlfl/src/Makefile 1.6:
+	use std Make commands, not GNU make commands
+
+2000-09-28  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/doc/test.hlfl 1.4: Add test for unknown protocol
+
+	* /usr/local/cvs/hlfl/src/hlfl.c 1.15:
+	Correction of unknown protocol not reported
+	(noted by Guillaume Valadon <doug@free.fr>)
+
+	* /usr/local/cvs/hlfl/src/getpts.c 1.5:
+	Hey, ports could have been used uninitialized
+
+2000-09-25  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/ChangeLog 1.1: automatic release commit
+
+2000-09-21  Arnaud Launay  <launay@hlfl.org>
+
+	* /usr/local/cvs/hlfl/NEWS 1.1:
+	News file, resuming changes (details in ChangeLog)
+
 2000-09-21  Arnaud Launay  <launay@hlfl.org>
 
 	* /usr/local/cvs/hlfl/NEWS 1.1:
