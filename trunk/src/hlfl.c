@@ -1052,12 +1052,28 @@ char *n;
 		"Copyright (C) 2000-2002 Renaud Deraison (deraison @ hlfl.org)\n\n");
 	fprintf(stderr, "Usage: %s [OPTIONS] <rulefile>\n\n", n);
 	fprintf(stderr, "Operation modes:\n");
-	fprintf(stderr, "   -h, --help\t\tprint this help and exit\n");
-	fprintf(stderr, "   -v, --version\tprint version number, then exit\n");
-	fprintf(stderr,
-		"   -t, --type=TYPE\tgenerate output formatted for TYPE of firewall\n");
-	fprintf(stderr,
-		"   -o, --output=FILE\tsave output in FILE (stdout is the default)\n");
+	fprintf(stderr, "   -h"
+#ifdef HAVE_GETOPT_LONG
+			", --help"
+#endif
+			"\t\tprint this help and exit\n");
+	fprintf(stderr, "   -v"
+#ifdef HAVE_GETOPT_LONG
+			", --version"
+#else
+			"\t"
+#endif
+			"\tprint version number, then exit\n");
+	fprintf(stderr,	"   -t"
+#ifdef HAVE_GETOPT_LONG
+			", --type="
+#endif
+			"TYPE\tgenerate output formatted for TYPE of firewall\n");
+	fprintf(stderr, "   -o"
+#ifdef HAVE_GETOPT_LONG
+			", --output="
+#endif
+			"FILE\tsave output in FILE (stdout is the default)\n");
 	fprintf(stderr, "\n");
 	fprintf(stderr, "TYPE options are:\n");
 	fprintf(stderr, "   ipfw - BSD ipfw\n");
