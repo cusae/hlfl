@@ -2,7 +2,7 @@ dnl Set up the main lines of the config script
 
 AC_PREREQ(2.52)
 AC_INIT(hlfl, `cat $srcdir/VERSION`, hlfl@hlfl.org)
-AM_CONFIG_HEADER([src/config.h])
+AM_CONFIG_HEADER(src/config.h)
 
 dnl Check for several programs
 AC_PROG_CC
@@ -21,4 +21,4 @@ AC_FUNC_MALLOC
 AC_CHECK_FUNCS([inet_ntoa memset strchr strdup strstr])
 
 AM_INIT_AUTOMAKE(hlfl, `cat $srcdir/VERSION`)
-AC_OUTPUT([Makefile doc/Makefile doc/hlfl.1 src/Makefile hlfl.spec hlfl.tmpl])
+AC_OUTPUT([Makefile doc/Makefile doc/hlfl.1 src/Makefile hlfl.spec])
