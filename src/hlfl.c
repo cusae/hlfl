@@ -57,7 +57,7 @@ struct definition {
 
 struct definition *definitions = NULL;
 
-#ifdef HAVE_GETOPT_H
+#ifdef HAVE_GETOPT
 /* option string for getopt() or getopt_long() */
 char *optstr = "hvt:o:";
 #ifdef HAVE_GETOPT_LONG
@@ -73,7 +73,7 @@ struct option long_options[] = {
 int ch;
 int opt_idx = 0;
 int opt_count = 1;
-#endif				/* HAVE_GETOPT_H */
+#endif				/* HAVE_GETOPT */
 
 int error = 0;
 char *error_str[] = {
@@ -1081,7 +1081,7 @@ int main(argc, argv)
 int argc;
 char **argv;
 {
-#ifdef HAVE_GETOPT_H
+#ifdef HAVE_GETOPT
 
 #ifdef HAVE_GETOPT_LONG
 	while ((ch = getopt_long(argc, argv, optstr, long_options, &opt_idx)) != -1) {
@@ -1159,7 +1159,7 @@ char **argv;
 	if (output_fname != (void *) 0)
 		free(output_fname);
 
-#endif				/* HAVE_GETOPT_H */
+#endif				/* HAVE_GETOPT */
 
 	return 0;
 }
