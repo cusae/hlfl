@@ -1,6 +1,5 @@
 include ../hlfl.tmpl
 
-prefix=/usr/local
 OBJS=	bsd_ipfw.o \
 	linux_ipfwadm.o \
 	linux_ipchains.o \
@@ -36,7 +35,7 @@ utils.o : utils.c includes.h config.h
 	$(CC) $(CFLAGS) -c utils.c
 
 hlfl : hlfl.c errors.h $(OBJS)
-	$(CC) $(CFLAGS) -DVERSION=$(VERSION) hlfl.c $(OBJS) -o hlfl 
+	$(CC) $(CFLAGS) -DVERSION=$(VERSION) hlfl.c $(OBJS) -o hlfl  $(LIBS)
 
 install : hlfl
 	cp -i hlfl ${prefix}/bin/
