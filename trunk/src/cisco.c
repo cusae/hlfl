@@ -46,21 +46,34 @@ icmp_types(type)
  char *type;
 {
  char *ret = malloc(20);
- memset(ret, 0, 20);
- if (!strlen(type))
-  return ret;
- if (!strcmp(type, "echo-reply"))
-  sprintf(ret, "echo-reply");
- else if (!strcmp(type, "destination-unreachable"))
-  sprintf(ret, "unreachable");
- else if (!strcmp(type, "echo-request"))
-  sprintf(ret, "echo");
- else if (!strcmp(type, "time-exceeded"))
-  sprintf(ret, "time-exceeded");
- else
-  fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
+
+ if (ret) {
+  memset(ret, 0, 20);
+  if (strlen(type)) {
+   struct {
+	char *str;
+	char *msg;
+   } types[] = {
+    { "echo-reply",			"echo-reply" },
+    { "destination-unreachable",	"unreachable" },
+    { "echo-request",			"echo" },
+    { "time-exceeded",			"time-exceeded" },
+    { NULL,				NULL }
+   }, *t;
+
+   for (t = types; t->str; t++) {
+    if (!strcmp(type, t->str)) {
+     sprintf(ret, t->msg);
+     break;
+    }
+   }
+   if (!t->str)
+    fprintf(stderr, "Warning. Unknown icmp type '%s'\n", type);
+  }
+ }
  return ret;
 }
+
 static struct cisco_interfaces *
 cisco_get_interface(name)
  char *name;
