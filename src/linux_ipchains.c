@@ -167,7 +167,10 @@ translate_linux_ipchains_start()
  
  printf("ipchains=\"/sbin/ipchains\"\n\n");
  printf("$ipchains -F\n");
- printf("$ipchains -X\n\n");
+ printf("$ipchains -X\n");
+ printf("$ipchains -P input DENY\n");
+ printf("$ipchains -P forward DENY\n");
+ printf("$ipchains -P output DENY\n");
  return 0;
 }
 
