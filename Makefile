@@ -1,16 +1,16 @@
 include hlfl.tmpl
 
 
-all : 
+all :
 	cd src && make
 
 hlfl.tmpl :
 	./configure
 
-src/hlfl : 
+src/hlfl :
 	cd src && make
-	
-		
+
+
 install : src/hlfl
 	@test -d ${bindir} || $(INSTALL) -c -d ${bindir}
 	$(INSTALL) -m 0755 -o root src/hlfl ${bindir}
@@ -22,14 +22,14 @@ install : src/hlfl
 	$(INSTALL) -m 0444 -o root doc/sample_2.hlfl ${datadir}/hlfl
 	$(INSTALL) -m 0444 -o root doc/test.hlfl ${datadir}/hlfl
 	$(INSTALL) -m 0444 -o root doc/syntax.txt ${datadir}/hlfl
-	
+
 uninstall :
 	rm -rf ${bindir}/hlfl
 	rm -f ${mandir}/man1/hlfl.1
 	rm -rf ${datadir}/hlfl
 
-clean : 
+clean :
 	cd src && make clean
-		
+
 distclean : clean
 	rm -f config.cache config.status config.log hlfl.tmpl src/config.h

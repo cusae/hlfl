@@ -1,6 +1,4 @@
-
-
 Netfilter and Cisco rules have never been tested in real life.
 
 This means that you should not blindly apply them onto your router,
-or else things may go wrong. 
+or else things may go wrong.

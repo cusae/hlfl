@@ -402,7 +402,7 @@ dnl AM_PATH_GTK([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
 dnl Test for GTK, and define GTK_CFLAGS and GTK_LIBS
 dnl
 AC_DEFUN(AM_PATH_GTK,
-[dnl 
+[dnl
 dnl Get the cflags and libraries from the gtk-config script
 dnl
   AC_PATH_PROG(GTK_CONFIG, gtk-config, no)
@@ -424,7 +424,7 @@ dnl
 #include <gtk/gtk.h>
 #include <stdio.h>
 
-int 
+int
 main ()
 {
   int major, minor, micro;
@@ -446,7 +446,7 @@ main ()
   fi
   if test "x$no_gtk" = x ; then
      AC_MSG_RESULT(yes)
-     ifelse([$2], , :, [$2])     
+     ifelse([$2], , :, [$2])
   else
      AC_MSG_RESULT(no)
      GTK_CFLAGS=""
