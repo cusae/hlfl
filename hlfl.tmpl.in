@@ -17,5 +17,6 @@ mandir=@mandir@
 CC=@CC@
 CFLAGS=@CFLAGS@ -DFILES=\"${datadir}/hlfl\"
 DEFS=$(CFLAGS)
+LIBS=@LIBS@
 INSTALL=@INSTALL@
 VERSION=\"@VERSION@\"
