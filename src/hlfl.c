@@ -417,7 +417,7 @@ length(s)
 
 
 /*
- * Returns 1 if the IP adress <s> is valid (of the form x.y.z.t)
+ * Returns nonzero if the IP adress <s> is valid (of the form x.y.z.t)
  */
 int
 valid_ip(s)
@@ -1249,7 +1249,16 @@ main(argc, argv)
     usage(argv[0]);
    }
 
- if (!strcmp(argv[1], "ipfw"))
+ if (!strcmp(argv[1], "ipfw4"))
+   {
+    translator_start = translate_ipfw4_start;
+    translate_func = translate_ipfw4;
+    comment = print_comment;
+    exit_func = nop;
+    include_text_func = include_text_ipfw4;
+   }
+
+	else if (!strcmp(argv[1], "ipfw"))
    {
     translator_start = translate_bsd_ipfw_start;
     translate_func = translate_bsd_ipfw;
