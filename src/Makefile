@@ -1,4 +1,4 @@
-sinclude ../hlfl.tmpl
+include ../hlfl.tmpl
 
 prefix=/usr/local
 OBJS=	bsd_ipfw.o \

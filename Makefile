@@ -1,4 +1,4 @@
-sinclude hlfl.tmpl
+include hlfl.tmpl
 
 all : hlfl.tmpl
 	cd src && make
