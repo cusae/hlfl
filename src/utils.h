@@ -4,4 +4,4 @@
 char *matching_items(char *, char, char);
 char *strchr_items(char *, char, char, char);
 
-#endif /* HLFL_UTILS_H */
+#endif				/* HLFL_UTILS_H */

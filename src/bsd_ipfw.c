@@ -46,17 +46,22 @@ icmp_types(type)
  * BSD's ipfw
  *------------------------------------------------------------------*/
 int
-translate_bsd_ipfw(op, proto, src, dst, sports, dports, interface)
+translate_bsd_ipfw(op, proto, src, log, dst, sports, dports, interface)
  int op;
  char *proto;
  char *src;
  char *dst;
+ int log;
  char *sports;
  char *dports;
  char *interface;
 {
  char *via = strdup("");
  char *icmp_code = "";
+ char *logit = "";
+
+ if (log)
+  logit = " log";
 
  if (icmp(proto))
    {
@@ -86,93 +91,87 @@ translate_bsd_ipfw(op, proto, src, dst, sports, dports, interface)
  switch (op)
    {
    case ACCEPT_ONE_WAY:
-    printf("$ipfw -f add allow %s from %s %s to %s %s out %s %s\n", proto, src,
-	   sports, dst, dports, icmp_code, via);
+    printf("$ipfw -f add allow%s %s from %s %s to %s %s out %s %s\n", logit,
+	   proto, src, sports, dst, dports, icmp_code, via);
     break;
    case ACCEPT_ONE_WAY_REVERSE:
-    printf("$ipfw -f add allow %s from %s %s to %s %s in %s %s\n", proto, dst,
-	   dports, src, sports, icmp_code, via);
+    printf("$ipfw -f add allow%s %s from %s %s to %s %s in %s %s\n", logit,
+	   proto, dst, dports, src, sports, icmp_code, via);
     break;
    case ACCEPT_TWO_WAYS:
-    printf("$ipfw -f add allow %s from %s %s to %s %s out %s %s\n", proto, src,
-	   sports, dst, dports, icmp_code, via);
-    printf("$ipfw -f add allow %s from %s %s to %s %s in %s %s\n", proto, dst,
-	   dports, src, sports, icmp_code, via);
+    printf("$ipfw -f add allow%s %s from %s %s to %s %s out %s %s\n", logit,
+	   proto, src, sports, dst, dports, icmp_code, via);
+    printf("$ipfw -f add allow%s %s from %s %s to %s %s in %s %s\n", logit,
+	   proto, dst, dports, src, sports, icmp_code, via);
     break;
    case ACCEPT_TWO_WAYS_ESTABLISHED:
     if (!strcmp(proto, "tcp"))
       {
-       printf("$ipfw -f add allow %s from %s %s to %s %s out %s\n", proto, src,
-	      sports, dst, dports, via);
-       printf("$ipfw -f add deny %s from %s %s to %s %s in setup %s\n", proto,
-	      dst, dports, src, sports, via);
-       printf("$ipfw -f add accept %s from %s %s to %s %s in %s\n", proto, dst,
-	      dports, src, sports, via);
+       printf("$ipfw -f add allow%s %s from %s %s to %s %s out %s\n", logit,
+	      proto, src, sports, dst, dports, via);
+       printf("$ipfw -f add deny%s %s from %s %s to %s %s in setup %s\n", logit,
+	      proto, dst, dports, src, sports, via);
+       printf("$ipfw -f add accept%s %s from %s %s to %s %s in %s\n", logit,
+	      proto, dst, dports, src, sports, via);
       }
     else
       {
        /* XXX stateful needed here */
        printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$ipfw -f add allow %s from %s %s to %s %s out %s %s\n", proto,
-	      src, sports, dst, dports, icmp_code, via);
-       printf("$ipfw -f add allow %s from %s %s to %s %s in %s %s\n", proto,
-	      dst, dports, src, sports, icmp_code, via);
+       printf("$ipfw -f add allow%s %s from %s %s to %s %s out %s %s\n", logit,
+	      proto, src, sports, dst, dports, icmp_code, via);
+       printf("$ipfw -f add allow%s %s from %s %s to %s %s in %s %s\n", logit,
+	      proto, dst, dports, src, sports, icmp_code, via);
       }
     break;
 
    case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
     if (!strcmp(proto, "tcp"))
       {
-       printf("$ipfw -f add allow %s from %s %s to %s %s in %s\n", proto, dst,
-	      dports, src, sports, via);
-       printf("$ipfw -f add deny %s from %s %s to %s %s out setup %s\n", proto,
-	      src, sports, dst, dports, via);
-       printf("$ipfw -f add accept %s from %s %s to %s %s out %s\n", proto, src,
-	      sports, dst, dports, via);
+       printf("$ipfw -f add allow%s %s from %s %s to %s %s in %s\n", logit,
+	      proto, dst, dports, src, sports, via);
+       printf("$ipfw -f add deny%s %s from %s %s to %s %s out setup %s\n",
+	      logit, proto, src, sports, dst, dports, via);
+       printf("$ipfw -f add accept%s %s from %s %s to %s %s out %s\n", logit,
+	      proto, src, sports, dst, dports, via);
       }
     else
       {
        /* XXX stateful needed here */
        printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$ipfw -f add allow %s from %s %s to %s %s in %s %s\n", proto,
-	      dst, dports, src, sports, icmp_code, via);
-       printf("$ipfw -f add allow %s from %s %s to %s %s out %s %s\n", proto,
-	      src, sports, dst, dports, icmp_code, via);
+       printf("$ipfw -f add allow%s %s from %s %s to %s %s in %s %s\n", logit,
+	      proto, dst, dports, src, sports, icmp_code, via);
+       printf("$ipfw -f add allow%s %s from %s %s to %s %s out %s %s\n", logit,
+	      proto, src, sports, dst, dports, icmp_code, via);
       }
     break;
    case DENY:
-    printf("$ipfw -f add deny %s from %s %s to %s %s out %s %s\n", proto, src,
-	   sports, dst, dports, icmp_code, via);
-    printf("$ipfw -f add deny %s from %s %s to %s %s in %s %s\n", proto, dst,
-	   dports, src, sports, icmp_code, via);
-    break;
-   case DENY_LOG:
-    printf("$ipfw -f add deny log %s from %s %s to %s %s out %s %s\n", proto,
-	   src, sports, dst, dports, icmp_code, via);
-    printf("$ipfw -f add deny log %s from %s %s to %s %s out %s %s\n", proto,
-	   src, sports, dst, dports, icmp_code, via);
+    printf("$ipfw -f add deny%s %s from %s %s to %s %s out %s %s\n", logit,
+	   proto, src, sports, dst, dports, icmp_code, via);
+    printf("$ipfw -f add deny%s %s from %s %s to %s %s in %s %s\n", logit,
+	   proto, dst, dports, src, sports, icmp_code, via);
     break;
    case REJECT:
-    printf("$ipfw -f add reject %s from %s %s to %s %s out %s %s\n", proto, src,
-	   sports, dst, dports, icmp_code, via);
-    printf("$ipfw -f add reject %s from %s %s to %s %s in %s %s\n", proto, dst,
-	   dports, src, sports, icmp_code, via);
+    printf("$ipfw -f add reject%s %s from %s %s to %s %s out %s %s\n", logit,
+	   proto, src, sports, dst, dports, icmp_code, via);
+    printf("$ipfw -f add reject%s %s from %s %s to %s %s in %s %s\n", logit,
+	   proto, dst, dports, src, sports, icmp_code, via);
     break;
    case DENY_OUT:
-    printf("$ipfw -f add deny %s from %s %s to %s %s out %s %s\n", proto, src,
-	   sports, dst, dports, icmp_code, via);
+    printf("$ipfw -f add deny%s %s from %s %s to %s %s out %s %s\n", logit,
+	   proto, src, sports, dst, dports, icmp_code, via);
     break;
    case DENY_IN:
-    printf("$ipfw -f add deny %s from %s %s to %s %s in %s %s\n", proto, dst,
-	   dports, src, sports, icmp_code, via);
+    printf("$ipfw -f add deny%s %s from %s %s to %s %s in %s %s\n", logit,
+	   proto, dst, dports, src, sports, icmp_code, via);
     break;
    case REJECT_OUT:
-    printf("$ipfw -f add reject %s from %s %s to %s %s out %s %s\n", proto, src,
-	   sports, dst, dports, icmp_code, via);
+    printf("$ipfw -f add reject%s %s from %s %s to %s %s out %s %s\n", logit,
+	   proto, src, sports, dst, dports, icmp_code, via);
     break;
    case REJECT_IN:
-    printf("$ipfw -f add reject %s from %s %s to %s %s in %s %s\n", proto, dst,
-	   dports, src, sports, icmp_code, via);
+    printf("$ipfw -f add reject%s %s from %s %s to %s %s in %s %s\n", logit,
+	   proto, dst, dports, src, sports, icmp_code, via);
     break;
    }
  free(via);
