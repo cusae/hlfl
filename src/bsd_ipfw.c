@@ -21,6 +21,7 @@
 #include "bsd_ipfw.h"
 extern int icmp(char *);
 extern int matched_if;
+extern char *lang;
 
 
 static char *
@@ -117,14 +118,21 @@ translate_bsd_ipfw(op, proto, src, log, dst, sports, dports, interface)
 	      proto, dst, dports, src, sports, via);
       }
     else
-      {
-       /* XXX stateful needed here */
-       printf("# (warning. A stateful firewall would be better here)\n");
-       printf("$ipfw -f add allow%s %s from %s %s to %s %s out %s %s\n", logit,
-	      proto, src, sports, dst, dports, icmp_code, via);
-       printf("$ipfw -f add allow%s %s from %s %s to %s %s in %s %s\n", logit,
-	      proto, dst, dports, src, sports, icmp_code, via);
-      }
+	    if (!strcmp(lang, "ipfw4"))
+	    {
+		    printf("$ipfw -f add allow%s %s from %s %s to %s %s out %s %s keep state\n", logit, proto, src, sports, dst, dports, icmp_code, via);
+		    printf("$ipfw -f add allow%s %s from %s %s to %s %s in %s %s keep state\n", logit, proto, dst, dports, src, sports, icmp_code, via);
+	    }
+	    else
+	    {
+		    /* XXX stateful needed here */
+		    printf("# (warning. A stateful firewall would be better here); you could use ipfw4.\n");
+		    printf("$ipfw -f add allow%s %s from %s %s to %s %s out %s %s\n", logit,
+				    proto, src, sports, dst, dports, icmp_code, via);
+		    printf("$ipfw -f add allow%s %s from %s %s to %s %s in %s %s\n", logit,
+				    proto, dst, dports, src, sports, icmp_code, via);
+	    }
+   }
     break;
 
    case ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE:
