@@ -21,7 +21,7 @@ AC_C_CONST
 # Checks for library functions.
 AC_CHECK_FUNCS([inet_aton inet_ntoa getopt getopt_long malloc memset strchr strdup strstr])
 
-CFLAGS="$CFLAGS -DFILES='\"${datadir}/hlfl\"' -Wall -pedantic -Werror"
+CFLAGS="$CFLAGS -DFILES='\"${datadir}/hlfl\"' -Wall"
 AC_SUBST(CFLAGS)
 
 # Needed for Solaris
