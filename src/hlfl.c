@@ -180,20 +180,14 @@ int_op(op)
 {
  int ret = 0;
 
+	/*
+		* FIXME op tests need to be ordered
+		* complex before, simple next
+		*/
 
  while(op && strlen(op))
  {
-  if (!strncmp(op, "->", strlen("->")))
-  	{
-  	ret |= ACCEPT_ONE_WAY;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "<-", strlen("<-")))
-  	{
-	ret |= ACCEPT_ONE_WAY_REVERSE;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "<->", strlen("<->")))
+  if (!strncmp(op, "<->", strlen("<->")))
   	{
 	ret |= ACCEPT_TWO_WAYS;
 	op = next_op(op);
@@ -206,16 +200,6 @@ int_op(op)
   else if (!strncmp(op, "<<=>", strlen("<<=>")))
   	{
 	ret |= ACCEPT_TWO_WAYS_ESTABLISHED_REVERSE;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "X!", strlen("X!")))
-  	{
-	ret |= REJECT_ALL;
-	op = next_op(op);
-	}
-  else if (!strncmp(op, "X", strlen("X")))
-  	{
-	ret |= DENY_ALL;
 	op = next_op(op);
 	}
   else if (!strncmp(op, "X->", strlen("X->")))
@@ -237,6 +221,26 @@ int_op(op)
   else if (!strncmp(op, "<-X!", strlen("<-X!")))
   	{
 	ret |= REJECT_IN;
+	op = next_op(op);
+	}
+  else if (!strncmp(op, "X!", strlen("X!")))
+  	{
+	ret |= REJECT_ALL;
+	op = next_op(op);
+	}
+  else if (!strncmp(op, "X", strlen("X")))
+  	{
+	ret |= DENY_ALL;
+	op = next_op(op);
+	}
+		else if (!strncmp(op, "->", strlen("->")))
+  	{
+  	ret |= ACCEPT_ONE_WAY;
+	op = next_op(op);
+	}
+  else if (!strncmp(op, "<-", strlen("<-")))
+  	{
+	ret |= ACCEPT_ONE_WAY_REVERSE;
 	op = next_op(op);
 	}
  else if(!strncmp(op, "accept", strlen("accept")))
