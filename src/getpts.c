@@ -66,7 +66,6 @@ static unsigned short *getpts(char *origexpr)
 		if (expr[j] != ' ')
 			expr[i++] = expr[j];
 	expr[i] = '\0';
-	exlen = i;
 	i = 0;
 	while ((p = strchr(expr, ','))) {
 		*p = '\0';
