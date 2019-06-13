@@ -210,7 +210,6 @@ char *expr;
 
 	if (s) {
 		char old_s;
-		old_s = s[0];
 		s[0] = '\0';
 		expr = s + 1;
 		expr = clean_expr(expr);
