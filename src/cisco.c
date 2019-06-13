@@ -295,7 +295,6 @@ char *dports;
 char *interface;
 {
 	int ret = 0;
-	char *via = strdup("");
 	char *p;
 	struct cisco_interfaces *c = ci;
 	char *icmp_code = "";
